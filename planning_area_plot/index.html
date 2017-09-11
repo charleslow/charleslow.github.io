@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+    <style>
+
+      h2 {
+        text-align: center;
+        color: "#333333";
+        font-family: Helvetica;
+        font-size: 75%;
+      }
+
+      .background {
+      	fill: none;
+      	pointer-events: all;
+      }
+
+      .feature {
+      	fill: #333333;
+      	cursor: pointer;
+      }
+
+      .feature.active {
+      	fill: orange;
+      }
+      
+    </style>
+    <script type="text/javascript">  
+      function draw(geo_data) {
+        "use strict";
+        var margin = 75,
+            width = 2000,
+            height = 900,
+            active = d3.select(null);
+
+        d3.select("body")
+          .append("h2")
+          .text("Plot of Singapore Planning Areas");
+
+        var svg = d3.select("body")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .append('g')
+            .attr('class', 'map');
+
+        // Create the reset by clicking on the background
+        svg.append("rect")
+		    .attr("class", "background")
+		    .attr("width", width)
+		    .attr("height", height)
+		    .on("click", reset);
+
+        // Calculate the necessary scale
+        var projection = d3.geo.mercator()
+                               .scale(1)
+                               .translate([0, 0]);
+
+        var path = d3.geo.path()
+        	.projection(projection);
+
+        var zoom = d3.behavior.zoom()
+		    .translate([0, 0])
+		    .scale(1)
+		    .on("zoom", zoomed);
+
+        var b = path.bounds(geo_data),
+        	s = .9 / Math.max((b[1][0] - b[0][0]) / width, (b[1][1] - b[0][1]) / height),
+        	t = [(width/2 - (s * (b[1][0] + b[0][0]))/2), (height/2 - (s * (b[1][1] + b[0][1]))/2)];
+        
+        projection.scale(s).translate(t);
+
+        var map = svg.selectAll('path')
+                     .data(geo_data.features)
+                     .enter()
+	                     .append('path')
+	                     .attr('d', path)
+	                     .attr('class', 'feature')
+	                     .style('stroke', 'white')
+	                     .style('stroke-width', 0.05)
+	                     .on("click", clicked);
+
+         function clicked(d) {
+         	if (active.node() === this) return reset();
+         	active.classed("active", false);
+         	active = d3.select(this).classed("active", true);
+
+         	var bounds = path.bounds(d),
+         		dx = bounds[1][0] - bounds[0][0],
+      			dy = bounds[1][1] - bounds[0][1],
+      			x = (bounds[0][0] + bounds[1][0]) / 2,
+			    y = (bounds[0][1] + bounds[1][1]) / 2,
+			    scale = Math.max(1, Math.min(8, 0.9 / Math.max(dx / width, dy / height))),
+			    translate = [width / 2 - scale * x, height / 2 - scale * y];
+
+         	// Get Area name, convert to Title Case
+         	function titleCase(str) {
+			  str = str.toLowerCase().split(' ');
+			  for (var i = 0; i < str.length; i++) {
+			    str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1); 
+			  }
+			  return str.join(' ');
+			}
+			var area_name = titleCase(d.properties.PLN_AREA_N);
+
+			// Remove all the text labels
+			// Add town name label
+		  	svg.selectAll("text").remove();
+			svg.append("text")
+				.attr("x", x)
+				.attr("y", y)
+				.text(area_name)
+				.attr("text-anchor", "middle")
+				.attr("font-size", 12/scale)
+				.attr("font-family", "Helvetica");
+
+			console.log("bounds is", bounds);
+			console.log("dx is", dx);
+			console.log("dy is", dy);
+			console.log("x is", x);
+			console.log("y is", y);
+			console.log("width is", width);
+			console.log("height is", height);
+			console.log("scale is", scale);
+			console.log("translate is", translate);
+
+			svg.transition()
+			    .duration(750)
+			    .call(zoom.translate(translate).scale(scale).event);
+		}
+
+		function reset() {
+		  active.classed("active", false);
+		  active = d3.select(null);
+		  map.style("stroke-width", 0.05);
+
+
+		  // Remove all the text labels
+		  svg.selectAll("text").remove();
+
+		  svg.transition()
+		      .duration(750)
+		      .call(zoom.translate([0, 0]).scale(1).event);
+		}
+
+		function zoomed() {
+		  map.style("stroke-width", 0.3);
+		  svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+		}
+
+		// function stopped() {
+		//   if (d3.event.defaultPrevented) d3.event.stopPropagation();
+		// }
+
+      };
+
+    </script>
+  </head>
+<body>
+  <script type="text/javascript">
+ 	d3.json("mp14_planning_area.geojson", draw);
+  </script>
+</body>
+</html>
