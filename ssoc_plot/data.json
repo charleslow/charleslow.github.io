@@ -1,0 +1,2640 @@
+{
+    "name": "SSOC Codes",
+    "children": [
+        {
+            "name": "1 :  Legislators, Senior Officials And Managers",
+            "children": [
+                {
+                    "name": "11 :  Legislators, Senior Officials And Chief Executives",
+                    "children": [
+                        {
+                            "name": "111 :  Legislators And Senior Officials",
+                            "children": [
+                                {
+                                    "name": "1111 :  Legislators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "1112 :  Senior Government And Statutory Board Officials",
+                                    "children": []
+                                },
+                                {
+                                    "name": "1114 :  Senior Officials Of Political Party Organisations",
+                                    "children": []
+                                },
+                                {
+                                    "name": "1115 :  Senior Officials Of Employers\u00c2\u2019, Workers\u00c2\u2019 And Other Economic-interest",
+                                    "children": []
+                                },
+                                {
+                                    "name": "1116 :  Senior Officials Of Humanitarian And Other Special-interest Organisations",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "112 :  Managing Directors, Chief Executives And General",
+                            "children": [
+                                {
+                                    "name": "1120 :  Managing Directors, Chief Executives And General Managers",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "12 :  Administrative And Commercial Managers",
+                    "children": [
+                        {
+                            "name": "121 :  Business Services And Administration Managers",
+                            "children": [
+                                {
+                                    "name": "1211 :  Finance And Administration Managers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "1212 :  Human Resource Managers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "1213 :  Policy And Planning Managers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "1219 :  Business Services And Administration Managers Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "122 :  Sales, Marketing, Development And Customer Service",
+                            "children": [
+                                {
+                                    "name": "1221 :  Sales, Marketing And Business Development Managers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "1222 :  Advertising And Public Relations Managers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "1223 :  Research And Development Managers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "1224 :  Customer Service And Call Centre Managers",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "13 :  Production And Specialised Services Managers",
+                    "children": [
+                        {
+                            "name": "131 :  Production Managers In Agriculture And Fisheries",
+                            "children": [
+                                {
+                                    "name": "1310 :  Production Managers In Agriculture And Fisheries",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "132 :  Manufacturing, Construction, Transport, Distribution",
+                            "children": [
+                                {
+                                    "name": "1321 :  Manufacturing Managers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "1323 :  Construction Managers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "1324 :  Transport, Supply, Distribution And Related Managers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "1329 :  Production And Operations Managers Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "133 :  Information And Communications Technology Service",
+                            "children": [
+                                {
+                                    "name": "1330 :  Information And Communications Technology Service Managers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "134 :  Professional, Financial, Community And Social Services",
+                            "children": [
+                                {
+                                    "name": "1341 :  Child Care Services Managers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "1342 :  Health Services Managers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "1343 :  Aged Care Services Managers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "1344 :  Social Welfare Managers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "1345 :  Education And Training Institution Managers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "1346 :  Financial And Insurance Services Managers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "1349 :  Professional, Financial, Community And Social Services Managers Not",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "14 :  Hospitality, Retail And Related Services Managers",
+                    "children": [
+                        {
+                            "name": "141 :  Hotel And Food And Beverages Services Managers",
+                            "children": [
+                                {
+                                    "name": "1411 :  Hotel Operations And Lodging Services Managers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "1412 :  Food And Beverages Services Managers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "142 :  Retail And Wholesale Trade Managers",
+                            "children": [
+                                {
+                                    "name": "1420 :  Retail And Wholesale Trade Managers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "143 :  Other Services Managers",
+                            "children": [
+                                {
+                                    "name": "1431 :  Sports Centre Managers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "1432 :  Recreation Centre Managers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "1433 :  Arts And Cultural Centre Managers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "1439 :  Other Services Managers Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "2 :  Professionals",
+            "children": [
+                {
+                    "name": "21 :  Science And Engineering Professionals",
+                    "children": [
+                        {
+                            "name": "211 :  Physical And Earth Science Professionals",
+                            "children": [
+                                {
+                                    "name": "2111 :  Physicists And Astronomers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2112 :  Meteorologists",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2113 :  Chemists",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2114 :  Geologists, Geophysicists And Other Physical Science Professionals",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "212 :  Mathematicians, Actuaries, Statisticians And Other",
+                            "children": [
+                                {
+                                    "name": "2121 :  Mathematicians, Operations Research Analysts And Actuaries",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2122 :  Statisticians",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2123 :  Other Statistical, Mathematical And Actuarial Professionals",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "213 :  Life Science Professionals",
+                            "children": [
+                                {
+                                    "name": "2131 :  Biologists, Botanists, Zoologists And Related Professionals",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2132 :  Farming, Forestry And Fishery Advisers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2133 :  Environmental Protection And Related Professionals",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2134 :  Pharmacologists And Related Professionals",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "214 :  Engineering Professionals (excluding",
+                            "children": [
+                                {
+                                    "name": "2141 :  Industrial And Production Engineers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2142 :  Civil Engineers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2143 :  Environmental Engineers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2144 :  Mechanical Engineers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2145 :  Chemical Engineers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2146 :  Mining Engineers, Metallurgists And Related Professionals",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2149 :  Engineering Professionals Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "215 :  Electrotechnology Engineers",
+                            "children": [
+                                {
+                                    "name": "2151 :  Electrical Engineers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2152 :  Electronics Engineers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2153 :  Telecommunications Engineers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "216 :  Architects, Planners, Surveyors And Designers",
+                            "children": [
+                                {
+                                    "name": "2161 :  Building Architects",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2162 :  Landscape Architects",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2163 :  Fashion, Garment And Product Designers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2164 :  Town And Related Planners",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2165 :  Surveyors And Cartographers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2166 :  Graphic And Multimedia Designers And Artists",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "217 :  Ship And Aircraft Related Professionals",
+                            "children": [
+                                {
+                                    "name": "2171 :  Ship Engineers And Related Professionals",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2172 :  Aircraft Pilots And Related Professionals",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "22 :  Health Professionals",
+                    "children": [
+                        {
+                            "name": "221 :  Medical Doctors",
+                            "children": [
+                                {
+                                    "name": "2211 :  Generalist Medical Practitioners",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2212 :  Specialist Medical Practitioners (medical)",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2213 :  Specialist Medical Practitioners (surgical)",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2214 :  Specialist Medical Practitioners (other Specialisations) - I",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2215 :  Specialist Medical Practitioners (other Specialisations) - Ii (con'td)",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "222 :  Nursing Professionals",
+                            "children": [
+                                {
+                                    "name": "2220 :  Nursing Professionals",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "223 :  Traditional And Complementary Medicine Professionals",
+                            "children": [
+                                {
+                                    "name": "2230 :  Traditional And Complementary Medicine Professionals",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "225 :  Veterinarians",
+                            "children": [
+                                {
+                                    "name": "2250 :  Veterinarians",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "226 :  Other Health Professionals",
+                            "children": [
+                                {
+                                    "name": "2261 :  Dentists",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2262 :  Pharmacists",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2263 :  Environmental And Occupational Health And Hygiene Professionals",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2264 :  Physiotherapists And Related Professionals",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2265 :  Dietitians And Nutritionists",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2266 :  Audiologists And Speech Therapists",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2267 :  Optometrists",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2268 :  Occupational Therapists",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2269 :  Other Health Professionals Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "23 :  Teaching And Training Professionals",
+                    "children": [
+                        {
+                            "name": "231 :  University, Polytechnic And Higher Education Teachers",
+                            "children": [
+                                {
+                                    "name": "2310 :  University, Polytechnic And Higher Education Teachers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "232 :  Junior College And Pre-university Education Teachers",
+                            "children": [
+                                {
+                                    "name": "2320 :  Junior College And Pre-university Education Teachers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "233 :  Vocational Education Teachers And Trainers",
+                            "children": [
+                                {
+                                    "name": "2330 :  Vocational Education Teachers And Trainers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "234 :  Secondary Education Teachers",
+                            "children": [
+                                {
+                                    "name": "2340 :  Secondary Education Teachers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "235 :  Primary Education Teachers",
+                            "children": [
+                                {
+                                    "name": "2350 :  Primary School Teachers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "236 :  Other Teaching Professionals",
+                            "children": [
+                                {
+                                    "name": "2361 :  Education Methods Specialists",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2362 :  Special Education Teachers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2369 :  Other Teaching Professionals Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "24 :  Business And Administration Professionals",
+                    "children": [
+                        {
+                            "name": "241 :  Finance Professionals",
+                            "children": [
+                                {
+                                    "name": "2411 :  Accountants",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2412 :  Financial And Investment Advisers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2413 :  Financial Analysts And Related Professionals",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2414 :  Securities And Finance Dealers And Brokers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2415 :  Insurance Underwriters",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "242 :  Administration Professionals",
+                            "children": [
+                                {
+                                    "name": "2421 :  Management And Business Consultants",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2422 :  Policy Administration Professionals",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2423 :  Human Resource Professionals",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2429 :  Other Administration Professionals Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "243 :  Marketing And Public Relations Professionals",
+                            "children": [
+                                {
+                                    "name": "2431 :  Advertising And Marketing Professionals",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2432 :  Public Relations Professionals",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2433 :  Specialised Goods Sales Professionals",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2434 :  Trade And Ship Brokers",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "25 :  Information And Communications Technology",
+                    "children": [
+                        {
+                            "name": "251 :  Software And Applications Developers And Analysts",
+                            "children": [
+                                {
+                                    "name": "2511 :  Systems Analysts",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2512 :  Software, Web And Multimedia Developers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2514 :  Applications And Systems Programmers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2515 :  Information Technology Testing And Quality Assurance Professionals",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2516 :  Information Technology Project Managers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2519 :  Software And Applications Developers And Analysts Not",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "252 :  Database, Network And Infrastructure",
+                            "children": [
+                                {
+                                    "name": "2521 :  Database Designers And Administrators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2522 :  Network, Servers And Computer Systems Administrators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2523 :  Computer Network And Infrastructure Professionals",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2524 :  Information Technology Security Specialists",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2529 :  Database And Network Professionals Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "26 :  Legal, Social And Cultural Professionals",
+                    "children": [
+                        {
+                            "name": "261 :  Legal Professionals",
+                            "children": [
+                                {
+                                    "name": "2611 :  Lawyers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2612 :  Judges",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "262 :  Librarians, Archivists And Curators",
+                            "children": [
+                                {
+                                    "name": "2621 :  Archivists, Curators And Conservators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2622 :  Librarians And Related Information Professionals",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "263 :  Social Science Professionals",
+                            "children": [
+                                {
+                                    "name": "2631 :  Economists",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2632 :  Sociologists, Anthropologists And Related Professionals",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2633 :  Historians, Political Scientists And Other Social Science Professionals",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2634 :  Psychologists",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2635 :  Social Work And Counselling Professionals",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "264 :  Authors, Journalists And Editors",
+                            "children": [
+                                {
+                                    "name": "2641 :  Authors And Related Writers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2642 :  Journalists",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2643 :  Translators, Interpreters And Other Linguists",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "265 :  Creative And Performing Artists",
+                            "children": [
+                                {
+                                    "name": "2651 :  Visual Artists",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2652 :  Musicians, Composers And Singers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2653 :  Dancers And Choreographers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2654 :  Film, Stage And Related Directors And Producers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2655 :  Actors",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2656 :  Radio And Television Presenters And Related Professionals",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "29 :  Other Professionals Not Elsewhere Classified",
+                    "children": [
+                        {
+                            "name": "290 :  Other Professionals Not Elsewhere Classified",
+                            "children": [
+                                {
+                                    "name": "2901 :  Religious Professionals",
+                                    "children": []
+                                },
+                                {
+                                    "name": "2909 :  Other Professionals Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "3 :  Associate Professionals And Technicians",
+            "children": [
+                {
+                    "name": "31 :  Physical And Engineering Science Associate",
+                    "children": [
+                        {
+                            "name": "310 :  Assistant Engineers",
+                            "children": [
+                                {
+                                    "name": "3100 :  Assistant Engineers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "311 :  Physical And Engineering Science Technicians",
+                            "children": [
+                                {
+                                    "name": "3111 :  Chemical And Physical Science Technicians",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3112 :  Civil Engineering Technicians",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3113 :  Electrical Engineering Technicians",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3114 :  Electronics Engineering Technicians",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3115 :  Mechanical Engineering Technicians",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3116 :  Chemical Engineering Technicians",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3117 :  Manufacturing Engineering Technicians",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3118 :  Draughtsmen",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3119 :  Physical And Engineering Science Technicians Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "314 :  Life Science Technicians And Related Associate",
+                            "children": [
+                                {
+                                    "name": "3141 :  Life Science Technicians (except Medical)",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3142 :  Agronomy, Horticultural And Farming Technicians",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "315 :  Ship And Aircraft Controllers And Technicians",
+                            "children": [
+                                {
+                                    "name": "3151 :  Ship Engineering Officers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3152 :  Ships' Deck Officers And Pilots",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3154 :  Air Traffic Controllers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3156 :  Sea Traffic Controllers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3157 :  Transport Operations Supervisors",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3159 :  Transport Controllers And Related Workers Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "316 :  Premises And Parks Officers",
+                            "children": [
+                                {
+                                    "name": "3160 :  Premises And Parks Officers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "317 :  Building, Quality And Safety Inspectors",
+                            "children": [
+                                {
+                                    "name": "3171 :  Building And Fire Inspectors",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3172 :  Quality And Safety Inspectors",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "32 :  Health Associate Professionals",
+                    "children": [
+                        {
+                            "name": "321 :  Medical And Pharmaceutical Technicians",
+                            "children": [
+                                {
+                                    "name": "3211 :  Medical Imaging And Therapeutic Equipment Technicians",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3212 :  Medical And Pathology Laboratory Technicians",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3213 :  Pharmacy Technicians",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3214 :  Medical And Dental Prosthetic Technicians",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "322 :  Nursing Associate Professionals",
+                            "children": [
+                                {
+                                    "name": "3220 :  Nursing Associate Professionals",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "323 :  Traditional And Complementary Medicine Associate",
+                            "children": [
+                                {
+                                    "name": "3230 :  Traditional And Complementary Medicine Associate Professionals",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "324 :  Veterinary Technicians And Assistants",
+                            "children": [
+                                {
+                                    "name": "3240 :  Veterinary Technicians And Assistants",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "325 :  Other Health Associate Professionals",
+                            "children": [
+                                {
+                                    "name": "3251 :  Dental Assistants And Therapists",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3253 :  Community Health Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3254 :  Opticians",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3255 :  Physiotherapy Technicians And Related Associate Professionals",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3257 :  Environmental And Occupational Health Inspectors",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3259 :  Health Associate Professionals Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "33 :  Business And Administration Associate Professionals",
+                    "children": [
+                        {
+                            "name": "331 :  Financial And Mathematical Associate Professionals",
+                            "children": [
+                                {
+                                    "name": "3312 :  Credit And Loans Officers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3313 :  Accounting Associate Professionals",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3315 :  Valuers And Loss Assessors",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "332 :  Sales And Related Associate Professionals",
+                            "children": [
+                                {
+                                    "name": "3321 :  Insurance Representatives And Related Associate Professionals",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3322 :  Commercial And Marketing Sales Executives",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3323 :  Buyers And Purchasing Agents",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3329 :  Sales And Related Associate Professionals Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "333 :  Business Services Agents",
+                            "children": [
+                                {
+                                    "name": "3331 :  Shipping, Clearing And Forwarding Agents",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3332 :  Conference And Event Planners",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3333 :  Employment Agents And Labour Contractors",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3334 :  Real Estate Agents",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3339 :  Business Services Agents Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "334 :  Administrative Associate Professionals",
+                            "children": [
+                                {
+                                    "name": "3345 :  Human Resource Associate Professionals",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3349 :  Administrative And Related Associate Professionals Not Elsewhere",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "335 :  Government Associate Professionals",
+                            "children": [
+                                {
+                                    "name": "3351 :  Customs And Immigration Officers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3355 :  Police Inspectors",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3359 :  Government Associate Professionals Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "34 :  Legal, Social, Cultural And Related Associate",
+                    "children": [
+                        {
+                            "name": "341 :  Legal And Social Associate Professionals",
+                            "children": [
+                                {
+                                    "name": "3411 :  Legal Associate Professionals",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3412 :  Social Work Associate Professionals",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "342 :  Sports And Fitness Workers",
+                            "children": [
+                                {
+                                    "name": "3421 :  Athletes And Sportsmen",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3422 :  Sports Coaches, Instructors, Officials And Other Related Associate",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "343 :  Artistic And Cultural Associate Professionals",
+                            "children": [
+                                {
+                                    "name": "3431 :  Photographers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3432 :  Interior Designers And Decorators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3433 :  Gallery, Museum And Library Technicians",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3434 :  Chefs",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3439 :  Artistic And Cultural Associate Professionals Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "344 :  Creative And Performing Arts Associate Professionals",
+                            "children": [
+                                {
+                                    "name": "3440 :  Creative And Performing Arts Associate Professionals",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "35 :  Information And Communications Technicians",
+                    "children": [
+                        {
+                            "name": "351 :  Information And Communications Technology",
+                            "children": [
+                                {
+                                    "name": "3511 :  Computer Systems Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3512 :  Computer Technicians",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3514 :  Website Administrators",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "352 :  Telecommunications And Broadcasting Technicians",
+                            "children": [
+                                {
+                                    "name": "3521 :  Broadcasting Technicians And Audio-visual Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3522 :  Telecommunications Engineering Technicians",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3523 :  Telecommunications Equipment Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3529 :  Optical And Electronic Equipment Operators Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "36 :  Teaching Associate Professionals",
+                    "children": [
+                        {
+                            "name": "361 :  Pre-primary Education Teachers",
+                            "children": [
+                                {
+                                    "name": "3610 :  Pre-primary Education Teachers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "362 :  Extracurriculum Instructors",
+                            "children": [
+                                {
+                                    "name": "3620 :  Extracurriculum Instructors",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "369 :  Teaching Associate Professionals Not Elsewhere",
+                            "children": [
+                                {
+                                    "name": "3691 :  Private Tutors",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3699 :  Teaching Associate Professionals Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "39 :  Other Associate Professionals Not Elsewhere",
+                    "children": [
+                        {
+                            "name": "399 :  Other Associate Professionals Not Elsewhere",
+                            "children": [
+                                {
+                                    "name": "3991 :  Religious Associate Professionals",
+                                    "children": []
+                                },
+                                {
+                                    "name": "3999 :  Other Associate Professionals Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "4 :  Clerical Support Workers",
+            "children": [
+                {
+                    "name": "40 :  Clerical Supervisors",
+                    "children": [
+                        {
+                            "name": "400 :  Clerical Supervisors",
+                            "children": [
+                                {
+                                    "name": "4000 :  Clerical Supervisors",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "41 :  General And Keyboard Clerks",
+                    "children": [
+                        {
+                            "name": "411 :  General Office Clerks",
+                            "children": [
+                                {
+                                    "name": "4110 :  General Office Clerks",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "412 :  Secretaries And Verbatim Reporters",
+                            "children": [
+                                {
+                                    "name": "4120 :  Secretaries And Verbatim Reporters",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "413 :  Keyboard Operators",
+                            "children": [
+                                {
+                                    "name": "4131 :  Typists And Word Processing Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "4132 :  Data Entry Clerks",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "42 :  Customer Services Officers And Clerks",
+                    "children": [
+                        {
+                            "name": "421 :  Tellers, Money Collectors And Related Clerks",
+                            "children": [
+                                {
+                                    "name": "4211 :  Bank Tellers And Other Counter Clerks",
+                                    "children": []
+                                },
+                                {
+                                    "name": "4213 :  Pawnbrokers And Moneylenders",
+                                    "children": []
+                                },
+                                {
+                                    "name": "4214 :  Bill Collectors And Related Workers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "422 :  Client Information Clerks",
+                            "children": [
+                                {
+                                    "name": "4221 :  Travel Agency And Related Clerks",
+                                    "children": []
+                                },
+                                {
+                                    "name": "4223 :  Telephone Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "4224 :  Receptionists, Customer Service And Information Clerks",
+                                    "children": []
+                                },
+                                {
+                                    "name": "4229 :  Client Information Clerks Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "43 :  Numerical And Material-recording Clerks",
+                    "children": [
+                        {
+                            "name": "431 :  Numerical Clerks",
+                            "children": [
+                                {
+                                    "name": "4311 :  Accounting And Bookkeeping Clerks",
+                                    "children": []
+                                },
+                                {
+                                    "name": "4312 :  Finance And Insurance Clerks",
+                                    "children": []
+                                },
+                                {
+                                    "name": "4314 :  Statistical Clerks",
+                                    "children": []
+                                },
+                                {
+                                    "name": "4315 :  Computer Operations Clerks",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "432 :  Material-recording And Transport Clerks",
+                            "children": [
+                                {
+                                    "name": "4321 :  Stock Clerks",
+                                    "children": []
+                                },
+                                {
+                                    "name": "4322 :  Production Clerks",
+                                    "children": []
+                                },
+                                {
+                                    "name": "4323 :  Transport Clerks",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "44 :  Other Clerical Support Workers",
+                    "children": [
+                        {
+                            "name": "441 :  Other Clerical Support Workers",
+                            "children": [
+                                {
+                                    "name": "4411 :  Library Clerks",
+                                    "children": []
+                                },
+                                {
+                                    "name": "4417 :  Legal Clerks",
+                                    "children": []
+                                },
+                                {
+                                    "name": "4419 :  Clerical Support Workers Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "5 :  Service And Sales Workers",
+            "children": [
+                {
+                    "name": "51 :  Personal Service Workers",
+                    "children": [
+                        {
+                            "name": "511 :  Travel Attendants, Conductors And Guides",
+                            "children": [
+                                {
+                                    "name": "5111 :  Travel Attendants And Stewards",
+                                    "children": []
+                                },
+                                {
+                                    "name": "5112 :  Transport Service Inspectors And Related Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "5113 :  Tour And Other Guides",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "512 :  Cooks",
+                            "children": [
+                                {
+                                    "name": "5120 :  Cooks",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "513 :  Waiters And Bartenders",
+                            "children": [
+                                {
+                                    "name": "5131 :  Waiters",
+                                    "children": []
+                                },
+                                {
+                                    "name": "5132 :  Bartenders And Baristas",
+                                    "children": []
+                                },
+                                {
+                                    "name": "5133 :  Bar/lounge Hostesses",
+                                    "children": []
+                                },
+                                {
+                                    "name": "5139 :  Waiters And Bartenders Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "514 :  Hairdressers, Beauticians And Related Workers",
+                            "children": [
+                                {
+                                    "name": "5141 :  Hairdressers, Barbers And Other Related Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "5142 :  Beauticians And Related Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "5149 :  Wellness Related Workers Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "515 :  Housekeepers And Related Workers",
+                            "children": [
+                                {
+                                    "name": "5150 :  Housekeepers And Related Workers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "516 :  Mail Carriers And Sorting Workers",
+                            "children": [
+                                {
+                                    "name": "5160 :  Mail Carriers And Sorting Workers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "517 :  Bookmakers, Croupiers And Related Gaming Workers",
+                            "children": [
+                                {
+                                    "name": "5170 :  Bookmakers, Croupiers And Related Gaming Workers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "519 :  Personal Service Workers Not Elsewhere Classified",
+                            "children": [
+                                {
+                                    "name": "5191 :  Astrologers, Fortune-tellers And Related Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "5193 :  Undertakers And Embalmers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "5194 :  Pet Groomers, Animal Keepers And Trainers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "5195 :  Driving Instructors",
+                                    "children": []
+                                },
+                                {
+                                    "name": "5199 :  Personal Service Workers Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "52 :  Sales Workers",
+                    "children": [
+                        {
+                            "name": "521 :  Stall Sales Workers",
+                            "children": [
+                                {
+                                    "name": "5211 :  Hawker/stall Holders (excluding Prepared Food Or Drinks)",
+                                    "children": []
+                                },
+                                {
+                                    "name": "5212 :  Hawker/stall Holders (prepared Food Or Drinks)",
+                                    "children": []
+                                },
+                                {
+                                    "name": "5213 :  Newsvendors",
+                                    "children": []
+                                },
+                                {
+                                    "name": "5219 :  Other Stall Sales Workers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "522 :  Shop Salespersons",
+                            "children": [
+                                {
+                                    "name": "5220 :  Shop And Store Salespersons",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "523 :  Cashiers And Ticket Clerks",
+                            "children": [
+                                {
+                                    "name": "5230 :  Cashiers And Ticket Clerks",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "524 :  Models, Sales Demonstrators And Other Sales Workers",
+                            "children": [
+                                {
+                                    "name": "5241 :  Fashion And Other Models",
+                                    "children": []
+                                },
+                                {
+                                    "name": "5242 :  Sales Demonstrators And Door-to-door Salespersons",
+                                    "children": []
+                                },
+                                {
+                                    "name": "5244 :  Contact Centre Salespersons",
+                                    "children": []
+                                },
+                                {
+                                    "name": "5249 :  Sales Workers Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "53 :  Personal Care Workers",
+                    "children": [
+                        {
+                            "name": "531 :  Child Care Workers And Teachers' Aides",
+                            "children": [
+                                {
+                                    "name": "5311 :  Child Care And Related Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "5312 :  Teachers' Aides",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "532 :  Healthcare Assistants And Other Personal Care",
+                            "children": [
+                                {
+                                    "name": "5320 :  Healthcare Assistants And Other Personal Care Workers",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "54 :  Protective Services Workers",
+                    "children": [
+                        {
+                            "name": "541 :  Protective Services Workers",
+                            "children": [
+                                {
+                                    "name": "5411 :  Fire-fighting And Rescue Officers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "5412 :  Police Officers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "5413 :  Prison Officers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "5414 :  Security Guards",
+                                    "children": []
+                                },
+                                {
+                                    "name": "5415 :  Lifeguards",
+                                    "children": []
+                                },
+                                {
+                                    "name": "5419 :  Protective Services And Related Workers Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "59 :  Service Workers Not Elsewhere Classified",
+                    "children": [
+                        {
+                            "name": "590 :  Service Workers Not Elsewhere Classified",
+                            "children": [
+                                {
+                                    "name": "5900 :  Service Workers Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "6 :  Agricultural And Fishery Workers",
+            "children": [
+                {
+                    "name": "61 :  Agricultural Workers",
+                    "children": [
+                        {
+                            "name": "611 :  Market Gardeners And Crop Growers",
+                            "children": [
+                                {
+                                    "name": "6111 :  Vegetable Farm Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "6113 :  Gardeners, Horticultural And Nursery Farm Workers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "612 :  Animal Producers",
+                            "children": [
+                                {
+                                    "name": "6121 :  Livestock And Dairy Farm Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "6122 :  Poultry Farm Workers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "619 :  Agricultural Workers Not Elsewhere Classified",
+                            "children": [
+                                {
+                                    "name": "6190 :  Agricultural Workers Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "62 :  Fishery Workers",
+                    "children": [
+                        {
+                            "name": "622 :  Fishery Workers",
+                            "children": [
+                                {
+                                    "name": "6221 :  Aquaculture Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "6222 :  Coastal Waters And Deep Sea Fishery Workers",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "7 :  Craftsmen And Related Trades Workers",
+            "children": [
+                {
+                    "name": "71 :  Building And Related Trades Workers, Excluding",
+                    "children": [
+                        {
+                            "name": "710 :  Supervisors And General Foremen (building And",
+                            "children": [
+                                {
+                                    "name": "7100 :  Supervisors And General Foremen (building And Related Trades)",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "711 :  Building Frame And Related Trades Workers",
+                            "children": [
+                                {
+                                    "name": "7112 :  Bricklayers And Related Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7113 :  Stone Cutters, Splitters, Carvers And Stonemasons",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7114 :  Concrete Placers, Concrete Finishers And Related Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7115 :  Carpenters And Joiners",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7119 :  Building Frame And Related Trades Workers Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "712 :  Building Finishers And Related Trades Workers",
+                            "children": [
+                                {
+                                    "name": "7121 :  Roofers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7122 :  Floor Layers And Tile Setters",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7123 :  Plasterers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7124 :  Insulation Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7125 :  Glaziers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7126 :  Plumbers, Pipe Fitters And Related Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7127 :  Air-conditioning And Refrigeration Mechanics",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7129 :  Building Finishers And Related Trades Workers Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "713 :  Painters, Building Structure Cleaners And Related",
+                            "children": [
+                                {
+                                    "name": "7131 :  Building Painters And Related Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7132 :  Spray Painters, Varnishers And Other Painters",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7133 :  Building Maintenance Workers, Building Structure Cleaners And",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "72 :  Metal, Machinery And Related Trades Workers",
+                    "children": [
+                        {
+                            "name": "720 :  Supervisors And General Foremen (metal, Machinery",
+                            "children": [
+                                {
+                                    "name": "7200 :  Supervisors And General Foremen (metal, Machinery And Related Trades)",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "721 :  Sheet And Structural Metal Workers, Moulders And",
+                            "children": [
+                                {
+                                    "name": "7211 :  Metal Moulders And Coremakers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7212 :  Welders And Flame Cutters",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7213 :  Sheet Metal Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7214 :  Structural Metal Preparers And Erectors",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7215 :  Riggers And Cable Splicers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "722 :  Blacksmiths, Toolmakers And Related Trades Workers",
+                            "children": [
+                                {
+                                    "name": "7221 :  Blacksmiths, Hammersmiths And Forging-press Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7222 :  Toolmakers And Related Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7224 :  Metal Polishers, Wheel Grinders And Tool Sharpeners",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "723 :  Machinery Mechanics, Fitters And Repairers",
+                            "children": [
+                                {
+                                    "name": "7231 :  Motor Vehicle Mechanics And Repairers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7232 :  Aircraft Engine Mechanics And Repairers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7233 :  Other Machinery Mechanics And Repairers",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "73 :  Precision, Handicraft, Printing And Related Trades",
+                    "children": [
+                        {
+                            "name": "730 :  Supervisors And General Foremen (precision,",
+                            "children": [
+                                {
+                                    "name": "7300 :  Supervisors And General Foremen (precision, Handicraft, Printing And",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "731 :  Handicraft And Precision Workers",
+                            "children": [
+                                {
+                                    "name": "7311 :  Precision Instrument Makers And Repairers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7312 :  Musical Instrument Makers, Repairers And Tuners",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7313 :  Jewellery And Precious Metal Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7314 :  Potters And Related Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7315 :  Glass Makers, Cutters, Grinders And Finishers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7316 :  Sign Writers, Decorative Painters, Engravers And Etchers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "732 :  Printing Trades Workers",
+                            "children": [
+                                {
+                                    "name": "7321 :  Pre-press Trades Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7322 :  Printers",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "74 :  Electrical And Electronic Trades Workers",
+                    "children": [
+                        {
+                            "name": "740 :  Supervisors And General Foremen (electrical And",
+                            "children": [
+                                {
+                                    "name": "7400 :  Supervisors And General Foremen (electrical And Electronic Trades)",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "741 :  Electrical Equipment Related Trades Workers",
+                            "children": [
+                                {
+                                    "name": "7411 :  Electricians",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7412 :  Electrical Mechanics And Fitters",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7413 :  Electrical Line Installers And Repairers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "742 :  Electronics And Telecommunications Related Trades",
+                            "children": [
+                                {
+                                    "name": "7421 :  Electronics Mechanics And Servicers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7422 :  Information And Communications Technology Installers And Servicers",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "75 :  Food Processing, Woodworking, Garment, Leather",
+                    "children": [
+                        {
+                            "name": "750 :  Supervisors And General Foremen (food Processing,",
+                            "children": [
+                                {
+                                    "name": "7500 :  Supervisors And General Foremen (food Processing, Woodworking, \n",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "751 :  Food Processing And Related Trades Workers",
+                            "children": [
+                                {
+                                    "name": "7511 :  Meat And Fish Preparers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7512 :  Bakers, Pastry And Confectionery Makers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7515 :  Food And Beverage Tasters And Graders",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7519 :  Food Processing And Related Trades Workers Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "752 :  Wood Treaters, Cabinet Makers And Related Trades",
+                            "children": [
+                                {
+                                    "name": "7521 :  Wood Treaters",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7522 :  Cabinet Makers And Wood Related Trades Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7529 :  Furniture Makers And Related Trades Workers Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "753 :  Garment, Leather And Related Trades Workers",
+                            "children": [
+                                {
+                                    "name": "7531 :  Tailors/dressmakers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7532 :  Garment And Related Pattern-makers And Cutters",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7534 :  Upholsterers And Related Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7536 :  Shoemakers And Related Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "7539 :  Garment And Related Trades Workers Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "754 :  Other Craft And Related Workers",
+                            "children": [
+                                {
+                                    "name": "7540 :  Other Craft And Related Workers",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "8 :  Plant And Machine Operators And Assemblers",
+            "children": [
+                {
+                    "name": "81 :  Stationary Plant And Machine Operators",
+                    "children": [
+                        {
+                            "name": "810 :  Stationary Plant And Machine Supervisors And General",
+                            "children": [
+                                {
+                                    "name": "8100 :  Stationary Plant And Machine Supervisors And General Foremen",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "811 :  Mining And Mineral Processing Plant Operators",
+                            "children": [
+                                {
+                                    "name": "8113 :  Well Drillers And Borers And Other Mining Related Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8114 :  Cement And Other Mineral Products Machine Operators",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "812 :  Metal Processing, Finishing And Products  Plant",
+                            "children": [
+                                {
+                                    "name": "8121 :  Metal Melters, Casters And Rolling Mill Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8122 :  Metal Heat Treating Plant Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8123 :  Metal Drawers And Extruders",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8124 :  Metal Finishing, Plating And Coating Machine Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8125 :  Machine-tool Setter-operators",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "813 :  Chemical Processing, Chemical And Photographic",
+                            "children": [
+                                {
+                                    "name": "8131 :  Chemical Processing And Chemical Products Plant And Machine",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8132 :  Photographic Products Machine Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8133 :  Pharmaceutical And Toiletry Products Machine Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8139 :  Chemical Processing, Chemical And Photographic Products Plant And",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "814 :  Rubber, Plastic And Paper Products Machine Operators",
+                            "children": [
+                                {
+                                    "name": "8141 :  Rubber Products Machine Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8142 :  Plastic Products Machine Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8143 :  Paper And Paperboard Products Machine Operators",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "815 :  Textile, Fur And Leather Products Machine Operators",
+                            "children": [
+                                {
+                                    "name": "8151 :  Fibre Preparing, Spinning And Winding Machine Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8152 :  Weaving And Knitting Machine Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8153 :  Sewing Machine Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8154 :  Bleaching, Dyeing And Fabric Cleaning Machine Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8159 :  Textile, Fur And Leather Products Machine Operators Not Elsewhere",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "816 :  Food And Related Products Machine Operators",
+                            "children": [
+                                {
+                                    "name": "8161 :  Meat And Fish Products Machine Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8162 :  Dairy And Confectionery Products Machine Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8163 :  Grain And Spice Milling Machine Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8164 :  Baked And Cereal Products Machine Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8165 :  Fruit, Vegetable And Nut Products Machine Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8166 :  Sugar Processing And Refining Machine Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8167 :  Brewers And Wine And Other Beverage Machine Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8168 :  Tobacco Products Machine Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8169 :  Food And Related Products Machine Operators Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "817 :  Wood Processing And Papermaking Plant Operators",
+                            "children": [
+                                {
+                                    "name": "8171 :  Pulp And Papermaking Plant Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8172 :  Wood Processing Plant Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8173 :  Wood Products Machine Operators",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "818 :  Other Stationary Plant And Machine Operators",
+                            "children": [
+                                {
+                                    "name": "8181 :  Glass And Ceramics Plant Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8182 :  Steam Engine And Boiler Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8183 :  Packing, Bottling And Labelling Machine Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8184 :  Printing, Binding And Related Machine Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8185 :  Incineration Plant, Water Treatment And Related Machine Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8186 :  Power Generating Plant Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8187 :  Petroleum And Natural Gas Refining Plant Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8188 :  Automated Assembly Line And Industrial Robot Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8189 :  Stationary Plant And Machine Operators Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "82 :  Assemblers And Quality Checkers",
+                    "children": [
+                        {
+                            "name": "820 :  Supervisors And General Foremen Of Assemblers",
+                            "children": [
+                                {
+                                    "name": "8200 :  Supervisors And General Foremen Of Assemblers And Quality Checkers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "821 :  Assemblers, Quality Checkers And Testers",
+                            "children": [
+                                {
+                                    "name": "8212 :  Electrical And Electronic Equipment Assemblers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8213 :  Quality Checkers And Testers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8219 :  Assemblers Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "83 :  Drivers And Mobile Machinery Operators",
+                    "children": [
+                        {
+                            "name": "830 :  Mobile Machinery Supervisors And General Foremen",
+                            "children": [
+                                {
+                                    "name": "8300 :  Mobile Machinery Supervisors And General Foremen",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "831 :  Mrt Train Operators And Related Workers",
+                            "children": [
+                                {
+                                    "name": "8311 :  Mrt Train Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8312 :  Railway Brakers And Related Workers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "832 :  Car And Light Goods Vehicle Drivers",
+                            "children": [
+                                {
+                                    "name": "8321 :  Motorcycle Delivery Men",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8322 :  Car, Taxi, Van And Light Goods Vehicle Drivers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "833 :  Heavy Truck And Bus Drivers",
+                            "children": [
+                                {
+                                    "name": "8331 :  Bus And Tram Drivers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8332 :  Heavy Truck And Lorry Drivers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "834 :  Mobile Machinery Operators",
+                            "children": [
+                                {
+                                    "name": "8342 :  Earth Moving And Related Machinery Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8343 :  Crane, Hoist And Related Equipment Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8344 :  Lifting Truck Operators",
+                                    "children": []
+                                },
+                                {
+                                    "name": "8349 :  Mobile Machinery Operators Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "835 :  Ships\u00c2\u2019 Deck Crew And Related Workers",
+                            "children": [
+                                {
+                                    "name": "8350 :  Ships\u00c2\u2019 Deck Crew And Related Workers",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "9 :  Cleaners, Labourers And Related Workers",
+            "children": [
+                {
+                    "name": "91 :  Cleaners And Related Workers",
+                    "children": [
+                        {
+                            "name": "910 :  Cleaning Supervisors",
+                            "children": [
+                                {
+                                    "name": "9100 :  Cleaning Supervisors",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "911 :  Cleaners And Helpers In Hotels, Offices And Other",
+                            "children": [
+                                {
+                                    "name": "9112 :  Cleaners And Helpers In Hotels And Related Establishments",
+                                    "children": []
+                                },
+                                {
+                                    "name": "9113 :  Cleaners In Offices",
+                                    "children": []
+                                },
+                                {
+                                    "name": "9114 :  Cleaners In Industrial Establishments",
+                                    "children": []
+                                },
+                                {
+                                    "name": "9115 :  Cleaners In Food And Beverage Establishments",
+                                    "children": []
+                                },
+                                {
+                                    "name": "9116 :  Cleaners In Residential Areas",
+                                    "children": []
+                                },
+                                {
+                                    "name": "9117 :  Cleaners In Open Areas",
+                                    "children": []
+                                },
+                                {
+                                    "name": "9119 :  Cleaners In Other Establishments",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "912 :  Vehicle, Window, Laundry And Other Hand Cleaning",
+                            "children": [
+                                {
+                                    "name": "9121 :  Hand Launderers And Pressers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "9122 :  Vehicle Cleaners",
+                                    "children": []
+                                },
+                                {
+                                    "name": "9123 :  Window Cleaners",
+                                    "children": []
+                                },
+                                {
+                                    "name": "9129 :  Cleaning Workers Not Elsewhere Classified",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "913 :  Domestic Helpers And Cleaners",
+                            "children": [
+                                {
+                                    "name": "9130 :  Domestic Helpers And Cleaners",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "92 :  Agricultural, Fishery And Related Labourers",
+                    "children": [
+                        {
+                            "name": "921 :  Agricultural, Fishery And Related Labourers",
+                            "children": [
+                                {
+                                    "name": "9214 :  Park And Garden Maintenance Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "9219 :  Agricultural, Fishery Labourers And Related Workers Not Elsewhere",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "93 :  Labourers And Related Workers",
+                    "children": [
+                        {
+                            "name": "931 :  Construction Labourers And Related Workers",
+                            "children": [
+                                {
+                                    "name": "9310 :  Civil Engineering And Building Construction Labourers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "932 :  Manufacturing Labourers And Related Workers",
+                            "children": [
+                                {
+                                    "name": "9320 :  Manufacturing Labourers And Related Workers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "933 :  Transport And Storage Labourers",
+                            "children": [
+                                {
+                                    "name": "9331 :  Hand And Pedal Vehicle Drivers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "9333 :  Material And Freight Handling Workers",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "94 :  Food Preparation And Kitchen Assistants",
+                    "children": [
+                        {
+                            "name": "941 :  Food Preparation And Kitchen Assistants",
+                            "children": [
+                                {
+                                    "name": "9410 :  Food Preparation And Kitchen Assistants",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "96 :  Waste And Recyclables Collection Workers",
+                    "children": [
+                        {
+                            "name": "960 :  Waste And Recyclables Collection Supervisors",
+                            "children": [
+                                {
+                                    "name": "9600 :  Waste And Recyclables Collection Supervisors",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "961 :  Waste And Recyclables Collection Workers",
+                            "children": [
+                                {
+                                    "name": "9611 :  Waste And Recyclables Collection Workers",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "962 :  Porters, Attendants And Related Workers",
+                            "children": [
+                                {
+                                    "name": "9621 :  Porters And Related Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "9625 :  Attendants",
+                                    "children": []
+                                },
+                                {
+                                    "name": "9626 :  Watchmen And Related Workers",
+                                    "children": []
+                                },
+                                {
+                                    "name": "9629 :  Other Elementary Workers",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

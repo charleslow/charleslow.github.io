@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <title>Collapsible Tree Example</title>
+
+    <style>
+
+ .node circle {
+   fill: steelblue;
+ }
+
+ .node text { 
+    font: 12px sans-serif;
+    font-weight : 300;
+  }
+
+ .link {
+   fill: none;
+   stroke: #d4d2d8;
+   stroke-width: 1px;
+ }
+  div.buttons {
+    position: fixed;
+    top: 5px;
+    left: 10px;
+  }
+
+  div.buttons div {
+    background-color: #cacaca;
+    padding: 1px;
+    margin: 2px;
+  }
+ 
+    </style>
+
+  </head>
+
+  <body>
+
+<!-- load the d3.js library --> 
+<script src="http://d3js.org/d3.v3.min.js"></script>
+ 
+<script>
+
+// ************** Generate the tree diagram  *****************
+var margin = {top: 20, right: 120, bottom: 20, left: 270},
+ width = 1500 - margin.right - margin.left,
+ height = 1300 - margin.top - margin.bottom;
+ 
+var i = 0;
+
+var tree = d3.layout.tree()
+ .size([height, width]);
+
+var diagonal = d3.svg.diagonal()
+ .projection(function(d) { return [d.y, d.x]; });
+
+var svg = d3.select("body").append("svg")
+ .attr("width", width + margin.right + margin.left)
+ .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+ .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+d3.json("data.json", function(error, treeData) {
+
+  update(treeData, 0);
+
+  var selections = [
+    {"id" : 0, "name" : "1 : Legislators, Senior Officials and Managers"}, 
+    {"id" : 1, "name" : "2 : Professionals"},
+    {"id" : 2, "name" : "3 : Associate Professionals And Technicians"},
+    {"id" : 3, "name" : "4 : Clerical Support Workers"},
+    {"id" : 4, "name" : "5 : Service And Sales Workers"},
+    {"id" : 5, "name" : "6 : Agricultural And Fishery Workers"},
+    {"id" : 6, "name" : "7 : Craftsmen And Related Trades Workers"},
+    {"id" : 7, "name" : "8 : Plant And Machine Operators And Assemblers"},
+    {"id" : 8, "name" : "9 : Cleaners, Labourers And Related Workers"}
+    ];
+
+  var buttons = d3.select("body")
+                  .append("div")
+                  .attr("class", "buttons")
+                  .selectAll("div")
+                  .data(selections)
+                  .enter()
+                  .append("div")
+                  .text(function(d) { return d.name; })
+                  .style("font-size", "13px")
+                  .style("font-family", "sans-serif");
+
+  buttons.on("click", function(d) {
+      d3.select(".buttons")
+        .selectAll("div")
+        .transition()
+        .duration(500)
+        .style("color", "black")
+        .style("background", "#cacaca");
+
+      d3.select(this)
+        .transition()
+        .duration(500)
+        .style("background", "orange")
+        .style("color", "white");
+      
+      update(treeData, d.id);
+  });
+
+
+});
+
+
+
+function update(data, selection) {
+
+  d3.selectAll("g.node").remove();
+  d3.selectAll("path.link").remove();
+
+  var root = data['children'][selection]
+  // Compute the new tree layout.
+  var nodes = tree.nodes(root),
+      links = tree.links(nodes);
+      
+  // Normalize for fixed-depth.
+  // nodes.forEach(function(d) { d.y = d.depth * 400; });
+  nodes.forEach(function(d) { d.y = (d.depth==1 || d.depth==0) ? (d.depth * 100) : (100 + (d.depth - 1) * 350); });
+
+
+  // Declare the nodes
+  var node = svg.selectAll("g.node")
+   .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+  // Enter the nodes.
+  var nodeEnter = node.enter().append("g")
+   .attr("class", "node")
+   .attr("transform", function(d) { 
+    return "translate(" + d.y + "," + d.x + ")"; 
+   });
+
+  nodeEnter.append("circle")
+   .attr("r", 4);
+
+  nodeEnter.append("text")
+   .attr("x", function(d) { return d.depth==0 ? -13 : 13; })
+   .attr("text-anchor", function(d) { return d.depth==0 ? "end" : "start"; })
+   .attr("dy", ".35em")
+   .text(function(d) { return d.name; })
+   .style("fill-opacity", 1);
+
+  // Declare the links
+  var link = svg.selectAll("path.link")
+   .data(links, function(d) { return d.target.id; });
+
+  // Enter the links.
+  link.enter().insert("path", "g")
+   .attr("class", "link")
+   .attr("d", diagonal);
+
+}
+
+</script>
+ 
+  </body>
+</html>
