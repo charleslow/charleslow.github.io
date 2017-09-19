@@ -124,7 +124,7 @@ function update(data, selection) {
       
   // Normalize for fixed-depth.
   // nodes.forEach(function(d) { d.y = d.depth * 400; });
-  nodes.forEach(function(d) { d.y = (d.depth==1 || d.depth==0) ? (d.depth * 100) : (100 + (d.depth - 1) * 360); });
+  nodes.forEach(function(d) { d.y = (d.depth==1 || d.depth==0) ? (d.depth * 100) : (100 + (d.depth - 1) * 400); });
 
   // Declare the nodes
   var node = svg.selectAll("g.node")
