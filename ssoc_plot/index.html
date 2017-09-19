@@ -45,7 +45,7 @@
 <script>
 
 // ************** Generate the tree diagram  *****************
-var margin = {top: 20, right: 120, bottom: 20, left: 270},
+var margin = {top: 20, right: 120, bottom: 20, left: 380},
  width = 1500 - margin.right - margin.left,
  height = 1300 - margin.top - margin.bottom;
  
@@ -124,8 +124,7 @@ function update(data, selection) {
       
   // Normalize for fixed-depth.
   // nodes.forEach(function(d) { d.y = d.depth * 400; });
-  nodes.forEach(function(d) { d.y = (d.depth==1 || d.depth==0) ? (d.depth * 100) : (100 + (d.depth - 1) * 350); });
-
+  nodes.forEach(function(d) { d.y = (d.depth==1 || d.depth==0) ? (d.depth * 100) : (100 + (d.depth - 1) * 360); });
 
   // Declare the nodes
   var node = svg.selectAll("g.node")
@@ -141,12 +140,20 @@ function update(data, selection) {
   nodeEnter.append("circle")
    .attr("r", 4);
 
+  // Change font size for different depth
+  function font_sizing(depth) {
+    var font_sizes = [15, 14, 12, 10];
+    return font_sizes[depth];
+  }
+
   nodeEnter.append("text")
    .attr("x", function(d) { return d.depth==0 ? -13 : 13; })
    .attr("text-anchor", function(d) { return d.depth==0 ? "end" : "start"; })
+   .style("font-weight", function(d) { return d.depth==0 ? "bold" : ""; })
    .attr("dy", ".35em")
    .text(function(d) { return d.name; })
-   .style("fill-opacity", 1);
+   // .style("fill-opacity", 1)
+   .style("font-size", function(d) { return font_sizing(d.depth); });
 
   // Declare the links
   var link = svg.selectAll("path.link")
