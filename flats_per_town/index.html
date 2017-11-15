@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Dwelling Units by Town</title>
+<style>
+/*.axis--x path {
+  display: none;
+}
+*/
+.bar {
+  fill: #525252;
+}
+
+.bar2 {
+  fill: #fc8d59;
+}
+
+.bar:hover {
+  fill: brown;
+}
+
+</style>
+<body>
+	<div id="chart1"></div>
+</body>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+
+var svg = d3.select("#chart1")
+					.append("svg")
+					.attr("width", 1200)
+					.attr("height", 600),
+    margin = {top: 120, right: 20, bottom: 20, left: 20},
+    width = +svg.attr("width") - margin.left - margin.right,
+    height = +svg.attr("height") - margin.top - margin.bottom;
+
+var title = svg.append("text")
+		        .attr("x", width / 2)             
+		        .attr("y", margin.top * 1 / 5)
+		        .attr("text-anchor", "middle")
+		        .style("font-family", "Helvetica")
+		        .style("font-size", "30px") 
+		        .text("HDB Dwelling Units in 2008");
+
+var title2 = svg.append("text")
+						.attr("x", 450)
+		        .attr("y", margin.top * 4 / 5)
+		        .attr("text-anchor", "middle")
+		        .style("font-family", "Helvetica")
+		        .style("font-size", "17px") 
+		        .text("Number of dwelling units vs Projected Dwelling Units");
+
+var title3 = svg.append("text")
+						.attr("x", 950)
+		        .attr("y", margin.top * 4 / 5)
+		        .attr("text-anchor", "middle")
+		        .style("font-family", "Helvetica")
+		        .style("font-size", "17px") 
+		        .text("Proportion of Projected Dwelling Units (%)");
+
+var g = svg.append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+d3.csv("cleaned.csv", function(data) {
+	data.year = +data.year;
+	data.dwelling_units = +data.dwelling_units;
+	data.proj_dwelling_units = +data.proj_dwelling_units;
+	data.prop_projected = +data.prop_projected;
+	plot_bars(data); 
+});
+
+plot_bars = function(data) {
+
+	// Get list of towns ordered by final dwelling units
+	var data_proj = data.filter(function(d) {return d.year == 2016; });
+	var data_proj = d3.nest()
+						.key(function(d) { return d.town; })
+						.rollup(function(v) {return d3.mean(v, function(d) {return d.proj_dwelling_units; }); })
+						.entries(data_proj);
+	var data_sorted = data_proj.sort(function(a, b) {
+		return b.value - a.value;
+	});
+	console.log("The sorted projected data is:", data_sorted);
+
+	var town_keys = d3.set();
+	data_sorted.forEach(function(d) {
+		town_keys.add(d.key);
+	})
+	var town_keys = town_keys.values();
+	console.log("The towns are:", town_keys);
+
+	// Plot Absolute Dwelling units
+	// Set the domain for x and y axis
+	var x_max = d3.max(data, function(d) { return +d.proj_dwelling_units; });
+	console.log("The maximum value for x axis is:", x_max);
+
+	// Set the scale for x axis
+	var x = d3.scaleLinear()
+			.rangeRound([0, width - 600])
+			.domain([0, x_max]);
+	console.log("The x position of 0 is:", x(0));
+	console.log("The x position of 72103 is:", x(72103));
+
+	// Set the scale for the y axis
+	var y = d3.scaleBand()
+			.rangeRound([0, height])
+			.domain(town_keys)
+			.padding(0.1);
+	console.log("The y position of Ang Mo Kio is:", y("Ang Mo Kio"));
+	console.log("The y position of Yishun is:", y("Yishun"));
+
+	// Append x axis
+	g.append("g")
+		.attr("transform", "translate(80," + height + ")")
+		.attr("class", "axis--x")
+		.call(d3.axisBottom(x).ticks(10));
+
+	// Append y axis
+	g.append("g")
+		.attr("transform", "translate(80,0)")
+		.attr("class", "axis--y")
+		.call(d3.axisLeft(y));
+
+
+
+  // Plot Proportion of projected dwelling units
+	// Set the scale for x axis
+	var x2 = d3.scaleLinear()
+			.rangeRound([700, 1000])
+			.domain([0, 1.0]);
+	console.log("The x position of 0 is:", x2(0));
+	console.log("The x position of 1 is:", x2(1));
+
+	// Append x axis
+	g.append("g")
+		.attr("transform", "translate(80," + height + ")")
+		.attr("class", "axis--x")
+		.call(d3.axisBottom(x2).ticks(10));
+
+	// Append y axis
+	g.append("g")
+		.attr("transform", "translate(" + 1080 +", 0)")
+		.attr("class", "axis--y")
+		.call(d3.axisRight(y));
+
+	// Clean data into nested form
+	// Key: town, Values: Dwelling units by year
+	var nested_data = d3.nest()
+						.key(function(d) { return d.year; })
+						.entries(data);
+	console.log("The nested data is:", nested_data);
+
+	// Plot Absolute values
+	// Plot projected dwelling units
+	g.selectAll(".bar_final")
+    .data(data_sorted, function(d) {return d.key; })
+    .enter().append("rect")
+      .attr("x", 80)
+      .attr("y", function(d) { return y(d.key); })
+      .attr("height", y.bandwidth())
+      .attr("width", function(d) { return x(d.value); })
+      .style("fill", "#e5e5e5");
+
+	// Get 2008 values
+	var data_2008 = nested_data.filter(function(d) {return d.key == 2008})[0].values;
+	var data_2008 = d3.nest()
+						.key(function(d) {return d.town; })
+						.rollup(function(v) {return {
+							dwelling_units : d3.mean(v, function(d) {return d.dwelling_units; }),
+							prop_projected : d3.mean(v, function(d) {return d.prop_projected; }) 
+						}})
+						.entries(data_2008);
+	console.log("The 2008 values are:", data_2008);
+
+	// Plot 2008 values
+	g.selectAll(".bar")
+    .data(data_2008, function(d) {return d.key; })
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", 80)
+      .attr("y", function(d) { return y(d.key); })
+      .attr("height", y.bandwidth())
+      .attr("width", function(d) { return x(d.value.dwelling_units); });
+
+  // Plot 2008 numeric value on the bar
+	var format_dwelling_units = d3.format(",.2r");
+	g.selectAll(".dwelling_number")
+    .data(data_2008, function(d) {return d.key; })
+    .enter().append("text")
+      .attr("text-anchor", "start")
+      .attr("dominant-baseline", "central")
+      .attr("class", "dwelling_number")
+      .attr("x", function(d) { return x(d.value.dwelling_units) + 90; })
+      .attr("y", function(d) { return y(d.key) + y.bandwidth()/2; })
+			.text(function(d) { return format_dwelling_units(d.value.dwelling_units); })
+			.style("font-family", "Helvetica")
+			.style("font-size", "11px");
+
+	// Plot Proportions
+	// Plot final proportions
+	g.selectAll(".bar2_final")
+    .data(data_sorted, function(d) {return d.key; })
+    .enter().append("rect")
+      .attr("x", 780)
+      .attr("y", function(d) { return y(d.key); })
+      .attr("height", y.bandwidth())
+      .attr("width", function(d) { return x2(1) - 700; })
+      .style("fill", "#fff7ec");
+
+	// Plot Tick Marks
+
+
+	// Plot 2008 Proportions
+	g.selectAll(".bar2")
+  .data(data_2008, function(d) {return d.key; })
+  .enter().append("rect")
+    .attr("class", "bar2")
+    .attr("x", 780)
+    .attr("y", function(d) { return y(d.key); })
+    .attr("height", y.bandwidth())
+    .attr("width", function(d) { return x2(d.value.prop_projected) - 700; });
+
+  // Plot 2008 % value on the right
+	var format = d3.format(".0%");
+		g.selectAll(".text_proportion")
+    .data(data_2008, function(d) {return d.key; })
+    .enter().append("text")
+      .attr("text-anchor", "start")
+      .attr("dominant-baseline", "central")
+      .attr("class", "text_proportion")
+      .attr("x", function(d) { return x2(d.value.prop_projected) + 90; })
+      .attr("y", function(d) { return y(d.key) + y.bandwidth()/2; })
+			.text(function(d) { return format(d.value.prop_projected); })
+			.style("font-family", "Helvetica")
+			.style("font-size", "11px")
+			.style("fill", "#b30000");
+
+
+    // Get list of years for updating of bar chart
+    var list_years = [];
+    for (var i = 2009; i <= 2016; i++) {
+    	list_years.push(i);
+    }
+    console.log("The list of years to update are:", list_years);
+
+    // Update function
+    function update(year) {
+    	console.log("Current year is:", year)
+
+    	// Current year data
+    	var data_current_year = nested_data.filter(function(d) {return d.key == year})[0].values;
+    	var data_current_year = d3.nest()
+						.key(function(d) {return d.town; })
+						.rollup(function(v) {return {
+							dwelling_units : d3.mean(v, function(d) {return d.dwelling_units; }),
+							prop_projected : d3.mean(v, function(d) {return d.prop_projected; }) 
+						}})
+						.entries(data_current_year);
+		console.log("The data for the current year is:", data_current_year)
+
+		// Previous year data
+		var data_previous_year = nested_data.filter(function(d) {return d.key == (year - 1)})[0].values;
+    	var data_previous_year = d3.nest()
+						.key(function(d) {return d.town; })
+						.rollup(function(v) {return d3.mean(v, function(d) {return d.dwelling_units; }); })
+						.entries(data_previous_year);
+		console.log("The data for the previous year is:", data_previous_year)
+
+		// Plot update in values
+		g.selectAll(".bar")
+		.data(data_current_year, function(d) {return d.key; })
+			.transition()
+				.duration(500)
+				.attr("width", function(d) { return x(d.value.dwelling_units); });
+
+		// Leave a mark for the previous value
+		g.selectAll(".tick")
+		.data(data_previous_year, function(d) { return d.key; })
+		.enter().append("rect")
+	      .attr("x", function(d) { return x(d.value) + 80; })
+	      .attr("y", function(d) { return y(d.key); })
+	      .attr("height", y.bandwidth())
+	      .attr("width", 0.5)
+	      .style("fill", "e5e5e5");
+
+		// Update the dwelling unit numbers
+		g.selectAll(".dwelling_number")
+		.data(data_current_year, function(d) {return d.key; })
+			.transition()
+				.duration(500)
+				.attr("x", function(d) { return x(d.value.dwelling_units) + 90; })
+				.text(function(d) { return format_dwelling_units(d.value.dwelling_units); });
+
+		// Update the proportion numbers
+		g.selectAll(".text_proportion")
+		.data(data_current_year, function(d) {return d.key; })
+			.transition()
+				.duration(500)
+				.attr("x", function(d) { return x2(d.value.prop_projected) + 90; })
+				.text(function(d) { return format(d.value.prop_projected); });
+
+    // Update the proportions
+		g.selectAll(".bar2")
+		.data(data_current_year, function(d) { return d.key; })
+		.transition()
+			.duration(500)
+			.attr("width", function(d) { return x2(d.value.prop_projected) - 700; });
+
+
+		// Update the Title
+		title
+			.text("HDB Dwelling Units in " + year);
+
+
+
+
+    }
+	
+	// Loop through all the years for the animation 
+	var delay = 2000;
+    var i = 2009;
+    var handle = setInterval(function() {
+    	update(i);
+    	i++;
+    	if (i >= 2017) clearInterval(handle);
+    }, delay);
+
+}
+
+</script>
+ 
+</html>
