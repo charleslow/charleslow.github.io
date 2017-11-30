@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Simpson's Paradox Illustration</title>
+<style>
+*/
+.ticks {
+  font: 10px sans-serif;
+}
+
+.track,
+.track-inset,
+.track-overlay {
+  stroke-linecap: round;
+}
+
+.track {
+  stroke: #000;
+  stroke-opacity: 0;
+  stroke-width: 10px;
+}
+
+.track-inset {
+  stroke: #ddd;
+  stroke-opacity: 0;
+  stroke-width: 8px;
+}
+
+.track-overlay {
+  pointer-events: stroke;
+  stroke-width: 50px;
+  stroke: transparent;
+  cursor: crosshair;
+}
+
+.handle_r {
+  fill: #de2d26;
+  stroke: #de2d26;
+  stroke-opacity: 0.5;
+}
+
+.handle_g {
+  fill: #31a354;
+  stroke: #31a354;
+  stroke-opacity: 0.5;
+}
+
+.bar_r {
+	fill : #fc9272;
+}
+
+.bar_g {
+	fill : #a1d99b;
+}
+
+.bar_label_r {
+	text-anchor : middle;
+	fill : #de2d26;
+	font-family : Helvetica;
+	font-size : 14px;
+	font-weight : bold;
+}
+
+.bar_label_g {
+	text-anchor : middle;
+	fill : #31a354;
+	font-family : Helvetica;
+	font-size : 14px;
+	font-weight : bold;
+}
+
+.border {
+  fill : transparent;
+  stroke-width : 4px;
+  stroke : #ddd;
+}
+
+.svg {
+  position : absolute;
+}
+
+.percent_label {
+  fill : #de2d26;
+  font-family : Helvetica;
+  font-size : 20px;
+  font-weight : bold; 
+}
+
+</style>
+<body>
+</body>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="drawchart.js"></script>
+<script>
+
+// Create individual Jars
+var jar_width = 300,
+    jar_height = 150,
+    x_margin = 80,
+    y_margin = 80,
+    y_gap = jar_height + 20,
+    x_gap = jar_width + 20;
+
+var jar1 = d3.select("body").append("g")
+    .append("svg")
+    .attr("class", "svg")
+    .attr("width", jar_width)
+    .attr("height", jar_height)
+    .attr("transform", "translate(" + x_margin + ", " + y_margin + ")");
+
+jar1.append("rect")
+  .attr("width", jar_width)
+  .attr("height", jar_height)
+  .attr("class", "border");
+
+var jar2 = d3.select("body").append("g")
+    .append("svg")
+    .attr("class", "svg")
+    .attr("width", jar_width)
+    .attr("height", jar_height)
+    .attr("transform", "translate(" + x_margin + ", " + (y_margin + y_gap) + ")");
+
+jar2.append("rect")
+  .attr("width", jar_width)
+  .attr("height", jar_height)
+  .attr("class", "border");
+
+var jar3 = d3.select("body").append("g")
+    .append("svg")
+    .attr("class", "svg")
+    .attr("width", jar_width)
+    .attr("height", jar_height)
+    .attr("transform", "translate(" + (x_margin + x_gap) + ", " + y_margin + ")");
+
+jar3.append("rect")
+  .attr("width", jar_width)
+  .attr("height", jar_height)
+  .attr("class", "border");
+
+var jar4 = d3.select("body").append("g")
+    .append("svg")
+    .attr("class", "svg")
+    .attr("width", jar_width)
+    .attr("height", jar_height)
+    .attr("transform", "translate(" + (x_margin + x_gap) + ", " + (y_margin + y_gap) + ")");
+
+jar4.append("rect")
+  .attr("width", jar_width)
+  .attr("height", jar_height)
+  .attr("class", "border");
+
+// Set the scale for the y axis
+var y = d3.scaleLinear()
+		.rangeRound([jar_height*1/5, jar_height])
+		.domain([0, 50])
+		.clamp(true);
+
+// Draw chart on svg
+// Use helper function from drawchart.js
+var jar1_r_chart = drawchart()
+  .bar_width(60)
+  .slider_position(60)
+  .bar_position(70)
+  .handle_position(0)
+  .bar_class("bar_r")
+  .handle_class("handle_r")
+  .bar_label_class("bar_label_r");
+
+var jar1_g_chart = drawchart()
+  .bar_width(60)
+  .slider_position(240)
+  .bar_position(170)
+  .handle_position(-70)
+  .bar_class("bar_g")
+  .handle_class("handle_g")
+  .bar_label_class("bar_label_g");
+
+var jar2_r_chart = drawchart()
+  .bar_width(60)
+  .slider_position(60)
+  .bar_position(70)
+  .handle_position(0)
+  .bar_class("bar_r")
+  .handle_class("handle_r")
+  .bar_label_class("bar_label_r");
+
+var jar2_g_chart = drawchart()
+  .bar_width(60)
+  .slider_position(240)
+  .bar_position(170)
+  .handle_position(-70)
+  .bar_class("bar_g")
+  .handle_class("handle_g")
+  .bar_label_class("bar_label_g");
+
+var jar3_r_chart = drawchart()
+  .bar_width(60)
+  .slider_position(60)
+  .bar_position(70)
+  .handle_position(0)
+  .bar_class("bar_r")
+  .handle_class("handle_r")
+  .bar_label_class("bar_label_r");
+
+var jar3_g_chart = drawchart()
+  .bar_width(60)
+  .slider_position(240)
+  .bar_position(170)
+  .handle_position(-70)
+  .bar_class("bar_g")
+  .handle_class("handle_g")
+  .bar_label_class("bar_label_g");
+
+var jar4_r_chart = drawchart()
+  .bar_width(60)
+  .slider_position(60)
+  .bar_position(70)
+  .handle_position(0)
+  .bar_class("bar_r")
+  .handle_class("handle_r")
+  .bar_label_class("bar_label_r");
+
+var jar4_g_chart = drawchart()
+  .bar_width(60)
+  .slider_position(240)
+  .bar_position(170)
+  .handle_position(-70)
+  .bar_class("bar_g")
+  .handle_class("handle_g")
+  .bar_label_class("bar_label_g");
+
+// Call functions to draw the charts
+jar1.call(jar1_r_chart);
+jar1.call(jar1_g_chart);
+jar2.call(jar2_r_chart);
+jar2.call(jar2_g_chart);
+jar3.call(jar3_r_chart);
+jar3.call(jar3_g_chart);
+jar4.call(jar4_r_chart);
+jar4.call(jar4_g_chart);
+
+// Set the scale for the y axis for combined jar
+var y2 = d3.scaleLinear()
+    .rangeRound([jar_height * 1/5, jar_height * 1.8])
+    .domain([0, 100])
+    .clamp(true);
+
+// Combined Jar A
+var a = d3.select("body").append("g")
+    .append("svg")
+    .attr("class", "svg")
+    .attr("width", jar_width)
+    .attr("height", jar_height * 1.8)
+    .attr("transform", "translate(" + x_margin + ", " + (y_margin + y_gap * 2) + ")");
+
+a.append("rect")
+    .attr("width", jar_width)
+    .attr("height", jar_height * 1.8)
+    .attr("class", "border");
+
+var a_r_bar = a.append("rect")
+    .attr("class", "bar_r")
+    .attr("width", 60)
+    .attr("height", y2(20))
+    .attr("x", 70)
+    .attr("y", y2(100 - 20));
+
+var a_r_label = a.append("text")
+  .attr("class", "bar_label_r")
+  .attr("x", 100)
+  .attr("y", y2(100 - 20) - 5)
+  .text(20);
+
+var a_g_bar = a.append("rect")
+    .attr("class", "bar_g")
+    .attr("width", 60)
+    .attr("height", y2(20))
+    .attr("x", 170)
+    .attr("y", y2(100 - 20));
+
+var a_g_label = a.append("text")
+  .attr("class", "bar_label_g")
+  .attr("x", 200)
+  .attr("y", y2(100 - 20) - 5)
+  .text(20);
+
+// Combined Jar B
+var b = d3.select("body").append("g")
+    .append("svg")
+    .attr("class", "svg")
+    .attr("width", jar_width)
+    .attr("height", jar_height * 1.8)
+    .attr("transform", "translate(" + (x_margin + x_gap) + ", " + (y_margin + y_gap * 2) + ")");
+
+b.append("rect")
+    .attr("width", jar_width)
+    .attr("height", jar_height * 1.8)
+    .attr("class", "border");
+
+var b_r_bar = b.append("rect")
+    .attr("class", "bar_r")
+    .attr("width", 60)
+    .attr("height", y2(20))
+    .attr("x", 70)
+    .attr("y", y2(100 - 20));
+
+var b_r_label = b.append("text")
+  .attr("class", "bar_label_r")
+  .attr("x", 100)
+  .attr("y", y2(100 - 20) - 5)
+  .text(20);
+
+var b_g_bar = b.append("rect")
+    .attr("class", "bar_g")
+    .attr("width", 60)
+    .attr("height", y2(20))
+    .attr("x", 170)
+    .attr("y", y2(100 - 20));
+
+var b_g_label = b.append("text")
+  .attr("class", "bar_label_g")
+  .attr("x", 200)
+  .attr("y", y2(100 - 20) - 5)
+  .text(20);
+
+// Add Percentages
+var jar1_percent = jar1.append("text")
+      .attr("class", "percent_label")
+      .attr("text-anchor", "end")
+      .attr("x", jar_width-5)
+      .attr("y", jar_height / 2)
+      .text("50%");
+
+var jar2_percent = jar2.append("text")
+      .attr("class", "percent_label")
+      .attr("text-anchor", "end")
+      .attr("x", jar_width-5)
+      .attr("y", jar_height / 2)
+      .text("50%")
+
+var jar3_percent = jar3.append("text")
+      .attr("class", "percent_label")
+      .attr("text-anchor", "start")
+      .attr("x", 5)
+      .attr("y", jar_height / 2)
+      .text("50%")
+
+var jar4_percent = jar4.append("text")
+      .attr("class", "percent_label")
+      .attr("text-anchor", "start")
+      .attr("x", 5)
+      .attr("y", jar_height / 2)
+      .text("50%")
+
+var a_percent = a.append("text")
+      .attr("class", "percent_label")
+      .attr("text-anchor", "end")
+      .attr("x", jar_width-5)
+      .attr("y", jar_height)
+      .text("50%")
+
+var b_percent = b.append("text")
+      .attr("class", "percent_label")
+      .attr("text-anchor", "start")
+      .attr("x", 5)
+      .attr("y", jar_height)
+      .text("50%")
+
+</script>
+ 
+</html>
