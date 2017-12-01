@@ -2,7 +2,9 @@
 <meta charset="utf-8">
 <title>Simpson's Paradox Illustration</title>
 <style>
-*/
+
+@import url(../style.css);
+
 .ticks {
   font: 10px sans-serif;
 }
@@ -27,9 +29,10 @@
 
 .track-overlay {
   pointer-events: stroke;
-  stroke-width: 50px;
-  stroke: transparent;
-  cursor: crosshair;
+  stroke-width: 80px;
+  opacity : 0;
+  stroke: #ddd;
+  cursor: pointer;
 }
 
 .handle_r {
@@ -79,7 +82,7 @@
 }
 
 .percent_label {
-  fill : #de2d26;
+  fill : #606060;
   font-family : Helvetica;
   font-size : 20px;
   font-weight : bold; 
@@ -87,13 +90,25 @@
 
 </style>
 <body>
+  <h1>Simpson's Paradox Illustration</h1>
+  <p>Simpson's paradox is a classic statistical phenomenon. I came across this paradox while taking Joe Blitzstein's excellent Statistics 110 course.</p>
+  <p>Essentially, Simpson's paradox happens when the proportions of a phenomenon (e.g. successful applications to college programmes) within a population are higher than that of another population, but when the proportions are examined within each sub category, the inequality sign flips for all of them.</p>
+  
+  <h2>Jelly Beans</h2>
+  <p>An example is the best way to look at this. Suppose I prefer red jelly beans over green ones. I am offered a chance to grab a handful of jelly beans from jar 1, but I have to choose
+  between either store A or B. I am then given another chance to grab a handful of jelly beans from jar 2, and again have to choose between store A or B.  
+  </p>
+  <p>Now, there could exist a scenario whether in both bases, it is preferable to choose store A. However, when both jars 1 and 2 are combined for each respective store, it becomes preferable
+    to pick from store B.
+  </p>
+  <p>You can explore this phenomenon yourself by dragging the bars below. Can you create a scenario of Simpson's paradox?</p>
 </body>
 
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="drawchart.js"></script>
 <script>
 
-// Create individual Jars
+// Set parameters for page
 var jar_width = 300,
     jar_height = 150,
     x_margin = 80,
@@ -101,48 +116,83 @@ var jar_width = 300,
     y_gap = jar_height + 20,
     x_gap = jar_width + 20;
 
-var jar1 = d3.select("body").append("g")
+// Add Canvas
+var canvas_width = x_gap*2 + x_margin,
+    canvas_height = y_gap * 5;
+var canvas = d3.select("body")
+  .append("svg")
+    .attr("width", canvas_width)
+    .attr("height", canvas_height);
+
+// Add Description
+canvas.append("text")
+  .attr("x", x_margin + jar_width/ 2)
+  .attr("y", 60)
+  .attr("font-weight", "bold")
+  .attr("font-size", "48px")
+  .text("A");
+
+canvas.append("text")
+  .attr("x", (x_margin) + jar_width * 1.5)
+  .attr("y", 60)
+  .attr("font-weight", "bold")
+  .attr("font-size", "48px")
+  .text("B");
+
+canvas.append("text")
+  .attr("x", 0)
+  .attr("y", y_margin + jar_height/2)
+  .attr("font-weight", "bold")
+  .attr("font-size", "30px")
+  .text("Jar 1");
+
+canvas.append("text")
+  .attr("x", 0)
+  .attr("y", y_margin + jar_height + 20 + jar_height/2)
+  .attr("font-weight", "bold")
+  .attr("font-size", "30px")
+  .text("Jar 2");
+
+
+// Create individual Jars
+var jar1 = canvas.append("g")
+    .attr("transform", "translate(" + x_margin + ", " + y_margin + ")")
     .append("svg")
-    .attr("class", "svg")
-    .attr("width", jar_width)
-    .attr("height", jar_height)
-    .attr("transform", "translate(" + x_margin + ", " + y_margin + ")");
+      .attr("width", jar_width)
+      .attr("height", jar_height);
 
 jar1.append("rect")
   .attr("width", jar_width)
   .attr("height", jar_height)
   .attr("class", "border");
 
-var jar2 = d3.select("body").append("g")
+var jar2 = canvas.append("g")
+    .attr("transform", "translate(" + x_margin + ", " + (y_margin + y_gap) + ")")
     .append("svg")
-    .attr("class", "svg")
-    .attr("width", jar_width)
-    .attr("height", jar_height)
-    .attr("transform", "translate(" + x_margin + ", " + (y_margin + y_gap) + ")");
+      .attr("width", jar_width)
+      .attr("height", jar_height);
 
 jar2.append("rect")
   .attr("width", jar_width)
   .attr("height", jar_height)
   .attr("class", "border");
 
-var jar3 = d3.select("body").append("g")
+var jar3 = canvas.append("g")
+    .attr("transform", "translate(" + (x_margin + x_gap) + ", " + y_margin + ")")
     .append("svg")
-    .attr("class", "svg")
-    .attr("width", jar_width)
-    .attr("height", jar_height)
-    .attr("transform", "translate(" + (x_margin + x_gap) + ", " + y_margin + ")");
+      .attr("width", jar_width)
+      .attr("height", jar_height);
 
 jar3.append("rect")
   .attr("width", jar_width)
   .attr("height", jar_height)
   .attr("class", "border");
 
-var jar4 = d3.select("body").append("g")
+var jar4 = canvas.append("g")
+    .attr("transform", "translate(" + (x_margin + x_gap) + ", " + (y_margin + y_gap) + ")")
     .append("svg")
-    .attr("class", "svg")
-    .attr("width", jar_width)
-    .attr("height", jar_height)
-    .attr("transform", "translate(" + (x_margin + x_gap) + ", " + (y_margin + y_gap) + ")");
+      .attr("width", jar_width)
+      .attr("height", jar_height);
 
 jar4.append("rect")
   .attr("width", jar_width)
@@ -158,73 +208,73 @@ var y = d3.scaleLinear()
 // Draw chart on svg
 // Use helper function from drawchart.js
 var jar1_r_chart = drawchart()
-  .bar_width(60)
-  .slider_position(60)
-  .bar_position(70)
-  .handle_position(0)
+  .bar_width(80)
+  .slider_position(90)
+  .bar_position(50)
+  .handle_position(-40)
   .bar_class("bar_r")
   .handle_class("handle_r")
   .bar_label_class("bar_label_r");
 
 var jar1_g_chart = drawchart()
-  .bar_width(60)
-  .slider_position(240)
-  .bar_position(170)
-  .handle_position(-70)
+  .bar_width(80)
+  .slider_position(190)
+  .bar_position(150)
+  .handle_position(-40)
   .bar_class("bar_g")
   .handle_class("handle_g")
   .bar_label_class("bar_label_g");
 
 var jar2_r_chart = drawchart()
-  .bar_width(60)
-  .slider_position(60)
-  .bar_position(70)
-  .handle_position(0)
+  .bar_width(80)
+  .slider_position(90)
+  .bar_position(50)
+  .handle_position(-40)
   .bar_class("bar_r")
   .handle_class("handle_r")
   .bar_label_class("bar_label_r");
 
 var jar2_g_chart = drawchart()
-  .bar_width(60)
-  .slider_position(240)
-  .bar_position(170)
-  .handle_position(-70)
+  .bar_width(80)
+  .slider_position(190)
+  .bar_position(150)
+  .handle_position(-40)
   .bar_class("bar_g")
   .handle_class("handle_g")
   .bar_label_class("bar_label_g");
 
 var jar3_r_chart = drawchart()
-  .bar_width(60)
-  .slider_position(60)
+  .bar_width(80)
+  .slider_position(110)
   .bar_position(70)
-  .handle_position(0)
+  .handle_position(-40)
   .bar_class("bar_r")
   .handle_class("handle_r")
   .bar_label_class("bar_label_r");
 
 var jar3_g_chart = drawchart()
-  .bar_width(60)
-  .slider_position(240)
+  .bar_width(80)
+  .slider_position(210)
   .bar_position(170)
-  .handle_position(-70)
+  .handle_position(-40)
   .bar_class("bar_g")
   .handle_class("handle_g")
   .bar_label_class("bar_label_g");
 
 var jar4_r_chart = drawchart()
-  .bar_width(60)
-  .slider_position(60)
+  .bar_width(80)
+  .slider_position(110)
   .bar_position(70)
-  .handle_position(0)
+  .handle_position(-40)
   .bar_class("bar_r")
   .handle_class("handle_r")
   .bar_label_class("bar_label_r");
 
 var jar4_g_chart = drawchart()
-  .bar_width(60)
-  .slider_position(240)
+  .bar_width(80)
+  .slider_position(210)
   .bar_position(170)
-  .handle_position(-70)
+  .handle_position(-40)
   .bar_class("bar_g")
   .handle_class("handle_g")
   .bar_label_class("bar_label_g");
@@ -241,85 +291,83 @@ jar4.call(jar4_g_chart);
 
 // Set the scale for the y axis for combined jar
 var y2 = d3.scaleLinear()
-    .rangeRound([jar_height * 1/5, jar_height * 1.8])
+    .rangeRound([jar_height * 1/5, jar_height * 1.5])
     .domain([0, 100])
     .clamp(true);
 
 // Combined Jar A
-var a = d3.select("body").append("g")
+var a = canvas.append("g")
+    .attr("transform", "translate(" + x_margin + ", " + (y_margin + y_gap * 2) + ")")
     .append("svg")
-    .attr("class", "svg")
-    .attr("width", jar_width)
-    .attr("height", jar_height * 1.8)
-    .attr("transform", "translate(" + x_margin + ", " + (y_margin + y_gap * 2) + ")");
+      .attr("width", jar_width)
+      .attr("height", jar_height * 1.5);
 
 a.append("rect")
     .attr("width", jar_width)
-    .attr("height", jar_height * 1.8)
+    .attr("height", jar_height * 1.5)
     .attr("class", "border");
 
 var a_r_bar = a.append("rect")
     .attr("class", "bar_r")
-    .attr("width", 60)
+    .attr("width", 80)
     .attr("height", y2(20))
-    .attr("x", 70)
+    .attr("x", 50)
     .attr("y", y2(100 - 20));
 
 var a_r_label = a.append("text")
   .attr("class", "bar_label_r")
-  .attr("x", 100)
+  .attr("x", 90)
   .attr("y", y2(100 - 20) - 5)
   .text(20);
 
 var a_g_bar = a.append("rect")
     .attr("class", "bar_g")
-    .attr("width", 60)
+    .attr("width", 80)
     .attr("height", y2(20))
-    .attr("x", 170)
+    .attr("x", 150)
     .attr("y", y2(100 - 20));
 
 var a_g_label = a.append("text")
   .attr("class", "bar_label_g")
-  .attr("x", 200)
+  .attr("x", 190)
   .attr("y", y2(100 - 20) - 5)
   .text(20);
 
 // Combined Jar B
-var b = d3.select("body").append("g")
+var b = canvas.append("g")
+    .attr("transform", "translate(" + (x_margin + x_gap) + ", " + (y_margin + y_gap * 2) + ")")
     .append("svg")
-    .attr("class", "svg")
-    .attr("width", jar_width)
-    .attr("height", jar_height * 1.8)
-    .attr("transform", "translate(" + (x_margin + x_gap) + ", " + (y_margin + y_gap * 2) + ")");
+      .attr("width", jar_width)
+      .attr("height", jar_height * 1.5);
 
 b.append("rect")
     .attr("width", jar_width)
-    .attr("height", jar_height * 1.8)
+    .attr("height", jar_height * 1.5)
     .attr("class", "border");
 
 var b_r_bar = b.append("rect")
     .attr("class", "bar_r")
-    .attr("width", 60)
+    .attr("width", 80)
     .attr("height", y2(20))
     .attr("x", 70)
     .attr("y", y2(100 - 20));
 
 var b_r_label = b.append("text")
   .attr("class", "bar_label_r")
-  .attr("x", 100)
+  .attr("x", 110)
   .attr("y", y2(100 - 20) - 5)
   .text(20);
 
 var b_g_bar = b.append("rect")
     .attr("class", "bar_g")
-    .attr("width", 60)
+    .attr("width", 80)
     .attr("height", y2(20))
     .attr("x", 170)
     .attr("y", y2(100 - 20));
 
 var b_g_label = b.append("text")
   .attr("class", "bar_label_g")
-  .attr("x", 200)
+  .attr("x", 210)
   .attr("y", y2(100 - 20) - 5)
   .text(20);
 

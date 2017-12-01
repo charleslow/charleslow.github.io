@@ -34,10 +34,10 @@ function drawchart() {
 
       var handle = slider.insert("rect", ".track-overlay")
         .attr("class", handle_class)
-        .attr("height", 2)
-        .attr("width", bar_width + 10)
+        .attr("height", 4)
+        .attr("width", bar_width)
         .attr("x", handle_position)
-        .attr("y", y(50 - number) - 2);
+        .attr("y", y(50 - number) - 4);
 
       var bar_label = d3.select(this).append("text")
         .attr("class", bar_label_class)
@@ -49,7 +49,7 @@ function drawchart() {
         var updated_number = Math.round(h);
 
         handle
-          .attr("y", y(50 - updated_number) - 2);
+          .attr("y", y(50 - updated_number) - 4);
 
         bar
           .attr("y", y(50 - updated_number))
