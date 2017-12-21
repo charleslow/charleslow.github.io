@@ -1,0 +1,56 @@
+---
+title: "Statistical Distributions"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Poisson Distribution
+The poisson distribution is controlled by a single parameter $\lambda$. 
+The poisson probability mass function is $P(X=x) = \frac{\lambda^k e^-\lambda}{k!}$, where $k=0,1,2...$.
+We are interested in how the distribution changes as $\lambda$ changes.
+
+### Setting lambda = 1
+For a start, let's set $\lambda = 1$ and see what the PMF looks like. 
+```{r cars, echo=F}
+library(ggplot2); library(scales)
+lambda <- seq(0, 10, 0.1)
+k <- 0:10
+lambda <- 1
+df <- data.frame(p = exp(-lambda) * lambda^k / factorial(k), k=k)
+
+ggplot(df, aes(x=k, y=p)) + geom_line() + geom_point() + theme_minimal() +
+  scale_y_continuous(breaks=seq(0,1,0.1), labels=percent_format()) +
+  scale_x_continuous(breaks=0:10) +
+  labs(title="Probability Mass Function of Poisson", subtitle="Lambda = 1")
+
+```
+
+The plot shows us that 0 and 1 are equally likely, and the likelihood of higher values quickly declines to 0 thereafter.
+
+### Setting lambda = 0 to 5
+Now let's try varying $\lambda = 0, 0.1, 0.2...10.0$ and see what the PMF looks like. 
+```{r, echo=F}
+library(ggplot2); library(scales)
+lambda <- seq(0, 5, 0.2)
+k <- 0:10
+df <- data.frame()
+for (l1 in lambda) {
+  p = exp(-l1) * l1^k / factorial(k)
+  temp = data.frame(p=p, k=k, lambda=l1)
+  df <- rbind(df, temp)
+}
+
+ggplot(df, aes(x=k, y=p, col=lambda, group=lambda)) + 
+  geom_line() + geom_point() + theme_minimal() +
+  scale_y_continuous(breaks=seq(0,1,0.1), labels=percent_format()) +
+  scale_x_continuous(breaks=0:10) +
+  scale_color_gradient(low="red", high="blue") +
+  labs(title="Probability Mass Function of Poisson", 
+       subtitle="Lambda = 0 to 5, intervals of 0.2")
+
+```
+
+You can see that the curve gradually shifts towards the right as the $\lambda$ or rate parameter increases. The curve for $\lambda = 5$ seems symmetrically distributed around $k = 5$, which is intuitive as the expected value of a poisson distribution is also its rate, or $EX = \lambda$.
