@@ -1,0 +1,49 @@
+html {
+  min-width : 1040px;
+}
+
+body {
+  font-size : 15px;
+  font-family : Helvetica;
+  position : relative;
+  width : 960px;
+  margin : 2em auto 4em auto;
+}
+
+h2,
+h3,
+h4,
+p {
+  font-family: Helvetica;
+}
+
+h1 {
+  font-family : Helvetica;
+  font-size : 36px;
+  font-weight : bold;
+  letter-spacing: -0.5px;
+  margin: .1em 0 .8em 0;
+}
+
+h2 {
+  font-size : 24px;
+  font-weight : bold;
+  letter-spacing: -1px;
+  margin: 2em 0 .8em 0;
+}
+
+body > p {
+  width : 720px;
+  line-height: 1.5em;
+  margin : 0.6em 0 1em 0;
+}
+
+body > ol {
+  width : 600px;
+  line-height: 1.5em;
+  margin : 0.6em 0 1em 0;
+}
+
+body > ol > li {
+  margin : 0.4em 0 0.5em 0;
+}

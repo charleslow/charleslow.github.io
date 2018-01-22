@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Binomial Coefficient Illustration</title>
+<style>
+
+@import "style.css";
+
+.ticks {
+  font: 10px sans-serif;
+}
+
+.track,
+.track-inset,
+.track-overlay {
+  stroke-linecap: round;
+}
+
+.track {
+  stroke: #000;
+  stroke-opacity: 0;
+  stroke-width: 10px;
+}
+
+.track-inset {
+  stroke: #ddd;
+  stroke-opacity: 0;
+  stroke-width: 8px;
+}
+
+.track-overlay {
+  pointer-events: stroke;
+  stroke-width: 80px;
+  opacity : 0;
+  stroke: #ddd;
+  cursor: pointer;
+}
+
+.handle_r {
+  fill: #de2d26;
+  stroke: #de2d26;
+  stroke-opacity: 0.5;
+}
+
+.handle_g {
+  fill: #31a354;
+  stroke: #31a354;
+  stroke-opacity: 0.5;
+}
+
+.bar_r {
+	fill : #fc9272;
+}
+
+.bar_g {
+	fill : #a1d99b;
+}
+
+.bar_label_r {
+	text-anchor : middle;
+	fill : #de2d26;
+	font-family : Helvetica;
+	font-size : 14px;
+	font-weight : bold;
+}
+
+.bar_label_g {
+	text-anchor : middle;
+	fill : #31a354;
+	font-family : Helvetica;
+	font-size : 14px;
+	font-weight : bold;
+}
+
+.border {
+  fill : transparent;
+  stroke-width : 4px;
+  stroke : #ddd;
+}
+
+.svg {
+  position : absolute;
+}
+
+.percent_label {
+  fill : #606060;
+  font-family : Helvetica;
+  font-size : 20px;
+  font-weight : bold; 
+}
+
+</style>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+<h1>Illustration of Binomial Coefficient</h1>
+<p>Say I have \(5\) balls, each of a different colour, and want to pick \(3\) of them. How many ways are there to do so? </p>
+
+<svg id="chart1" width="720" height="100"></svg>
+<script>
+var svg = d3.select("svg#chart1")
+
+var circle_data = [0, 1, 2, 3, 4];
+var circle_color = ["#e41a1c", "#377eb8", "#4daf4a", "#ff7f00", "#984ea3"];
+
+svg
+  .selectAll("circle")
+  .data(circle_data)
+  .enter()
+    .append("circle")
+    .style("fill", function(d) { return circle_color[d]; })
+    .attr("cx", function(d) { return d * 80 + 100; })
+    .attr("cy", 50)
+    .attr("r", 25);
+</script>
+
+
+<p> This is a typical problem in any introduction course to statistics, and makes for a fun problem to tackle using visualisations. 
+Hopefully this post leaves you with a little more intuition. </p>
+
+<h2>A Typical Solution</h2>
+<p> The typical solution goes like this (see this <a href="https://math.stackexchange.com/questions/1170021/intuitive-explanation-of-binomial-coefficient">thread</a> for more details): </p>
+<ol>
+  <li> There are \(5\) ways to pick the first ball.</li>
+  <li> After picking the first ball, there are only \(4\) balls remaining. So there are \(4\) ways to pick the second ball. </li>
+  <li> Repeating this logic, there are \(3\) ways left to pick the third ball, and we can keep going on if we wanted. </li>  
+  <li> We now have \(5 \times 4 \times 3 = 60\) ways to pick \(3\) balls, and this would be correct if the sequence that the balls were picked mattered.
+  But since the sequence does not matter, we need to divide this number by the number of ways the \(3\) balls could have been arranged. </li>
+  <li> So how many ways are there to arrange the \(3\) balls? Well, we could use the same logic we applied above! We have \(3\) ways 
+to pick the first ball, \(2\) to pick the second, and \(1\) to pick the third. So there are \(3 \times 2 \times 1 =6\) ways to arrange the \(3\) balls. </li>
+</ol>
+
+<p> And... we're done! There are \({5 \times 4 \times 3 \over 3 \times 2 \times 1} = {60 \over 6} = 10\) ways to pick the balls. To make this solution 
+a function of the total number of balls (denote as \(n\)) and the number of balls we want to pick (denote as \(r\)): 
+$$ {n(n-1)...(n-r+1) \over r! } $$ </p>
+
+<p> Which is also equal to: $$ {n! \over {r!(n-r)!} } $$</p>
+
+
+<p> This number is known as the binomial coefficient, because it is an important part of the binomial distribution.
+But this is all we need to know for now. </p>
+
+<h2>Can we visualise this?</h2>  
+
+<p>Well, you say, I follow the logic, but it's a little hard to picture in my head what's exactly going on. 
+Can you help me visualise this?</p>
+
+<p>Glad you asked! Let's start with Step 1 above: Pick the first ball. Well, clearly there are \(5\) ways to do so.</p>
+
+<svg id="chart2" width="720" height="100"></svg>
+<script>
+var svg = d3.select("svg#chart2")
+
+var circle_data = [0, 1, 2, 3, 4];
+var circle_color = ["#e41a1c", "#377eb8", "#4daf4a", "#ff7f00", "#984ea3"];
+
+svg
+  .selectAll("circle")
+  .data(circle_data)
+  .enter()
+    .append("circle")
+    .style("fill", function(d) { return circle_color[d]; })
+    .attr("cx", function(d) { return d * 140 + 50; })
+    .attr("cy", 50)
+    .attr("r", 10);
+</script>
+
+<p>Now let's pick the second ball. Remember, there were \(5\) ways to pick the 1st ball, and for each of these, there
+are \(4\) ways to pick the 2nd ball. So we have  \(5 \times 4 = 20\) options now.</p>
+
+<svg id="chart3" width="720" height="170"></svg>
+<script>
+var svg3 = d3.select("svg#chart3")
+
+var circle_data = [0, 1, 2, 3, 4];
+var circle_color = ["#e41a1c", "#377eb8", "#4daf4a", "#ff7f00", "#984ea3"];
+
+// Original 5 balls
+svg3
+  .selectAll("circle1")
+  .data(circle_data)
+  .enter()
+    .append("circle")
+    .attr("class", "circle1")
+    .style("fill", function(d) { return circle_color[d]; })
+    .attr("cx", function(d) { return d * 140 + 50; })
+    .attr("cy", 40)
+    .attr("r", 10);
+
+// Calculate 5 permute 2
+// Now 20 sets
+var circle_permutations = combine(circle_data, 2);
+
+// Initialise circles
+svg3
+  .selectAll("circle2")
+  .data(circle_permutations)
+  .enter()
+    .append("circle")
+    .attr("class", "circle2")
+    .style("opacity", 0)
+    .style("fill", function(d) { return circle_color[d.second]; })
+    .attr("cx", function(d) { return d.first * 140 + 75; })
+    .attr("cy", function(d) { return d.index * 30 + 40; })
+    .attr("r", 10);
+
+svg3
+  .selectAll("circle3")
+  .data(circle_permutations)
+  .enter()
+    .append("circle")
+    .attr("class", "circle3")
+    .style("opacity", 0)
+    .style("fill", function(d) { return circle_color[d.first]; })
+    .attr("cx", function(d) { return d.first * 140 + 50; })
+    .attr("cy", function(d) { return d.index * 30 + 40; })
+    .attr("r", 10);
+
+// This is the part that repeats
+// Make opacity 1, then 0, then oscillate
+update_circles();
+function update_circles() {
+  var delay_before_first = 1000;
+  var delay_before_second = 2000;
+  var later_delay = 200;
+  var delay_before_clear = 2000;
+  var total_delay = delay_before_second + 20*later_delay + delay_before_clear;
+
+  // Second set of balls
+  svg3.selectAll(".circle2")
+    .data(circle_permutations)
+    .transition()
+    .delay(function(d, i) { return (i+1)*later_delay + delay_before_second; })
+    .style("opacity", 1)
+      .transition()
+      .delay(function(d, i) { return total_delay - (i+1)*later_delay - delay_before_second; })
+      .style("opacity", 0)
+      .on("end", update_circles);
+
+  // First set of balls
+  svg3.selectAll(".circle3")
+    .data(circle_permutations)
+    .transition()
+    .delay(delay_before_first)
+    .style("opacity", 1)
+      .transition()
+      .delay(total_delay - delay_before_first)
+      .style("opacity", 0);
+};
+
+function combine(input, len) {
+var final_result = [];
+for (var i=0; i < input.length; i++) {
+  var temp_input = input.slice();
+  temp_input.splice(i, 1);
+
+  for (var j=0; j < temp_input.length; j++) {
+    var result = {
+      "first" : input[i], 
+      "index" : j,
+      "second" : temp_input[j]
+    };
+    final_result.push(result);
+    }
+  }
+  return(final_result);
+};
+</script>
+
+<p>Now let's pick the third ball. You should know the drill by now: for each of the \(20\) options above, we have another \(3\) ways to
+pick the 3rd ball. So we now have \(5 \times 4 \times 3 = 60\) options and a screen full of balls!</p>
+
+<p> If you look closely, you can see that there are many duplicates in the 60 options. In other words, the same 3 balls have been 
+  selected multiple times, just in different order. But we don't really care about the order, we just want to find <i>unique</i> ways to pick 3 balls! To find these duplicates, we sort the balls so that identical combinations are grouped together. </p>
+
+<p> After sorting, we can see that there are actually only \(10\) unique combinations, just that <i>each</i> combination is repeated \(6\) times. There is only one thing left to do: eliminate all the duplicates to get the final answer: \(10\)! </p>
+
+<svg id="chart4" width="720" height="500"></svg>
+<script>
+var svg4 = d3.select("svg#chart4")
+var circle_data = [0, 1, 2, 3, 4];
+var circle_color = ["#e41a1c", "#377eb8", "#4daf4a", "#ff7f00", "#984ea3"];
+// svg4
+//   .append("rect")
+//   .attr("width", "100%")
+//   .attr("height", "100%")
+//   .style("fill", "transparent")
+//   .style("stroke", "black");
+
+var circle_permutations3 = combine3(circle_data);
+console.log(circle_permutations3);
+
+// Sort data according to the set of 3 numbers
+// Give it a new index
+function compare(a,b) {
+  if (a.set < b.set)
+    return -1;
+  if (a.set > b.set)
+    return 1;
+  return 0;
+}
+circle_permutations3.sort(compare);
+circle_permutations3.forEach(function(element, index) { element.new_index = index; });
+for (var i=0; i < circle_permutations3.length; i++) {
+  if (i < 30) {
+    // This gives the new position, for first row
+    circle_permutations3[i].new_y = i%6;
+    circle_permutations3[i].new_x = Math.floor(i/6);
+  } else {
+    // This gives the new position, for second row
+    circle_permutations3[i].new_y = 8 + i%6;
+    circle_permutations3[i].new_x = Math.floor(i/6) - 5;
+  }
+}
+
+
+// Initialise circles
+// Set parameters for the delay
+// --- Phase 1 ---
+// initial_delay : move the circles to their new position
+// circle_appear_delay : make all circles 1,2 appear
+// circle12_delay : one by one all circles 1,2 appear
+// phase1_total_delay : all of the above
+// --- Phase 2 ---
+// circle_appear_delay : make all circles 3 appear
+// circle3_delay : one by one all the circles3 appear
+// phase_2_total_delay : all of the above
+// --- Phase 3 ---
+// initial_delay : before sorting the circles
+// circle_sort_duration : move circles to sorted position
+// circle_disappear_delay : before de-duplicating
+// circle_pop_duration : make the circles pop
+// circle_disappear_duration : make the duplicates disappear
+// circle_clean_delay : before all cleaned up
+// circle_clean_duration : make all disappear
+// --- Phase 4 ---
+// circle_reorder_duration : reorder everything
+
+// total_delay gives the total duration for everything to be finished
+// Then make all circles 3, 2, 1 disappear
+var initial_delay = 2000,
+    circle_move_duration = 1000,
+    circle_appear_delay = 1000,
+    circle_disappear_delay = 2000,
+    circle12_delay = 25,
+    circle3_delay = 25,
+    circle_sort_duration = 2000,
+    circle_disappear_delay = 3000,
+    circle_pop_duration = 5,
+    circle_disappear_duration = 500,
+    circle_clean_delay = 4000,
+    circle_clean_duration = 100,
+    circle_reorder_duration = 500,
+    circle_initial_reappear = 500;
+
+var phase1_total_delay = initial_delay + circle_move_duration + circle_appear_delay + 60*circle12_delay;
+var phase2_total_delay = phase1_total_delay + circle_appear_delay + 60*circle3_delay;
+var phase3_total_delay = phase2_total_delay + initial_delay + circle_sort_duration + circle_disappear_delay + circle_pop_duration + 
+circle_disappear_duration + circle_clean_delay + circle_clean_duration;
+
+// Start with 2 circles
+var circle1_initial = svg4
+  .selectAll("circle1_initial")
+  .data(circle_permutations3, function(d) {return d.index; })
+  .enter()
+    .append("circle")
+    .filter(function(d) { return d.cut === true; })
+    .attr("class", "circle1")
+    .style("fill", function(d) { return circle_color[d.first]; })
+    .attr("cx", function(d) { return d.first * 140 + 50; })
+    .attr("cy", function(d) { return d.initial_pos * 30 + 40; })
+    .attr("r", 10);
+
+var circle2_initial = svg4
+  .selectAll("circle2_initial")
+  .data(circle_permutations3, function(d) {return d.index; })
+  .enter()
+    .append("circle")
+    .filter(function(d) { return d.cut === true; })
+    .attr("class", "circle2")
+    .style("fill", function(d) { return circle_color[d.second]; })
+    .attr("cx", function(d) { return d.first * 140 + 75; })
+    .attr("cy", function(d) { return d.initial_pos * 30 + 40; })
+    .attr("r", 10);
+
+// Additional circles 1 and 2
+var circle1_all = svg4
+  .selectAll("circle1_all")
+  .data(circle_permutations3, function(d) { return d.index; })
+  .enter()
+  .append("circle")
+    .attr("class", "circle1")
+    .style("fill", function(d) { return circle_color[d.first]; })
+    .attr("cx", function(d) { return d.first * 140 + 50; })
+    .attr("cy", function(d) { return d.final_pos * 30 + 40; })
+    .attr("r", 10)
+    .style("opacity", 0);
+
+var circle2_all = svg4
+  .selectAll("circle2_all")
+  .data(circle_permutations3, function(d) { return d.index; })
+  .enter()
+  .append("circle")
+    .attr("class", "circle2")
+    .style("fill", function(d) { return circle_color[d.second]; })
+    .attr("cx", function(d) { return d.first * 140 + 75; })
+    .attr("cy", function(d) { return d.final_pos * 30 + 40; })
+    .attr("r", 10)
+    .attr("opacity", 0);
+
+// Circles 3
+var circle3 = svg4
+  .selectAll("circle3")
+  .data(circle_permutations3, function(d) {return d.index; })
+  .enter()
+    .append("circle")
+    .attr("class", "circle3")
+    .style("opacity", 0)
+    .style("fill", function(d) { return circle_color[d.third]; })
+    .attr("cx", function(d) { return d.first * 140 + 100; })
+    .attr("cy", function(d) { return d.final_pos * 30 + 40; })
+    .attr("r", 10);
+
+function update_circles2() {
+
+// Move circle1 and circle2 to new position
+circle1_initial
+  .transition()
+  .delay(initial_delay)
+  .duration(circle_move_duration)
+  .attr("cy", function(d) { return d.final_pos * 30 + 40; });
+
+circle2_initial
+  .transition()
+  .delay(initial_delay)
+  .duration(circle_move_duration)
+  .attr("cy", function(d) { return d.final_pos * 30 + 40; });
+
+// Make first and second circles appear, initial circle1 and 2 disappear
+circle1_all
+  .transition()
+  .delay(function(d,i) { return initial_delay + circle_move_duration + circle_appear_delay + (d.index+1)*circle12_delay; }) 
+  .style("opacity", 1);
+
+circle2_all
+  .transition()
+  .delay(function(d,i) { return initial_delay + circle_move_duration + circle_appear_delay + (d.index+1)*circle12_delay; }) 
+  .style("opacity", 1);
+
+circle1_initial
+  .transition()
+  .delay(phase1_total_delay)
+  .style("opacity", 0);
+
+circle2_initial
+  .transition()
+  .delay(phase1_total_delay)
+  .style("opacity", 0);
+
+// Make third circles appear
+circle3
+  .transition()
+  .delay(function(d,i) { return phase1_total_delay + circle_appear_delay + (d.index+1)*circle3_delay; }) 
+  .style("opacity", 1);
+
+// Phase 3
+// Sort the circles
+// And make them disappear after that
+circle1_all
+  .transition()
+  .delay(phase2_total_delay + initial_delay)
+  .duration(circle_sort_duration)
+  .attr("cx", function(d) { return d.new_x * 140 + 50; })
+  .attr("cy", function(d) { return d.new_y * 30 + 40; })
+    .transition()
+    .delay(circle_disappear_delay)
+    .duration(circle_pop_duration)
+    .attr("r", function(d) { return d.new_y === 0 | d.new_y === 8 ? 10 : 11; })
+      .transition()
+      .duration(circle_disappear_duration)
+      .style("opacity", function(d) { return d.new_y === 0 | d.new_y === 8 ? 1 : 0; })
+        .transition()
+        .delay(circle_clean_delay)
+        .duration(circle_clean_duration)
+        .style("opacity", 0);
+
+circle2_all
+  .transition()
+  .delay(phase2_total_delay + initial_delay)
+  .duration(circle_sort_duration)
+  .attr("cx", function(d) { return d.new_x * 140 + 75; })
+  .attr("cy", function(d) { return d.new_y * 30 + 40; })
+    .transition()
+    .delay(circle_disappear_delay)
+    .duration(circle_pop_duration)
+    .attr("r", function(d) { return d.new_y === 0 | d.new_y === 8 ? 10 : 11; })
+      .transition()
+      .duration(circle_disappear_duration)
+      .style("opacity", function(d) { return d.new_y === 0 | d.new_y === 8 ? 1 : 0; })
+        .transition()
+        .delay(circle_clean_delay)
+        .duration(circle_clean_duration)
+        .style("opacity", 0);
+
+circle3
+  .transition()
+  .delay(phase2_total_delay + initial_delay)
+  .duration(circle_sort_duration)
+  .attr("cx", function(d) { return d.new_x * 140 + 100; })
+  .attr("cy", function(d) { return d.new_y * 30 + 40; })
+    .transition()
+    .delay(circle_disappear_delay)
+    .duration(circle_pop_duration)
+    .attr("r", function(d) { return d.new_y === 0 | d.new_y === 8 ? 10 : 11; })
+      .transition()
+      .duration(circle_disappear_duration)
+      .style("opacity", function(d) { return d.new_y === 0 | d.new_y === 8 ? 1 : 0; })
+        .transition()
+        .delay(circle_clean_delay)
+        .duration(circle_clean_duration)
+        .style("opacity", 0);
+
+// Phase 4
+// Reorder everything
+circle1_all
+  .transition()
+  .delay(phase3_total_delay)
+  .duration(circle_reorder_duration)
+  .attr("cx", function(d) { return d.first * 140 + 50; })
+  .attr("cy", function(d) { return d.final_pos * 30 + 40; })
+  .attr("r", 10);
+
+circle2_all
+  .transition()
+  .delay(phase3_total_delay)
+  .duration(circle_reorder_duration)
+  .attr("cx", function(d) { return d.first * 140 + 75; })
+  .attr("cy", function(d) { return d.final_pos * 30 + 40; })
+  .attr("r", 10);
+
+circle3
+  .transition()
+  .delay(phase3_total_delay)
+  .duration(circle_reorder_duration)
+  .attr("cx", function(d) { return d.first * 140 + 100; })
+  .attr("cy", function(d) { return d.final_pos * 30 + 40; })
+  .attr("r", 10);  
+
+circle1_initial
+  .transition()
+  .delay(phase3_total_delay)
+  .duration(circle_reorder_duration)
+  .attr("cx", function(d) { return d.first * 140 + 50; })
+  .attr("cy", function(d) { return d.initial_pos * 30 + 40; })
+    .transition()
+    .duration(circle_initial_reappear)
+    .style("opacity", 1);
+
+circle2_initial
+  .transition()
+  .delay(phase3_total_delay)
+  .duration(circle_reorder_duration)
+  .attr("cx", function(d) { return d.first * 140 + 75; })
+  .attr("cy", function(d) { return d.initial_pos * 30 + 40; })
+    .transition()
+    .duration(circle_initial_reappear)
+    .style("opacity", 1)
+    .on("end", update_circles2);
+}
+
+update_circles2(); 
+
+function combine3(input) {
+var final_result = [];
+var index_count = 0;
+for (var i=0; i < input.length; i++) {
+  var temp_input1 = input.slice();
+  temp_input1.splice(i, 1);
+  var row_count = 0;
+  var final_pos = 0;
+
+  for (var j=0; j < temp_input1.length; j++) {
+    var temp_input2 = temp_input1.slice()
+    temp_input2.splice(j, 1);
+    
+    for (var k=0; k < temp_input2.length; k++) {
+      var result = {
+        "first" : input[i], 
+        "second" : temp_input1[j],
+        "third" : temp_input2[k],
+        "initial_pos" : input[j],
+        "final_pos" : final_pos,
+        "cut" : row_count/3 === input[j],
+        "index" : index_count
+      };
+      result.set = [result.first, result.second, result.third].sort();
+      result.x_final = result.set[0];
+
+      row_count += 1;
+      index_count += 1;
+      final_pos += 1;
+      if (row_count%3 === 0) final_pos+=0.8
+      final_result.push(result);
+    }
+    }
+  }
+  return(final_result);
+};
+</script>
+
+<p> It is important to remember that it is not by accident that each unique combination is repeated 6 times. This is simply the number of ways you can order 3 unique balls, i.e. \(3 \times 2 \times 1 = 3! = 6\). </p>
+
+<p> And there we have it - there are \(10\) unique ways to choose 3 balls out of 5 balls. </p>
+
+<svg id="chart5" width="720" height="80"></svg>
+<script>
+var svg5 = d3.select("svg#chart5")
+
+// Circle 1, 2, 3
+svg5
+  .selectAll("circle1")
+  .data(circle_permutations3, function(d) { return d.index; })
+  .enter()
+    .append("circle")
+    .filter(function(d) { return d.new_y === 0 | d.new_y === 8 ? true : false; })
+    .attr("cx", function(d) { return d.new_x * 140 + 50; })
+    .attr("cy", function(d) { return d.new_y === 0 ? 20 : 60; })
+    .style("fill", function(d) { return circle_color[d.first]; })
+    .attr("r", 10);
+
+svg5
+  .selectAll("circle2")
+  .data(circle_permutations3, function(d) { return d.index; })
+  .enter()
+    .append("circle")
+    .filter(function(d) { return d.new_y === 0 | d.new_y === 8 ? true : false; })
+    .attr("cx", function(d) { return d.new_x * 140 + 75; })
+    .attr("cy", function(d) { return d.new_y === 0 ? 20 : 60; })
+    .style("fill", function(d) { return circle_color[d.second]; })
+    .attr("r", 10);
+
+svg5
+  .selectAll("circle3")
+  .data(circle_permutations3, function(d) { return d.index; })
+  .enter()
+    .append("circle")
+    .filter(function(d) { return d.new_y === 0 | d.new_y === 8 ? true : false; })
+    .attr("cx", function(d) { return d.new_x * 140 + 100; })
+    .attr("cy", function(d) { return d.new_y === 0 ? 20 : 60; })
+    .style("fill", function(d) { return circle_color[d.third]; })
+    .attr("r", 10);
+</script>
+
+<h2>Back to the formula</h2>  
+
+<p> Thankfully, we don't need all these balls everytime we calculate the binomial coefficient. We just need to apply the formula to calculate it: 
+$$ {{n(n-1)...(n-r+1) \over r!} = {n! \over (n-r)!r!} } $$ </p>
+
+<p> But hopefully this visualisation has helped you gain some intuition on what's happening the next time you pull out that formula! </p>
+
+
+</html>
