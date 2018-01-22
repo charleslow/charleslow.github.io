@@ -11,3 +11,5 @@ For a start, I'm currently learning d3.js to explore more ways of communicating 
 * [HDB Dwelling Units](https://charleslow.github.io/flats_per_town) - Exploring transitions in d3. Data taken from data.gov.sg.
 
 * [Simpson's Paradox](https://charleslow.github.io/simpsons_paradox) - Simpson's paradox is a classic statistical [phenomenon](https://en.wikipedia.org/wiki/Simpson%27s_paradox). This visualisation helps us develop some intuition to how this might happen. Inspired by the jellybeans example raised by Joe Blitzstein in his Statistics 110 class.
+
+* [Visualising the Binomial Coefficient](https://charleslow.github.io/binomial_coefficient) - How many ways can we pick 3 balls out of 5 balls? This visualisation provides some intuition on the formula for calculating this figure, also known as the binomial coefficient.
