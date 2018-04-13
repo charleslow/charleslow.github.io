@@ -13,3 +13,9 @@ For a start, I'm currently learning d3.js to explore more ways of communicating 
 * [Simpson's Paradox](https://charleslow.github.io/simpsons_paradox) - Simpson's paradox is a classic statistical [phenomenon](https://en.wikipedia.org/wiki/Simpson%27s_paradox). This visualisation helps us develop some intuition to how this might happen. Inspired by the jellybeans example raised by Joe Blitzstein in his Statistics 110 class.
 
 * [Visualising the Binomial Coefficient](https://charleslow.github.io/binomial_coefficient) - How many ways can we pick 3 balls out of 5 balls? This visualisation provides some intuition on the formula for calculating this figure, also known as the binomial coefficient.
+
+I'm also taking Andrew Ng's Deep learning course:
+* [Softmax Classification of MNIST from Scratch](https://charleslow.github.io/softmax_from_scratch) - This is an implementation derived from Andrew Ng's code to implement a softmax classifier which achieves 96% accuracy on MNIST digit recognition using just numpy. It shows the power of deep learning using relatively simple code.
+
+I'm also learning discrete choice models:
+* [Multinomial Logit Exercises](https://charleslow.github.io/multinomial_logit) - Working through Kenneth Train's exercises on multinomial logit using the mlogit R package.
