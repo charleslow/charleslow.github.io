@@ -2,7 +2,9 @@
 
 This is a page of my random projects which I'm presently curious about.
 
-For a start, I'm currently learning d3.js to explore more ways of communicating data insights. Some examples are: 
+Handwritten notes from taking David Rosenberg's Foundations of ML course [notes](https://charleslow.github.io/notes/foundations_of_ml.pdf).
+
+Using d3.js to explore more ways of communicating data insights. Some examples are: 
 
 * [d3.js visualisation of Singapore planning areas](https://charleslow.github.io/planning_area_plot) - Exploring d3 maps and zooming.
 
@@ -17,5 +19,3 @@ For a start, I'm currently learning d3.js to explore more ways of communicating 
 I'm also taking Andrew Ng's Deep learning course:
 * [Softmax Classification of MNIST from Scratch](https://charleslow.github.io/softmax_from_scratch) - This is an implementation derived from Andrew Ng's code to implement a softmax classifier which achieves 96% accuracy on MNIST digit recognition using just numpy. It shows the power of deep learning using relatively simple code.
 
-I'm also learning discrete choice models:
-* [Multinomial Logit Exercises](https://charleslow.github.io/multinomial_logit) - Working through Kenneth Train's exercises on multinomial logit using the mlogit R package.
