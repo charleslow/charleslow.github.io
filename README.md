@@ -2,7 +2,7 @@
 
 This is a page of my random projects which I'm presently curious about.
 
-Handwritten notes from taking David Rosenberg's Foundations of ML course [notes](https://charleslow.github.io/notes/foundations_of_ml.pdf).
+[Handwritten notes](https://charleslow.github.io/notes/foundations_of_ml.pdf) from taking David Rosenberg's Foundations of ML course.
 
 Using d3.js to explore more ways of communicating data insights. Some examples are: 
 
