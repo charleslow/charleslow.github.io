@@ -4,3 +4,6 @@ language = "en"
 multilingual = false
 src = "src"
 title = "Charles' Notebook"
+
+[output.html]
+default_theme = "coal"
