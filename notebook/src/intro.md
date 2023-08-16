@@ -1,0 +1,1 @@
+This is a collection of my notes which I refer to on a regular basis. Hope it is also helpful for others stumbling by.
