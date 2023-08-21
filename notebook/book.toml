@@ -7,3 +7,4 @@ title = "Charles' Notebook"
 
 [output.html]
 default_theme = "coal"
+mathjax-support = true

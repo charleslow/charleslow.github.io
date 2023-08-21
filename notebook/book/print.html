@@ -31,6 +31,8 @@
 
         <!-- Custom theme stylesheets -->
 
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
     <div id="body-container">
@@ -84,7 +86,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="misc.html"><strong aria-hidden="true">1.</strong> Miscellaneous</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> Recommender Systems</div></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">2.1.</strong> Two Tower</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.2.</strong> Diversity</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.3.</strong> Exposure Bias</div></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="misc.html"><strong aria-hidden="true">1.</strong> Miscellaneous</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> Recommender Systems</div></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">2.1.</strong> Two Tower</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.2.</strong> Diversity</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.3.</strong> Exposure Bias</div></li></ol></li><li class="chapter-item expanded "><a href="papers.html"><strong aria-hidden="true">3.</strong> Papers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="schnabel_2016.html"><strong aria-hidden="true">3.1.</strong> Schnabel 2016 - Recs as Treatments</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -168,6 +170,7 @@
                 <div id="content" class="content">
                     <main>
                         <p>This is a collection of my notes which I refer to on a regular basis. Hope it is also helpful for others stumbling by.</p>
+<p>Built with <a href="https://rust-lang.github.io/mdBook/">mdBook</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="miscellaneous-notes"><a class="header" href="#miscellaneous-notes">Miscellaneous Notes</a></h1>
 <p>A collection of miscellaneous, useful notes.</p>
 <h2 id="numpy-indexing"><a class="header" href="#numpy-indexing">Numpy Indexing</a></h2>
@@ -187,6 +190,19 @@ idx
 &gt;&gt;  array([[2, 3]]))
 </code></pre>
 <p>Indexing the original array with this output <code>X[idx]</code> will then give us what we want.</p>
+<div style="break-before: page; page-break-before: always;"></div><p>Summaries of individual papers that I have taken a deeper look into.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="recommendations-as-treatments"><a class="header" href="#recommendations-as-treatments">Recommendations as Treatments</a></h1>
+<p><a href="https://arxiv.org/pdf/1602.05352.pdf">Paper Link</a>.</p>
+<p>Training and evaluation data for recommender systems is subject to selection bias, because the probability of observing a data point depends on (i) users interacting with items which they like and (ii) the recommender system pushing items which they think the user likes. This leads to data Missing Not at Random (MNAR) and leads to biased model training and evaluation.</p>
+<p>Consider users interacting with movies. Denote users \( u \in \{ 1, ..., U \} \) and movies \( i \in \{ 1, ..., I \} \). Let \( Y \in \mathbb{R}^{U \times I} \) denote the true rating / interaction matrix between user and item, and \( \hat{Y} \) the predicted matrix. Let \( O \in \{ 0, 1 \}^{U \times I} \) be the observability matrix of whether an interaction was observed, and \( P \in \mathbb{R}^{U \times I} \) be the probability of observation, i.e. \( P_{u,i} = P(O_{u,i} = 1) \). Ideally, we want the propensity matrix <code>P</code> to be uncorrelated with labels <code>Y</code>.</p>
+<h2 id="evaluation"><a class="header" href="#evaluation">Evaluation</a></h2>
+<p>Given a model \( \hat{Y} \), we often want to compute evaluation metrics \( \delta_{u,i}(\hat{Y}, Y) \) on how well \( \hat{Y} \) approximates \( Y \). For example:</p>
+<p>\[
+\delta_{u,i}(\hat{Y}, Y) = (Y_{u,i} - \hat{y}_{u,i})^2 \ \ \text{MSE}
+\]</p>
+<p>\[
+\delta_{u,i}(\hat{Y}, Y) = \frac{Y_{u,i}}{logrank( \hat{y}_{u,i} )} \ \ \text{DCG}
+\]</p>
 
                     </main>
 
@@ -241,7 +257,9 @@ idx
 
         <script>
         window.addEventListener('load', function() {
-            window.setTimeout(window.print, 100);
+            MathJax.Hub.Register.StartupHook('End', function() {
+                window.setTimeout(window.print, 100);
+            });
         });
         </script>
 
