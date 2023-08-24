@@ -29,3 +29,15 @@ idx
 ```
 
 Indexing the original array with this output `X[idx]` will then give us what we want.
+
+## asyncio
+
+[reference](https://realpython.com/async-io-python/)
+
+asyncio is a single-threaded framework that does not use multi-threading or multi-processing to speed up tasks. Instead, a coordinator (or event loop) passes control from a time-consuming blocking function (e.g. time.sleep or an I/O operation) to other functions to run. This passing of control occurs with the `await` keyword. When the blocking function is completed, it notifies the coordinator and control returns to where the blocking function left off.
+
+`asyncio` does not speed up CPU-bound tasks, due to its single-threaded design. It only works when the function being awaited is an I/O operation that is supported by asyncio. This includes [stuff](https://realpython.com/async-io-python/#libraries-that-work-with-asyncawait) like:
+* HTTP (supported through `aiohttp`)
+* DB calls (e.g. `aioredis`)
+
+`asyncio` is preferred for such tasks (e.g. making multiple I/O calls and doing something when they all return) over multi-processing because of its single-thread design, making it easier to debug.

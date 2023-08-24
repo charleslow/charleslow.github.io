@@ -86,7 +86,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="misc.html"><strong aria-hidden="true">1.</strong> Miscellaneous</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> Recommender Systems</div></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">2.1.</strong> Two Tower</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.2.</strong> Diversity</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.3.</strong> Exposure Bias</div></li></ol></li><li class="chapter-item expanded "><a href="papers.html"><strong aria-hidden="true">3.</strong> Papers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="schnabel_2016.html"><strong aria-hidden="true">3.1.</strong> Schnabel 2016 - Recs as Treatments</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="misc.html"><strong aria-hidden="true">1.</strong> Miscellaneous</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> Recommender Systems</div></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">2.1.</strong> Two Tower</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.2.</strong> Diversity</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.3.</strong> Exposure Bias</div></li></ol></li><li class="chapter-item expanded "><a href="papers.html"><strong aria-hidden="true">3.</strong> Papers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="schnabel_2016.html"><strong aria-hidden="true">3.1.</strong> Schnabel 2016 - Recs as Treatments</a></li></ol></li><li class="chapter-item expanded "><a href="sketch.html"><strong aria-hidden="true">4.</strong> Sketchbook</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -189,22 +189,6 @@
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

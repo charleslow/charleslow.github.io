@@ -85,7 +85,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="misc.html"><strong aria-hidden="true">1.</strong> Miscellaneous</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> Recommender Systems</div></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">2.1.</strong> Two Tower</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.2.</strong> Diversity</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.3.</strong> Exposure Bias</div></li></ol></li><li class="chapter-item expanded "><a href="papers.html"><strong aria-hidden="true">3.</strong> Papers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="schnabel_2016.html" class="active"><strong aria-hidden="true">3.1.</strong> Schnabel 2016 - Recs as Treatments</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="misc.html"><strong aria-hidden="true">1.</strong> Miscellaneous</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> Recommender Systems</div></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">2.1.</strong> Two Tower</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.2.</strong> Diversity</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.3.</strong> Exposure Bias</div></li></ol></li><li class="chapter-item expanded "><a href="papers.html"><strong aria-hidden="true">3.</strong> Papers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="schnabel_2016.html" class="active"><strong aria-hidden="true">3.1.</strong> Schnabel 2016 - Recs as Treatments</a></li></ol></li><li class="chapter-item expanded "><a href="sketch.html"><strong aria-hidden="true">4.</strong> Sketchbook</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -171,15 +171,42 @@
                         <h1 id="recommendations-as-treatments"><a class="header" href="#recommendations-as-treatments">Recommendations as Treatments</a></h1>
 <p><a href="https://arxiv.org/pdf/1602.05352.pdf">Paper Link</a>.</p>
 <p>Training and evaluation data for recommender systems is subject to selection bias, because the probability of observing a data point depends on (i) users interacting with items which they like and (ii) the recommender system pushing items which they think the user likes. This leads to data Missing Not at Random (MNAR) and leads to biased model training and evaluation.</p>
-<p>Consider users interacting with movies. Denote users \( u \in \{ 1, ..., U \} \) and movies \( i \in \{ 1, ..., I \} \). Let \( Y \in \mathbb{R}^{U \times I} \) denote the true rating / interaction matrix between user and item, and \( \hat{Y} \) the predicted matrix. Let \( O \in \{ 0, 1 \}^{U \times I} \) be the observability matrix of whether an interaction was observed, and \( P \in \mathbb{R}^{U \times I} \) be the probability of observation, i.e. \( P_{u,i} = P(O_{u,i} = 1) \). Ideally, we want the propensity matrix <code>P</code> to be uncorrelated with labels <code>Y</code>.</p>
-<h2 id="evaluation"><a class="header" href="#evaluation">Evaluation</a></h2>
+<p>Consider users interacting with movies. Denote users \( u \in \{ 1, ..., U \} \) and movies \( i \in \{ 1, ..., I \} \). Let \( Y \in \mathbb{R}^{U \times I} \) denote the true rating / interaction matrix between user and item, and \( \hat{Y} \) the predicted matrix. Let \( O \in \{ 0, 1 \}^{U \times I} \) be the observability matrix of whether an interaction was observed, and \( P \in \mathbb{R}^{U \times I} \) be the probability of observation, i.e. \( P_{u,i} = P(O_{u,i} = 1) \). Ideally, we want the propensity matrix <code>P</code> to be uniform across all entries, which gives us the Missing Completely at Random (MCAR) condition.</p>
+<h2 id="evaluating-only-on-observed-entries-is-biased"><a class="header" href="#evaluating-only-on-observed-entries-is-biased">Evaluating only on observed entries is biased</a></h2>
 <p>Given a model \( \hat{Y} \), we often want to compute evaluation metrics \( \delta_{u,i}(\hat{Y}, Y) \) on how well \( \hat{Y} \) approximates \( Y \). For example:</p>
 <p>\[
-\delta_{u,i}(\hat{Y}, Y) = (Y_{u,i} - \hat{y}_{u,i})^2 \ \ \text{MSE}
+\delta_{u,i}(\hat{Y}, Y) = (Y_{u,i} - \hat{Y}_{u,i})^2 \ \ \text{MSE}
 \]</p>
 <p>\[
-\delta_{u,i}(\hat{Y}, Y) = \frac{Y_{u,i}}{logrank( \hat{y}_{u,i} )} \ \ \text{DCG}
+\delta_{u,i}(\hat{Y}, Y) = \frac{Y_{u,i}}{logrank( \hat{Y}_{u,i} )} \ \ \text{DCG}
 \]</p>
+<p>The Risk function may then be denoted:</p>
+<p>\[
+R(\hat{Y}) = \frac{\sum_u \sum_i \delta_{u,i}(\hat{Y}, Y)}{U \times I}
+\]</p>
+<p>However, \( R(\hat{Y}) \) cannot be computed because most entries in \( Y \) are missing. Typically, we estimate \( \hat{R} \) using only observed entries. This estimator is naive because it simply assumes the propensity matrix \( P \) is uniform. This assumption is often false in recommender systems because a small set of popular items tend to get impressed a lot. Hence this estimator will favour models that lean towards the popular items compared to models that recommend rarer / new items.</p>
+<p>\[
+\hat{R}_{\text{naive}}(\hat{Y}) = 
+\frac{1}{| { (u, i): O_{u,i} = 1  } |} 
+\cdot 
+\sum_{u,i: O_{u,i}=1} \delta_{u,i}(\hat{Y}, Y)
+\]</p>
+<h2 id="unbiased-estimators"><a class="header" href="#unbiased-estimators">Unbiased estimators</a></h2>
+<p>The main idea in this paper is to view this problem as analogous to estimating treatment effects in causal inference. Think of recommending an item as an intervention analogous to treating a patient with a specific drug. The goal is to estimate the outcome of a new recommendation (clicked or not) or new treatment (recovered or not), while most outcomes between <code>u,i</code> pairs are not known.</p>
+<p>The key to resolving this bias is to understand the assignment mechanism that generated \( O \), namely the propensity matrix \( P \). We can then correct for the propensity. We need to assume that \( P_{u,i} &gt; 0 \forall u, i \), i.e. full support, because otherwise the IPS estimator below is undefined.</p>
+<h3 id="ips-estimator"><a class="header" href="#ips-estimator">IPS Estimator</a></h3>
+<p>The main estimator is the Inverse Propensity Score (IPS) estimator. Assuming that the assignment mechanism \( P \) is known:</p>
+<p>\[
+\hat{R}_{\text{ips}}(\hat{Y} | P) = 
+\frac{1}{| { (u, i): O_{u,i} = 1  } |} 
+\cdot 
+\sum_{u,i: O_{u,i}=1} \frac{\delta_{u,i}(\hat{Y}, Y)}{P_{u,i}}
+\]</p>
+<p>We have simply normalized each score by its inverse propensity, so that popular items with a high chance of being shown get their score reduced proportionally (and likewise in the opposite direction for rare items).</p>
+<h2 id="comments"><a class="header" href="#comments">Comments</a></h2>
+<ul>
+<li>This paper only addresses exposure bias, but not position bias. In other words, it assumes that all impressions are equal, which is valid when a user is shown an ad, but not when a user is shown a list of search results. In the latter case, items in lower positions have a lower probability of being considered by the user, even though both are considered to be observed. </li>
+</ul>
 
                     </main>
 
@@ -189,6 +216,9 @@
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
+                            <a rel="next" href="sketch.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -200,26 +230,13 @@
                         <i class="fa fa-angle-left"></i>
                     </a>
 
+                    <a rel="next" href="sketch.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
             </nav>
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 
