@@ -2,6 +2,14 @@
 
 A collection of miscellaneous, useful notes.
 
+## Vim
+
+Command to interactively change each 'foo' to 'bar'. `:%s` triggers the substitute global command, followed by the search and replace phrases respectively. Finally `g` means replace all occurrences and `c` means with confirmation. Note that `:s` will only do the same for one line.
+
+```bash
+:%s/foo/bar/gc
+```
+
 ## Numpy Indexing
 
 Suppose we have a 2D array `X` and would like to take a slice of certain rows and columns. We might try, for e.g., to take the first two rows of X and the 3rd/4th column of X, i.e. we expect to get a 2 by 2 matrix.
