@@ -49,7 +49,7 @@ In the context of information retrieval, Trey Grainger in [AI-Powered Search](ht
 
 The relatedness idea is to define a foreground of documents, e.g. based on a retrieval of documents using query \\( q \\) which are related to the query, and to compare the attributes of the foreground against the background, i.e. all documents. 
 
-Mathematically, the relevance of each skill \\( t \\) to the query \\( q \\) may be defined as the z-statistic of the one-sample z-test of proportions of the occurrence of skill \\( t \\) in the foreground sample compared against the background population. Specifically:
+Mathematically, we can think of the foreground documents as a sample, and the background documents as the population. The strength of the relationship between each skill \\( t \\) to the query \\( q \\) may then be defined as the z-statistic of the one-sample z-test of proportions of the occurrence of skill \\( t \\) in the foreground sample compared against the background population. A significantly greater occurrence in the sample compared to the population suggests a strong relationship between \\( t \\) and \\( q \\), and vice versa. Specifically:
 
 \\[
   z = \frac{ \hat{p} - p }{ \sqrt{ \frac{ p(1-p) }{n} } }
