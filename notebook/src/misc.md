@@ -70,3 +70,32 @@ Where:
 - \\( p = P(t) \\) is the probability of skill t appearing across all documents.
 
 By performing a retrieval and ranking skills based on the z-statistic, we can compute a relationship between any arbitrary query and attribute of the documents (on the fly, if necessary). This functionality is implemented in [solr](https://solr.apache.org/guide/8_5/json-facet-api.html#relatedness-and-semantic-knowledge-graphs).
+
+## Package Versioning
+
+[link](https://python-poetry.org/docs/dependency-specification/)
+
+[SemVer](https://semver.org/) is the versioning standard for Python packages. For a package version of e.g. `1.2.3`:
+- The first number `1` is the major version. We update it when we make major API changes. A major of `0` indicates that the package is under initial development and anything may change.
+- The second number `2` is the minor version. We update it when we add functionality in a backward compatible manner.
+- The third number `3` is the patch version. We update it when we patch bugs in a backward compatible manner.
+
+Poetry is a useful tool to manage package dependencies in a Python library. In the `pyproject.toml` file, we specify package dependencies in the following manner:
+
+```
+[tool.poetry.dependencies]
+python = ">=3.8,<3.11"
+requests = "^2.26.0"
+pytz = "~2022.1"
+```
+
+The `caret` requirement (e.g. `requests = "^2.26.0"`) means that SemVer compatible changes are allowed, i.e. an update is allowed if the version number does not modify the left-most non-zero digit. E.g.:
+- `^1.2.3` means that `1.3.0` is allowed but not `2.0.0`
+- `^0.2.4` means that `0.2.5` is allowed but not `0.3.0`
+
+The `tilde` requirement is somewhat stricter. It specifies a minimal version but allows room to upgrade depending on how many digits are supplied. If `major.minor.patch` or `major.minor` is supplied, only patch-level changes are allowed. If `major` is supplied, minor and patch level changes are allowed.
+- `~1.2.3` means that `1.2.7` is allowed but not `1.3.0`
+- `~1.2` means that `1.2.7` is allowed but not `1.3.0`
+- `~1` means that `1.3.0` is allowed but not `2.0.0`
+
+The poetry versioning specification depends on developer updating the library versions in a disciplined way. It allows us to provide some flexibility in package versioning while avoiding updating a dependent package to a version that breaks our code. Having more flexibility in specifying package dependencies reduces the risk of dependencies version conflicting.
