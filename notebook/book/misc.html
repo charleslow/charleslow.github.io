@@ -85,7 +85,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="misc.html" class="active"><strong aria-hidden="true">1.</strong> Miscellaneous</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> Recommender Systems</div></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">2.1.</strong> Two Tower</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.2.</strong> Diversity</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.3.</strong> Exposure Bias</div></li></ol></li><li class="chapter-item expanded "><a href="papers.html"><strong aria-hidden="true">3.</strong> Papers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="schnabel_2016.html"><strong aria-hidden="true">3.1.</strong> Schnabel 2016 - Recs as Treatments</a></li></ol></li><li class="chapter-item expanded "><a href="sketch.html"><strong aria-hidden="true">4.</strong> Sketchbook</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="misc.html" class="active"><strong aria-hidden="true">1.</strong> Miscellaneous</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> Recommender Systems</div></li><li><ol class="section"><li class="chapter-item expanded "><a href="gradient_boosting.html"><strong aria-hidden="true">2.1.</strong> Gradient Boosting</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.2.</strong> Two Tower</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.3.</strong> Diversity</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.4.</strong> Exposure Bias</div></li></ol></li><li class="chapter-item expanded "><a href="papers.html"><strong aria-hidden="true">3.</strong> Papers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="schnabel_2016.html"><strong aria-hidden="true">3.1.</strong> Schnabel 2016 - Recs as Treatments</a></li></ol></li><li class="chapter-item expanded "><a href="sketch.html"><strong aria-hidden="true">4.</strong> Sketchbook</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -247,6 +247,79 @@ pytz = &quot;~2022.1&quot;
 <p>The GIL also improves performance for single-threaded programs, as it only requires a single lock to be managed (not sure how this works). There have been attempts to remove the GIL from Python but none have been successful because they would degrade single-threaded performance.</p>
 <p>For many C extensions (e.g. numpy), multi-threading is still possible because these extensions are allowed to manually release the GIL (as long as they restore things back to normal when the functions return). This allows us to still use multi-threading for CPU-intensive functions with the GIL around. Similarly for Rust, we can release the GIL to achieve <a href="https://pyo3.rs/v0.9.2/parallelism">parallelism</a>.</p>
 <p>Alternatively, we can use <code>multiprocessing</code> to create multiple processes (instead of threads). Each process contains its own Python interpreter (and GIL) and hence can run truly in parallel. The downside is that the overhead of creating and managing processes is much more than that for threads, meaning that the benefits of multiprocessing are much dampened compared to multi-threading.</p>
+<h2 id="lightgbm-memory"><a class="header" href="#lightgbm-memory">LightGBM Memory</a></h2>
+<p>I often run into memory issues running LightGBM. So here are some experiments to measure memory usage and understand how hyperparameters can affect memory usage.</p>
+<p>The function of interest is the <code>fit</code> method for the learn to rank task.</p>
+<pre><code class="language-python">import lightGBM as lgb
+def f():
+    model = lgb.LGBMRanker(**params, objective=&quot;lambdarank&quot;)
+    model.fit(
+        X=data,
+        y=y,
+        group=groups,
+    )
+</code></pre>
+<p>The memory usage is measured using the <code>memory_profiler</code> module, which checks the memory usage at .1 second intervals. The maximum is then taken to represent the maximum memory usage of the fit function. We also take note of the size of the data itself (using <code>data.nbytes</code>) and subtract that away to get closer to the LightGBM memory usage.</p>
+<pre><code class="language-python">from memory_profiler import memory_usage
+def run(params):
+    mem_usage = memory_usage(f)
+    return max(mem_usage) / 1000 # GB
+</code></pre>
+<p>We set the default parameters as follows and generate the data this way. For the experiments below, the default parameters are used unless specified otherwise.</p>
+<pre><code class="language-python">DEFAULT_PARAMS = {
+    &quot;N&quot;: 200000, # number of instances
+    &quot;M&quot;: 500, # feature dimension
+    &quot;n_estimators&quot;: 100,
+    &quot;num_leaves&quot;: 100,
+    &quot;histogram_pool_size&quot;: -1,
+}
+data = np.random.randn(DEFAULT_PARAMS[&quot;N&quot;], DEFAULT_PARAMS[&quot;M&quot;])
+groups = [20] * int(N / 20) # assume each session has 20 rows
+y = np.random.randint(2, size=N) # randomly choose 0 or 1
+</code></pre>
+<p>Large <code>num_leaves</code> can get very memory intensive. We should not need too many leaves, so generally using <code>num_leaves &lt;= 100</code> and increasing the number of estimators seems sensible to me.</p>
+<ul>
+<li>num_leaves: <code>10</code>, Maximum memory usage: 2.28 GB - 0.80 GB = <code>1.48 GB</code></li>
+<li>num_leaves: <code>100</code>, Maximum memory usage: 2.52 GB - 0.80 GB = <code>1.72 GB</code></li>
+<li>num_leaves: <code>1000</code>, Maximum memory usage: 4.04 GB - 0.80 GB = <code>3.24 GB</code></li>
+</ul>
+<p>Increasing <code>n_estimators</code> doesn't seem to raise memory much, but increases run time because each tree is fitted sequentially on the residual errors, so it cannot be parallelized.</p>
+<ul>
+<li>n_estimators: <code>10</code>, Maximum memory usage: 2.28 GB - 0.80 GB = <code>1.48 GB</code></li>
+<li>n_estimators: <code>100</code>, Maximum memory usage: 2.53 GB - 0.80 GB = <code>1.73 GB</code></li>
+<li>n_estimators: <code>1000</code>, Maximum memory usage: 2.69 GB - 0.80 GB = <code>1.89 GB</code></li>
+</ul>
+<p>Increasing <code>N</code> increases memory sublinearly. It seems that the data size itself will be more of a problem than the increase in LightGBM memory usage as <code>N</code> increases. For extremely large <code>N</code>, we can also set the <code>subsample</code> parameter to use only a fraction of the training instances for each step (i.e. stochastic rather than full gradient descent). By default <code>subsample=1.0</code>.</p>
+<ul>
+<li>N: <code>1,000</code>, Maximum memory usage: 0.38 GB - 0.00 GB = <code>0.38 GB</code></li>
+<li>N: <code>10,000</code>, Maximum memory usage: 0.45 GB - 0.04 GB = <code>0.41 GB</code></li>
+<li>N: <code>100,000</code>, Maximum memory usage: 1.46 GB - 0.40 GB = <code>1.06 GB</code></li>
+<li>N: <code>1,000,000</code>, Maximum memory usage: 6.12 GB - 4.00 GB = <code>2.12 GB</code></li>
+<li>N: <code>2,000,000</code>, Maximum memory usage: 10.48 GB - 8.00 GB = <code>2.48 GB</code></li>
+</ul>
+<p>In contrast to <code>N</code>, memory usage is quite sensitive to <code>M</code>, seems to increase linearly when <code>M</code> gets large. <code>M=10,000</code> blows up my memory. I suppose this could be mitigated by setting <code>colsample_bytree</code> or <code>colsample_bynode</code> to sample a smaller subset.</p>
+<ul>
+<li>M: <code>100</code>, Maximum memory usage: 2.08 GB - 0.16 GB = <code>1.92 GB</code></li>
+<li>M: <code>1000</code>, Maximum memory usage: 4.92 GB - 1.60 GB = <code>3.32 GB</code></li>
+<li>M: <code>2000</code>, Maximum memory usage: 9.69 GB - 3.20 GB = <code>6.49 GB</code></li>
+<li>M: <code>3000</code>, Maximum memory usage: 14.35 GB - 4.80 GB = <code>9.55 GB</code></li>
+</ul>
+<p>To deal with the high memory usage of large <code>M</code>, we can set <code>colsample_bytree</code> which samples a subset of columns before training each tree. This will help to mitigate the memory usage. For this experiment, we set <code>M=2000</code> to simulate data with high number of dimensions.</p>
+<ul>
+<li><code>colsample_bytree</code>: 0.1, Maximum memory usage: 8.60 GB - 3.20 GB = <code>5.40 GB</code></li>
+<li><code>colsample_bytree</code>: 0.2, Maximum memory usage: 9.58 GB - 3.20 GB = <code>6.38 GB</code></li>
+<li><code>colsample_bytree</code>: 0.4, Maximum memory usage: 10.06 GB - 3.20 GB = <code>6.86 GB</code></li>
+<li><code>colsample_bytree</code>: 0.6, Maximum memory usage: 10.07 GB - 3.20 GB = <code>6.87 GB</code></li>
+<li><code>colsample_bytree</code>: 0.8, Maximum memory usage: 10.46 GB - 3.20 GB = <code>7.26 GB</code></li>
+</ul>
+<p>In contrast, setting <code>colsample_bynode</code> does not help memory usage at all. Not too sure why, but I suppose since multiple nodes for the same tree can be split at the same time, the full feature set still has to be kept in memory.</p>
+<ul>
+<li><code>colsample_bynode</code>: 0.1, Maximum memory usage: 10.49 GB - 3.20 GB = <code>7.29 GB</code></li>
+<li><code>colsample_bynode</code>: 0.2, Maximum memory usage: 10.49 GB - 3.20 GB = <code>7.29 GB</code></li>
+<li><code>colsample_bynode</code>: 0.4, Maximum memory usage: 10.49 GB - 3.20 GB = <code>7.29 GB</code></li>
+<li><code>colsample_bynode</code>: 0.6, Maximum memory usage: 10.49 GB - 3.20 GB = <code>7.29 GB</code></li>
+<li><code>colsample_bynode</code>: 0.8, Maximum memory usage: 10.48 GB - 3.20 GB = <code>7.28 GB</code></li>
+</ul>
 
                     </main>
 
@@ -256,7 +329,7 @@ pytz = &quot;~2022.1&quot;
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="papers.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="gradient_boosting.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -270,7 +343,7 @@ pytz = &quot;~2022.1&quot;
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="papers.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="gradient_boosting.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
