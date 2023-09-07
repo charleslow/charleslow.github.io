@@ -4,7 +4,7 @@ TLDR: Solutions for memory issues during training of a LightGBM model:
 1. Cast numeric values into `np.float32` to save data space
 2. Keep `num_leaves <= 100` (or some reasonable number)
 3. If feature dimension is large (e.g. `M >= 1000`), try `colsample_bytree = 0.1`, although this might not help too much if the bottleneck is during bin histogram construction (rather than the actual training)
-4. If number of rows and features are both large (e.g. `N >= 1_000_000` and `M >= 100`) then the data itself is taking up a lot of memory. It would be worthwhile to put the data on disk and use `lgb.Dataset` by providing the file path as the data argument instead. Then, we should set `two_round=True` for the train method params. The [explanation](https://github.com/microsoft/LightGBM/issues/1138#issuecomment-353857567) for two round is rather unclear, but it should help with memory when `Dataset` is loading from disk (rather than from a `numpy.array` in memory). For this option, I had some trouble getting it to work with categorical columns.
+4. If number of rows and features are both large (e.g. `N >= 1_000_000` and `M >= 1000`, i.e. `>= 4 GB`) then the data itself is taking up a lot of memory. It would be worthwhile to put the data on disk and use `lgb.Dataset` by providing the file path as the data argument instead. Then, we should set `two_round=True` for the train method params. The [explanation](https://github.com/microsoft/LightGBM/issues/1138#issuecomment-353857567) for two round is rather unclear, but it should help with memory when `Dataset` is loading from disk (rather than from a `numpy.array` in memory). For this option, I had some trouble getting it to work with categorical columns.
 
 For more details can refer to the experiments below.
 
