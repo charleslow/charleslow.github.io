@@ -169,6 +169,15 @@
                 <div id="content" class="content">
                     <main>
                         <h2 id="lightgbm-memory"><a class="header" href="#lightgbm-memory">LightGBM Memory</a></h2>
+<p>TLDR: Solutions for memory issues during training of a LightGBM model:</p>
+<ol>
+<li>Cast numeric values into <code>np.float32</code> to save data space</li>
+<li>Keep <code>num_leaves &lt;= 100</code> (or some reasonable number)</li>
+<li>If feature dimension is large (e.g. <code>M &gt;= 1000</code>), try <code>colsample_bytree = 0.1</code>, although this might not help too much if the bottleneck is during bin histogram construction (rather than the actual training)</li>
+<li>If number of rows and features are both large (e.g. <code>N &gt;= 1_000_000</code> and <code>M &gt;= 100</code>) then the data itself is taking up a lot of memory. It would be worthwhile to put the data on disk and use <code>lgb.Dataset</code> by providing the file path as the data argument instead. Then, we should set <code>two_round=True</code> for the train method params. The <a href="https://github.com/microsoft/LightGBM/issues/1138#issuecomment-353857567">explanation</a> for two round is rather unclear, but it should help with memory when <code>Dataset</code> is loading from disk (rather than from a <code>numpy.array</code> in memory). For this option, I had some trouble getting it to work with categorical columns.</li>
+</ol>
+<p>For more details can refer to the experiments below.</p>
+<h3 id="experiments"><a class="header" href="#experiments">Experiments</a></h3>
 <p>I often run into memory issues running LightGBM. So here are some experiments to measure memory usage and understand how hyperparameters can affect memory usage.</p>
 <p>The function of interest is the <code>fit</code> method for the learn to rank task.</p>
 <pre><code class="language-python">import lightGBM as lgb
@@ -180,7 +189,7 @@ def f():
         group=groups,
     )
 </code></pre>
-<p>The memory usage is measured using the <code>memory_profiler</code> module, which checks the memory usage at .1 second intervals. The maximum is then taken to represent the maximum memory usage of the fit function. We also take note of the size of the data itself (using <code>data.nbytes</code>) and subtract that away to get closer to the LightGBM memory usage.</p>
+<p>The memory usage is measured using the <code>memory_profiler</code> module, which checks the memory usage at .1 second intervals. The maximum is then taken to represent the maximum memory usage of the fit function. We also take note of the size of the data itself (using <code>data.nbytes</code>) and subtract that away to get closer to the LightGBM memory usage. Do note that this memory profiling is not very rigorous, so the results are best for relative comparison within each experiment rather than across experiments.</p>
 <pre><code class="language-python">from memory_profiler import memory_usage
 def run(params):
     mem_usage = memory_usage(f)
@@ -198,7 +207,7 @@ data = np.random.randn(DEFAULT_PARAMS[&quot;N&quot;], DEFAULT_PARAMS[&quot;M&quo
 groups = [20] * int(N / 20) # assume each session has 20 rows
 y = np.random.randint(2, size=N) # randomly choose 0 or 1
 </code></pre>
-<p>Large <code>num_leaves</code> can get very memory intensive. We should not need too many leaves, so generally using <code>num_leaves &lt;= 100</code> and increasing the number of estimators seems sensible to me.</p>
+<p>Large <code>num_leaves</code> can get very memory intensive. We should not need too many leaves, so generally using <code>num_leaves &lt;= 100</code> and increasing the number of estimators seems sensible to Gme.</p>
 <ul>
 <li>num_leaves: <code>10</code>, Maximum memory usage: 2.28 GB - 0.80 GB = <code>1.48 GB</code></li>
 <li>num_leaves: <code>100</code>, Maximum memory usage: 2.52 GB - 0.80 GB = <code>1.72 GB</code></li>
@@ -241,6 +250,20 @@ y = np.random.randint(2, size=N) # randomly choose 0 or 1
 <li><code>colsample_bynode</code>: 0.6, Maximum memory usage: 10.49 GB - 3.20 GB = <code>7.29 GB</code></li>
 <li><code>colsample_bynode</code>: 0.8, Maximum memory usage: 10.48 GB - 3.20 GB = <code>7.28 GB</code></li>
 </ul>
+<p>Tweaking <code>boosting</code> and <code>data_sample_strategy</code> don't seem to affect memory usage too much. Using <code>dart</code> seems to require a bit more memory than the traditional <code>gbdt</code>.</p>
+<ul>
+<li><code>data_sample_strategy</code>: bagging, <code>boosting</code>: gbdt, Maximum memory usage: 8.90 GB - 3.20 GB = <code>5.70 GB</code></li>
+<li><code>data_sample_strategy</code>: goss, <code>boosting</code>: gbdt, Maximum memory usage: 9.58 GB - 3.20 GB = <code>6.38 GB</code></li>
+<li><code>data_sample_strategy</code>: bagging, <code>boosting</code>: dart, Maximum memory usage: 9.81 GB - 3.20 GB = <code>6.61 GB</code></li>
+<li><code>data_sample_strategy</code>: goss, <code>boosting</code>: dart, Maximum memory usage: 9.80 GB - 3.20 GB = <code>6.60 GB</code></li>
+</ul>
+<p>Another bottleneck we can tackle is to realize that LightGBM is a two-stage algorithm. In the first stage, LightGBM uses the full dataset to construct bins for each numeric variable (controlled by the <code>max_bins</code> argument) based on the optimal splits. In the second stage, these discretized bins are then used to map and split the numeric variables during the actual training process to contruct trees. From my understanding, the first stage cannot be chunked as it requires the full dataset, but the second stage can be chunked (as per any stochastic gradient descent algorithm) where a fraction of the dataset is loaded at each time. Hence, the real bottleneck appears to be the first stage, when the bins are constructed.</p>
+<p>According to this <a href="https://github.com/microsoft/LightGBM/issues/1146">thread</a>, we can separate the memory usage between the two stages by using <code>lgb.Dataset</code>. First, we initialize the Dataset object and make sure to set <code>free_raw_data=True</code> (this tells it to free the original data array after the binning is done). Then, we trigger the actual dataset construction using <code>dataset.construct()</code>. Thereafter, we are free to delete the original data array to free up memory for the actual training. The following code illustrates this concept.</p>
+<pre><code class="language-python">dataset = lgb.Dataset(data=data, label=y, group=groups, free_raw_data=True)
+del data
+dataset.construct()
+lgb.train(params=params, train_set=dataset)
+</code></pre>
 
                     </main>
 
