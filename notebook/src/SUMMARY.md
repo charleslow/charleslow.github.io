@@ -10,4 +10,5 @@
     - [Exposure Bias]()
 - [Papers](./papers.md)
     - [Schnabel 2016 - Recs as Treatments](./schnabel_2016.md)
+    - [Burges 2010 - RankNET to LambdaMART](./burges_2010.md)
 - [Sketchbook](./sketch.md)

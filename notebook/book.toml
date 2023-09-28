@@ -3,8 +3,15 @@ authors = ["Charles Low"]
 language = "en"
 multilingual = false
 src = "src"
-title = "Charles' Notebook"
+title = "Chux's Notebook"
 
 [output.html]
+copy-fonts = true
 default_theme = "coal"
-mathjax-support = true
+additional-css = ["katex.min.css"]
+
+[output.html.playground]
+runnable = false
+
+[preprocessor.katex]
+after = ["links"]
