@@ -10,20 +10,20 @@ RankNET is a generic framework for training a learn to rank model. Given a diffe
 
 RankNET uses revealed pair-wise preferences within each query session to train $f$. Specifically, suppose we have a data for one query session as follows:
 
-| item  | clicked   |
-| ----- | -------   |
-| a     | 0         |
-| b     | 1         |
-| c     | 0         |
+| query   | item  | clicked   |
+| ------- | ----- | -------   |
+| qid1 | a     | 0         |
+| qid1 | b     | 1         |
+| qid1 | c     | 0         |
 
-We can transform this data into a pairwise dataset as follows, where $ y_{jk} $ denotes the preference relationship between $item^j$ and $item^k$ which we inferred from the click data.
+We can transform this data into a pairwise dataset as follows, where $ y^{jk} $ denotes the preference relationship between $item^j$ and $item^k$ which we inferred from the click data. Note that the pairwise comparisons are only made within the same query session (e.g. `qid1`), as it reflects a given user's preferences in the context of a query and the items impressed to him/her in that session.
 
-| $item^j$  | $item^k$ | $y^{jk}$|
-| ----- | ----- | ----- |
-| a     | b | -1 |
-| a     | c | 0  |
-| b     | a | 1 |
-| b     | c | 0 |
+| query   | $\textbf{item}^j$  | $\textbf{item}^k$ | $\textbf{y}^{jk}$|
+| ------- | ----- | ----- | ----- |
+| qid1 | a     | b | -1 |
+| qid1 | a     | c | 0  |
+| qid1 | b     | a | 1 |
+| qid1 | b     | c | 0 |
 
 The pairwise setting is now more amenable to modelling (compared to directly optimizing for a good ranking), since we can now treat the task as a classification problem. For each row of the pairwise dataset, we only need to model the probability that $item^j$ is preferred (or not) to $item^k$. This can be formalized using a cross entropy loss comparing the predicted preference of our model to the revealed preference in the dataset.
 
@@ -47,12 +47,12 @@ $$
     \right]
 $$
 
-For convenience, let us denote $y^{jk}_i$, such that $P^{jk}_i := \frac{1}{2} (1 + y^{jk}_i)$. Note that this translates into the following:
+For convenience, let us denote $y^{jk}_i := 2 P^{jk}_i - 1 $ (and conversely, $ P^{jk}_i = \frac{y^{jk}_i + 1}{2}$), which translates into the following:
 - $y^{jk}_i = 1$ if we prefer item j to item k
 - $y^{jk}_i = 0$ if we have no preference between the two items
 - $y^{jk}_i = -1$ if we prefer item k to item j
 
-Let us also define the convenience variable $z = -log \hat{P}^{jk}_i = log \left[ 1 + exp(-a(\hat{y}^j_i - \hat{y}^k_i)) \right] $. The cross entropy loss then simplifies to (TBC):
+Let us also define the convenience variable $z := -log \hat{P}^{jk}_i = log \left[ 1 + exp(-a(\hat{y}^j_i - \hat{y}^k_i)) \right] $. The cross entropy loss then simplifies to:
 $$
 \begin{aligned}
     L 
@@ -64,9 +64,20 @@ $$
     &= \sum_i
     \left[
         \frac{1}{2} (1 + y^{jk}_i) z 
-        +
-        -\frac{1}{2}
+        -\frac{1}{2}( 1 - y^{jk}_i) 
+            \left[
+                (-a)(\hat{y}^j_i - \hat{y}^k_i) - z
+            \right]
+    \right]
+        \\
+    &= \sum_i
+    \left[
+        z + \frac{a}{2}( 1 - y^{jk}_i )(\hat{y}^j_i - \hat{y}^k_i)
     \right]
 \end{aligned}
 $$
+
+Note that in line 2 of the above, we use the useful identity that $ log(1-sigmoid(x)) = x + log(sigmoid(x)) $ and $ log \hat{P}^{jk}_i = -z $. In line 3, the first and last term of line 2 cancel out to simply return $z$.
+
+Having written out the loss function, we now need to differentiate the loss with respect to the model scores and parameters to obtain the gradient descent formula used to train the RankNET model.
 
