@@ -79,5 +79,41 @@ $$
 
 Note that in line 2 of the above, we use the useful identity that $ log(1-sigmoid(x)) = x + log(sigmoid(x)) $ and $ log \hat{P}^{jk}_i = -z $. In line 3, the first and last term of line 2 cancel out to simply return $z$.
 
-Having written out the loss function, we now need to differentiate the loss with respect to the model scores and parameters to obtain the gradient descent formula used to train the RankNET model.
+Having written out the loss function, we now need to differentiate the loss with respect to the model scores and parameters to obtain the gradient descent formula used to train the RankNET model. Differentiating $L$ wrt $\hat{y}^j_i$ and $\hat{y}^k_i$ gives:
+
+$$
+\begin{aligned}
+    \frac{\partial L}{\partial \hat{y}^j_i} 
+    &=
+        \frac{a}{2}(1 - y^{jk}_i) + 
+        \frac{-a \cdot exp(-a(\hat{y}^j_i - \hat{y}^k_i))}{1 + exp(-a(\hat{y}^j_i - \hat{y}^k_i))}
+        \\
+    &=
+        \frac{a}{2}(1 - y^{jk}_i) - 
+        \frac{a}{1 + exp(a(\hat{y}^j_i - \hat{y}^k_i))}
+        \\
+    &=
+        - \frac{\partial L}{\partial \hat{y}^k_i}
+\end{aligned}
+$$
+
+Note that the first line of the above uses the result $\frac{d}{dx} ln f(x) = \frac{f'(x)}{f(x)}$. We obtain line 2 by multiplying the right term by $exp(a(\hat{y}^j_i - \hat{y}^k_i))$ in both the numerator and denominator. We obtain line 3 by observing that $L$ is a function of $d := \hat{y}^j_i - \hat{y}^k_i$, such that $\frac{\partial L}{\partial \hat{y}^j_i} = \frac{\partial L}{\partial d} \cdot \frac{\partial d}{\partial \hat{y}^j_i} = \frac{\partial L}{\partial d}$ and likewise $\frac{\partial L}{\partial \hat{y}^k_i} = \frac{\partial L}{\partial d} \cdot \frac{\partial d}{\partial \hat{y}^k_i} = - \frac{\partial L}{\partial d}$. The symmetry of the derivative wrt $j$ and $k$ will be important for the next section on factorizing RankNET to speed it up.
+
+Finally, we use the gradient to update individual parameters $w_l \in \mathbb{R}$ of the model $f$. In the below, $n$ denotes the number of data points in the pairwise dataset. This update procedure rounds up the discussion on RankNET and is sufficient for training a generic differentiable model $f$ from ranking data.
+$$
+\begin{aligned}
+    w_l 
+    &\leftarrow
+        w_l - \eta \frac{\partial L}{\partial w_l}
+        \\
+    &=
+        w_l - \frac{\eta}{n} \sum_i \left[
+            \frac{\partial L}{\partial \hat{y}^j_i} \cdot \frac{\partial \hat{y}^j_i}{\partial w_l}
+            +
+            \frac{\partial L}{\partial \hat{y}^k_i} \cdot \frac{\partial \hat{y}^k_i}{\partial w_l}
+        \right]
+\end{aligned}
+$$
+
+## Factorizing RankNET
 
