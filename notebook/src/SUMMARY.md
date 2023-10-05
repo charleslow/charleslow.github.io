@@ -5,6 +5,7 @@
 - [Miscellaneous](./misc.md)
 - [Recommender Systems]()
     - [Gradient Boosting](./gradient_boosting.md)
+    - [TF-IDF](./tfidf.md)
     - [Two Tower]()
     - [Diversity]()
     - [Exposure Bias]()
