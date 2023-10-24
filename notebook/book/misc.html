@@ -245,6 +245,48 @@ pytz = &quot;~2022.1&quot;
 <p>The GIL also improves performance for single-threaded programs, as it only requires a single lock to be managed (not sure how this works). There have been attempts to remove the GIL from Python but none have been successful because they would degrade single-threaded performance.</p>
 <p>For many C extensions (e.g. numpy), multi-threading is still possible because these extensions are allowed to manually release the GIL (as long as they restore things back to normal when the functions return). This allows us to still use multi-threading for CPU-intensive functions with the GIL around. Similarly for Rust, we can release the GIL to achieve <a href="https://pyo3.rs/v0.9.2/parallelism">parallelism</a>.</p>
 <p>Alternatively, we can use <code>multiprocessing</code> to create multiple processes (instead of threads). Each process contains its own Python interpreter (and GIL) and hence can run truly in parallel. The downside is that the overhead of creating and managing processes is much more than that for threads, meaning that the benefits of multiprocessing are much dampened compared to multi-threading.</p>
+<h2 id="memory-profiling"><a class="header" href="#memory-profiling">Memory Profiling</a></h2>
+<p>It is often useful to profile the memory usage of our script. In python, we can use <code>memory_profiler</code> to check the memory usage of our program line by line.</p>
+<pre><code class="language-python">from memory_profiler import profile
+import sys
+
+
+@profile(stream=sys.stdout)
+def f():
+    a = [1] * (10**6)
+    b = [2] * (2 * 10**7)
+    del b
+
+
+if __name__ == &quot;__main__&quot;:
+    f()
+</code></pre>
+<p>This will print the following useful information to stdout. Note that even before we did anything, there is background memory usage of 17MiB.</p>
+<pre><code>Filename: memory_profiling.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+     5     17.1 MiB     17.1 MiB           1   @profile(stream=sys.stdout)
+     6                                         def f():
+     7     24.5 MiB      7.5 MiB           1       a = [1] * (10**6)
+     8    177.2 MiB    152.6 MiB           1       b = [2] * (2 * 10**7)
+     9     24.8 MiB   -152.4 MiB           1       del b
+</code></pre>
+<p>We might also want to track memory usage of a function over time. We can use <code>memory_usage</code> instead for that.</p>
+<pre><code class="language-python">def g(a, n: int = 100):
+    time.sleep(1)
+    b = [a] * n
+    time.sleep(1)
+    del b
+    time.sleep(1)
+
+if __name__ == &quot;__main__&quot;:
+    usage = memory_usage((g, (1,), {&quot;n&quot;: int(1e7)}), interval=0.5)
+    print(usage)
+</code></pre>
+<p>This will give us an array like so, showing the spike in memory in the middle of g.</p>
+<pre><code>[17.375, 17.5234375, 17.5234375, 19.34765625, 93.59765625, 93.59765625, 17.53125, 17.53125, 17.53125]
+</code></pre>
 
                     </main>
 

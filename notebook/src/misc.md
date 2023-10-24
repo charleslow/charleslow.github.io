@@ -111,3 +111,58 @@ The GIL also improves performance for single-threaded programs, as it only requi
 For many C extensions (e.g. numpy), multi-threading is still possible because these extensions are allowed to manually release the GIL (as long as they restore things back to normal when the functions return). This allows us to still use multi-threading for CPU-intensive functions with the GIL around. Similarly for Rust, we can release the GIL to achieve [parallelism](https://pyo3.rs/v0.9.2/parallelism).
 
 Alternatively, we can use `multiprocessing` to create multiple processes (instead of threads). Each process contains its own Python interpreter (and GIL) and hence can run truly in parallel. The downside is that the overhead of creating and managing processes is much more than that for threads, meaning that the benefits of multiprocessing are much dampened compared to multi-threading.
+
+## Memory Profiling
+
+It is often useful to profile the memory usage of our script. In python, we can use `memory_profiler` to check the memory usage of our program line by line.
+
+```python
+from memory_profiler import profile
+import sys
+
+
+@profile(stream=sys.stdout)
+def f():
+    a = [1] * (10**6)
+    b = [2] * (2 * 10**7)
+    del b
+
+
+if __name__ == "__main__":
+    f()
+```
+
+This will print the following useful information to stdout. Note that even before we did anything, there is background memory usage of 17MiB.
+
+```
+Filename: memory_profiling.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+     5     17.1 MiB     17.1 MiB           1   @profile(stream=sys.stdout)
+     6                                         def f():
+     7     24.5 MiB      7.5 MiB           1       a = [1] * (10**6)
+     8    177.2 MiB    152.6 MiB           1       b = [2] * (2 * 10**7)
+     9     24.8 MiB   -152.4 MiB           1       del b
+```
+
+We might also want to track memory usage of a function over time. We can use `memory_usage` instead for that.
+
+```python
+def g(a, n: int = 100):
+    time.sleep(1)
+    b = [a] * n
+    time.sleep(1)
+    del b
+    time.sleep(1)
+
+if __name__ == "__main__":
+    usage = memory_usage((g, (1,), {"n": int(1e7)}), interval=0.5)
+    print(usage)
+```
+
+This will give us an array like so, showing the spike in memory in the middle of g.
+
+```
+[17.375, 17.5234375, 17.5234375, 19.34765625, 93.59765625, 93.59765625, 17.53125, 17.53125, 17.53125]
+```

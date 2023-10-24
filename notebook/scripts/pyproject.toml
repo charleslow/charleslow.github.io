@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "scripts"
+version = "0.1.0"
+description = ""
+authors = ["Charles Low <charleslow88@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+memory-profiler = "^0.61.0"
+lightgbm = "^4.1.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
