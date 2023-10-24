@@ -149,6 +149,8 @@ Line #    Mem usage    Increment  Occurrences   Line Contents
 We might also want to track memory usage of a function over time. We can use `memory_usage` instead for that.
 
 ```python
+import time
+from memory_profiler import memory_usage
 def g(a, n: int = 100):
     time.sleep(1)
     b = [a] * n

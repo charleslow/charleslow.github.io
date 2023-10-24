@@ -277,7 +277,9 @@ Line #    Mem usage    Increment  Occurrences   Line Contents
      9     24.8 MiB   -152.4 MiB           1       del b
 </code></pre>
 <p>We might also want to track memory usage of a function over time. We can use <code>memory_usage</code> instead for that.</p>
-<pre><code class="language-python">def g(a, n: int = 100):
+<pre><code class="language-python">import time
+from memory_profiler import memory_usage
+def g(a, n: int = 100):
     time.sleep(1)
     b = [a] * n
     time.sleep(1)
