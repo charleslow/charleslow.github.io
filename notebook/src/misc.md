@@ -53,21 +53,21 @@ asyncio is a single-threaded framework that does not use multi-threading or mult
 
 ## relatedness
 
-In the context of information retrieval, Trey Grainger in [AI-Powered Search](https://www.manning.com/books/ai-powered-search) suggests a relatedness measure to connect arbitrary entities together. Suppose we have a collection of jobs and each job is tagged with a set of skills. Suppose we wish to retrieve relevant skills to an arbitrary free text query \\( q \\). 
+In the context of information retrieval, Trey Grainger in [AI-Powered Search](https://www.manning.com/books/ai-powered-search) suggests a relatedness measure to connect arbitrary entities together. Suppose we have a collection of jobs and each job is tagged with a set of skills. Suppose we wish to retrieve relevant skills to an arbitrary free text query $q$. 
 
-The relatedness idea is to define a foreground of documents, e.g. based on a retrieval of documents using query \\( q \\) which are related to the query, and to compare the attributes of the foreground against the background, i.e. all documents. 
+The relatedness idea is to define a foreground of documents, e.g. based on a retrieval of documents using query $q$ which are related to the query, and to compare the attributes of the foreground against the background, i.e. all documents. 
 
-Mathematically, we can think of the foreground documents as a sample, and the background documents as the population. The strength of the relationship between each skill \\( t \\) to the query \\( q \\) may then be defined as the z-statistic of the one-sample z-test of proportions of the occurrence of skill \\( t \\) in the foreground sample compared against the background population. A significantly greater occurrence in the sample compared to the population suggests a strong relationship between \\( t \\) and \\( q \\), and vice versa. Specifically:
+Mathematically, we can think of the foreground documents as a sample, and the background documents as the population. The strength of the relationship between each skill $ t $ to the query $ q $ may then be defined as the z-statistic of the one-sample z-test of proportions of the occurrence of skill $ t $ in the foreground sample compared against the background population. A significantly greater occurrence in the sample compared to the population suggests a strong relationship between $ t $ and $ q $, and vice versa. Specifically:
 
-\\[
+$$
   z = \frac{ \hat{p} - p }{ \sqrt{ \frac{ p(1-p) }{n} } }
-\\]
+$$
 
 Where:
-- \\( \hat{p} = \frac{ df(q, t) }{ df(q) } \\) is the sample proportion.
-- \\( df(q, t) \\) is the number of documents in the foreground corresponding to query \\( q \\) and contains skill \\( t \\).
-- \\( df(q) \\) is the total number of documents in the foreground corresponding to query \\( q \\). It is also the number of samples \\( n \\).
-- \\( p = P(t) \\) is the probability of skill t appearing across all documents.
+- $ \hat{p} = \frac{ df(q, t) }{ df(q) } $ is the sample proportion.
+- $ df(q, t) $ is the number of documents in the foreground corresponding to query $ q $ and contains skill $ t $.
+- $ df(q) $ is the total number of documents in the foreground corresponding to query $ q $. It is also the number of samples $ n $.
+- $ p = P(t) $ is the probability of skill t appearing across all documents.
 
 By performing a retrieval and ranking skills based on the z-statistic, we can compute a relationship between any arbitrary query and attribute of the documents (on the fly, if necessary). This functionality is implemented in [solr](https://solr.apache.org/guide/8_5/json-facet-api.html#relatedness-and-semantic-knowledge-graphs).
 
