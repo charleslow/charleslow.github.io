@@ -3,6 +3,7 @@
 [Introduction](intro.md)
 
 - [Miscellaneous](./misc.md)
+    - [LLM](./llm.md)
 - [Recommender Systems]()
     - [Gradient Boosting](./gradient_boosting.md)
     - [TF-IDF](./tfidf.md)

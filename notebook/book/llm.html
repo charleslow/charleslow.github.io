@@ -3,8 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Page not found - Chux&#x27;s Notebook</title>
-        <base href="/">
+        <title>LLM - Chux&#x27;s Notebook</title>
 
 
         <!-- Custom HTML head -->
@@ -85,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="misc.html"><strong aria-hidden="true">1.</strong> Miscellaneous</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="llm.html"><strong aria-hidden="true">1.1.</strong> LLM</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> Recommender Systems</div></li><li><ol class="section"><li class="chapter-item expanded "><a href="gradient_boosting.html"><strong aria-hidden="true">2.1.</strong> Gradient Boosting</a></li><li class="chapter-item expanded "><a href="tfidf.html"><strong aria-hidden="true">2.2.</strong> TF-IDF</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.3.</strong> Two Tower</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.4.</strong> Diversity</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.5.</strong> Exposure Bias</div></li></ol></li><li class="chapter-item expanded "><a href="papers.html"><strong aria-hidden="true">3.</strong> Papers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="schnabel_2016.html"><strong aria-hidden="true">3.1.</strong> Schnabel 2016 - Recs as Treatments</a></li><li class="chapter-item expanded "><a href="burges_2010.html"><strong aria-hidden="true">3.2.</strong> Burges 2010 - RankNET to LambdaMART</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="misc.html"><strong aria-hidden="true">1.</strong> Miscellaneous</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="llm.html" class="active"><strong aria-hidden="true">1.1.</strong> LLM</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> Recommender Systems</div></li><li><ol class="section"><li class="chapter-item expanded "><a href="gradient_boosting.html"><strong aria-hidden="true">2.1.</strong> Gradient Boosting</a></li><li class="chapter-item expanded "><a href="tfidf.html"><strong aria-hidden="true">2.2.</strong> TF-IDF</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.3.</strong> Two Tower</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.4.</strong> Diversity</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.5.</strong> Exposure Bias</div></li></ol></li><li class="chapter-item expanded "><a href="papers.html"><strong aria-hidden="true">3.</strong> Papers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="schnabel_2016.html"><strong aria-hidden="true">3.1.</strong> Schnabel 2016 - Recs as Treatments</a></li><li class="chapter-item expanded "><a href="burges_2010.html"><strong aria-hidden="true">3.2.</strong> Burges 2010 - RankNET to LambdaMART</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -168,14 +167,28 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="document-not-found-404"><a class="header" href="#document-not-found-404">Document not found (404)</a></h1>
-<p>This URL is invalid, sorry. Please use the navigation bar or search to continue.</p>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+<h1 id="large-language-models"><a class="header" href="#large-language-models">Large Language Models</a></h1>
+<p>LLMs are generally used in an auto-regressive way, where the user supplies a prompt and the LLM returns a generated response. This framework makes it amenable to a wide range of tasks.</p>
+<p>HuggingFace has a great <a href="https://huggingface.co/blog/optimize-llm">blog post</a> explaining how we can run LLMs on humble hardware. Typically, LLMs have billions of parameters. The following rules of thumb helps us know how much memory we need to load the LLM into memory:</p>
+<ul>
+<li>Loading a model with <code>X billion</code> parameters requires <code>4 * X GB of VRAM</code> in <code>float32</code></li>
+<li>Loading a model with <code>X billion</code> parameters requires <code>2 * X GB of VRAM</code> in <code>bfloat16</code></li>
+</ul>
+<p>Hence we see that we can load a <code>~7 billion</code> parameters model with around <code>14GB</code> of VRAM if loaded in <code>bfloat16</code>, which makes it feasible to run on GPUs like Tesla T4 with <code>16GB</code> of VRAM. This can be done when loading the model with <code>from_pretrained(..., torch_dtype=torch.bfloat16)</code>.</p>
+<p>Current popular open source LLM of that size includes <code>mosaicml/mpt-7b</code>, which can be easily downloaded and used using huggingface.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="misc.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
 
+                            <a rel="next" href="gradient_boosting.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -183,7 +196,13 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="misc.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
 
+                    <a rel="next" href="gradient_boosting.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
             </nav>
 
         </div>
