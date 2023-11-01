@@ -11,5 +11,6 @@
     - [Diversity]()
     - [Exposure Bias]()
 - [Papers](./papers.md)
-    - [Schnabel 2016 - Recs as Treatments](./schnabel_2016.md)
-    - [Burges 2010 - RankNET to LambdaMART](./burges_2010.md)
+    - [Schnabel 2016 - Recs as Treatments](./papers/schnabel_2016.md)
+    - [Burges 2010 - RankNET to LambdaMART](./papers/burges_2010.md)
+    - [Dao 2022 - Flash Attention](./papers/dao_2022.md)

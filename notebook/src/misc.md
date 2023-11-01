@@ -10,6 +10,25 @@ Command to interactively change each 'foo' to 'bar'. `:%s` triggers the substitu
 :%s/foo/bar/gc
 ```
 
+## Find Files
+
+To find files anywhere on the system with the filename `python` using bash, use:
+
+```bash
+find . -name python
+```
+
+We can add `*` before and/or after the filename to allow other characters before or after our keyword:
+
+```bash
+find . -name *python*
+```
+
+To search not just in the filename but also in the full path (e.g. we only want to search in `Desktop`), we can do:
+```bash
+find . -wholename "*Desktop*python*"
+```
+
 ## Numpy Indexing
 
 Suppose we have a 2D array `X` and would like to take a slice of certain rows and columns. We might try, for e.g., to take the first two rows of X and the 3rd/4th column of X, i.e. we expect to get a 2 by 2 matrix.

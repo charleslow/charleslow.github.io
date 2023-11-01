@@ -84,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="misc.html" class="active"><strong aria-hidden="true">1.</strong> Miscellaneous</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="llm.html"><strong aria-hidden="true">1.1.</strong> LLM</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> Recommender Systems</div></li><li><ol class="section"><li class="chapter-item expanded "><a href="gradient_boosting.html"><strong aria-hidden="true">2.1.</strong> Gradient Boosting</a></li><li class="chapter-item expanded "><a href="tfidf.html"><strong aria-hidden="true">2.2.</strong> TF-IDF</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.3.</strong> Two Tower</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.4.</strong> Diversity</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.5.</strong> Exposure Bias</div></li></ol></li><li class="chapter-item expanded "><a href="papers.html"><strong aria-hidden="true">3.</strong> Papers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="schnabel_2016.html"><strong aria-hidden="true">3.1.</strong> Schnabel 2016 - Recs as Treatments</a></li><li class="chapter-item expanded "><a href="burges_2010.html"><strong aria-hidden="true">3.2.</strong> Burges 2010 - RankNET to LambdaMART</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="misc.html" class="active"><strong aria-hidden="true">1.</strong> Miscellaneous</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="llm.html"><strong aria-hidden="true">1.1.</strong> LLM</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> Recommender Systems</div></li><li><ol class="section"><li class="chapter-item expanded "><a href="gradient_boosting.html"><strong aria-hidden="true">2.1.</strong> Gradient Boosting</a></li><li class="chapter-item expanded "><a href="tfidf.html"><strong aria-hidden="true">2.2.</strong> TF-IDF</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.3.</strong> Two Tower</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.4.</strong> Diversity</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.5.</strong> Exposure Bias</div></li></ol></li><li class="chapter-item expanded "><a href="papers.html"><strong aria-hidden="true">3.</strong> Papers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="papers/schnabel_2016.html"><strong aria-hidden="true">3.1.</strong> Schnabel 2016 - Recs as Treatments</a></li><li class="chapter-item expanded "><a href="papers/burges_2010.html"><strong aria-hidden="true">3.2.</strong> Burges 2010 - RankNET to LambdaMART</a></li><li class="chapter-item expanded "><a href="papers/dao_2022.html"><strong aria-hidden="true">3.3.</strong> Dao 2022 - Flash Attention</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -173,6 +173,16 @@
 <h2 id="vim"><a class="header" href="#vim">Vim</a></h2>
 <p>Command to interactively change each 'foo' to 'bar'. <code>:%s</code> triggers the substitute global command, followed by the search and replace phrases respectively. Finally <code>g</code> means replace all occurrences and <code>c</code> means with confirmation. Note that <code>:s</code> will only do the same for one line.</p>
 <pre><code class="language-bash">:%s/foo/bar/gc
+</code></pre>
+<h2 id="find-files"><a class="header" href="#find-files">Find Files</a></h2>
+<p>To find files anywhere on the system with the filename <code>python</code> using bash, use:</p>
+<pre><code class="language-bash">find . -name python
+</code></pre>
+<p>We can add <code>*</code> before and/or after the filename to allow other characters before or after our keyword:</p>
+<pre><code class="language-bash">find . -name *python*
+</code></pre>
+<p>To search not just in the filename but also in the full path (e.g. we only want to search in <code>Desktop</code>), we can do:</p>
+<pre><code class="language-bash">find . -wholename &quot;*Desktop*python*&quot;
 </code></pre>
 <h2 id="numpy-indexing"><a class="header" href="#numpy-indexing">Numpy Indexing</a></h2>
 <p>Suppose we have a 2D array <code>X</code> and would like to take a slice of certain rows and columns. We might try, for e.g., to take the first two rows of X and the 3rd/4th column of X, i.e. we expect to get a 2 by 2 matrix.</p>
