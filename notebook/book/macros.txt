@@ -1,2 +1,3 @@
 \grad:{\nabla}
 \R:{\mathbb{R}^{#1 \times #2}}
+\pushright:{[1]{\ifmeasuring@#1\else\omit\hfill$\displaystyle#1$\fi\ignorespaces}}

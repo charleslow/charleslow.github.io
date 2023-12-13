@@ -7,6 +7,10 @@ Conclusion: np.vectorize is faster.
 >>> main(num_rows=5000, num_cols=25, num_vocab=200, num_trials=100)
 Method1: 41.303ms
 Method6: 24.230ms
+
+>>> main(num_rows=500, num_cols=1, num_vocab=200, num_trials=100)
+Method1: 0.177ms
+Method6: 0.095ms
 """
 import timeit
 import random
@@ -96,4 +100,4 @@ def main(
         assert (results[i - 1] == results[i]).all()
 
 
-main(num_rows=5000, num_cols=25, num_vocab=200, num_trials=100)
+main(num_rows=500, num_cols=1, num_vocab=200, num_trials=100)
