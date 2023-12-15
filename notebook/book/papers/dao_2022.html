@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../intro.html">Introduction</a></li><li class="chapter-item expanded "><a href="../misc.html"><strong aria-hidden="true">1.</strong> Miscellaneous</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../llm.html"><strong aria-hidden="true">1.1.</strong> LLM</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> Recommender Systems</div></li><li><ol class="section"><li class="chapter-item expanded "><a href="../gradient_boosting.html"><strong aria-hidden="true">2.1.</strong> Gradient Boosting</a></li><li class="chapter-item expanded "><a href="../tfidf.html"><strong aria-hidden="true">2.2.</strong> TF-IDF</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.3.</strong> Two Tower</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.4.</strong> Diversity</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.5.</strong> Exposure Bias</div></li></ol></li><li class="chapter-item expanded "><a href="../papers.html"><strong aria-hidden="true">3.</strong> Papers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../papers/schnabel_2016.html"><strong aria-hidden="true">3.1.</strong> Schnabel 2016 - Recs as Treatments</a></li><li class="chapter-item expanded "><a href="../papers/burges_2010.html"><strong aria-hidden="true">3.2.</strong> Burges 2010 - RankNET to LambdaMART</a></li><li class="chapter-item expanded "><a href="../papers/dao_2022.html" class="active"><strong aria-hidden="true">3.3.</strong> Dao 2022 - Flash Attention</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../intro.html">Introduction</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">1.</strong> Recommender Systems</div></li><li><ol class="section"><li class="chapter-item expanded "><a href="../gradient_boosting.html"><strong aria-hidden="true">1.1.</strong> Gradient Boosting</a></li><li class="chapter-item expanded "><a href="../tfidf.html"><strong aria-hidden="true">1.2.</strong> TF-IDF</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">1.3.</strong> Two Tower</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">1.4.</strong> Diversity</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">1.5.</strong> Exposure Bias</div></li></ol></li><li class="chapter-item expanded "><a href="../llm.html"><strong aria-hidden="true">2.</strong> LLMs</a></li><li class="chapter-item expanded "><a href="../misc.html"><strong aria-hidden="true">3.</strong> Miscellaneous</a></li><li class="chapter-item expanded "><a href="../papers.html"><strong aria-hidden="true">4.</strong> Papers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../papers/schnabel_2016.html"><strong aria-hidden="true">4.1.</strong> Schnabel 2016 - Recs as Treatments</a></li><li class="chapter-item expanded "><a href="../papers/burges_2010.html"><strong aria-hidden="true">4.2.</strong> Burges 2010 - RankNET to LambdaMART</a></li><li class="chapter-item expanded "><a href="../papers/dao_2022.html" class="active"><strong aria-hidden="true">4.3.</strong> Dao 2022 - Flash Attention</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -244,6 +244,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

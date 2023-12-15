@@ -29,5 +29,13 @@ model = AutoModelForCausalLM.from_pretrained(..., load_in_8bit=True)
 
 The self-attention mechanism ([Dao 2022](https://arxiv.org/abs/2205.14135)) is at the heart of the transformer neural network. Suppose we have an input sequence of embeddings $X = (x_1, ..., x_N)$ where $x_i \in \mathbb{R}^d$, such that $X \in \mathbb{R}^{d \times N}$. Naively, we can compute activations by $V = W_v \cdot X$, where $W_v \in \mathbb{R}^{k \times d}$, such that $V \in \mathbb{R}^{k \times N}$.
 
+## How to fine-tune an LLM
 
-  we want the activations 
+- [trl RL example](https://huggingface.co/blog/trl-peft)
+  - Fine tune a 20B GPT model on text generation on IMDB dataset (loaded in 8 bit)
+  - Since step 1 used PEFT, we need to merge the adapter weights with the base model
+  - Finally, use RLHF to generate positive movie reviews. They used a BERT IMDB sentiment classifer to generate rewards
+- [DataCamp example](https://www.datacamp.com/tutorial/fine-tuning-llama-2)
+  - Using `SFTTrainer` from the `trl` library to do supervised fine-tuning
+- [PEFT - based on LORA](https://github.com/huggingface/peft) - PEFT is built by hugginface to support LORA.
+
