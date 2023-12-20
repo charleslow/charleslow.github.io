@@ -56,11 +56,24 @@ Recent papers advocate for relative positional embeddings, with the following di
 - The encoding of relative position is done most naturally within the $QK^T$ self-attention matrix, since that is where the relative degree of interaction between tokens at different positions is encoded
 - The encoding should be such that tokens further apart have a lower value in the self-attention matrix and tokens closer together have a higher value
 
-Rotational Position Embeddings (RoPE) ([Su 2021](https://arxiv.org/pdf/2104.09864.pdf)) proposes rotating the query and key vectors by an angle proportional to the relative distance between the two positions. Specifically $\hat{q}_i^T \hat{k}_j = q_i^T R_{\theta,i-j} k^j$, where $R_{\theta,i-j}$ is a rotational matrix that performs the rotation.
+Rotational Position Embeddings (`RoPE`) ([Su 2021](https://arxiv.org/pdf/2104.09864.pdf)) proposes rotating the query and key vectors by an angle proportional to the relative distance between the two positions. Specifically $\hat{q}_i^T \hat{k}_j = q_i^T R_{\theta,i-j} k^j$, where $R_{\theta,i-j}$ is a rotational matrix that performs the rotation.
 
-Attention with Linear Biases (ALiBi) ([Press 2022](https://arxiv.org/pdf/2108.12409.pdf)) proposes an even simpler method. It simply subtracts $|i-j|/m$ from row $i$ and column $j$ of the self-attention matrix, where $m$ is a fixed scalar (specific to each attention head). Intuitively, it penalizes the attention proportional to the distance between the tokens. The study shows that this method outperforms RoPE as we extrapolate to longer sequences, and is conceptually simpler.
+Attention with Linear Biases (`ALiBi`) ([Press 2022](https://arxiv.org/pdf/2108.12409.pdf)) proposes an even simpler method. It simply subtracts $|i-j|/m$ from row $i$ and column $j$ of the self-attention matrix, where $m$ is a fixed scalar (specific to each attention head). Intuitively, it penalizes the attention proportional to the distance between the tokens. The study shows that this method outperforms RoPE as we extrapolate to longer sequences, and is conceptually simpler.
 
 ## Key-Value Cache
+
+Most LLMs work in an auto-regressive manner, i.e. we provide an input sequence, generate the next token with the LLM, then append this token to the input sequence for the next iteration. Most LLMs are also trained with the causal language modelling objective and mask the upper triangle of the self-attention matrix, so that each query token $q_i$ can only interact with key token $k_j$ and value token $v_j$ if $j \geq i$. This setup encourages us to cache results from previous time steps, since a lot of computation is repeated.
+
+The following is based on how I imagine this to work, after reading [Cameron R. Wolfe's LinkedIn post](https://www.linkedin.com/posts/cameron-r-wolfe-ph-d-04744a238_friday-ai-fundamentals-the-kv-cache-using-activity-7095825756928311296-7xXD). During training, we compute the projections $Q, K, V \in \R^{N \times d}$, where $N$ is the maximum sequence length and $d$ is the hidden dimension. The final output $O = softmax(QK^T) V \in \R^{N \times d}$ actually provides a $d$-dimension representation of the model's prediction at each of the $N$ positions. 
+
+For next token generation, we can add a projection head, say $W_p \in \R^{d \times p}$, where $p$ represents the size of the vocabulary, such that $A = O W_p \in \R^{N \times p}$ can represent the activations *at each of the $N$ positions* for the next token. Specifically, $A_{[0,\ :]}$ represents the predictions of position $1$ given input tokens $[0]$, $A_{[1,\ :]}$ represents the predictions of position $2$ given input tokens $[0,1]$, and so on. These activations will then be fed into some cross-entropy loss such that activations at the correct token for each position gets rewarded. This allows us to do efficient training, since we simultaneously provide losses for the prediction at each of the $N$ positions to the model for backpropagation.
+
+However, when we are doing inference generation, we only need to predict for the final position of the input sequence (suppose it is position $c$), i.e. we are only interested in $A_{[c,\ :]}$ and $O_{[c,\ :]}$. Hence for starters, we only need $q_c := Q_{[c,\ :]}$ instead of the entire $Q$ matrix, since only that row comes into play. However, we still need the entire $K$ and $V$ matrices, since we want $q_c$ to interact with all tokens in the input sequence. This is where the KV cache comes in - we cache the existing $K$ and $V$ matrices, so that we only need to project the final token of the input sequence $x_c^T W_k \in \R^{1 \times d}$ and $x_c^T W_v \in \R^{1 \times d}$ at each step and append it to the existing cached $K$ and $V$. We can then compute $O_c = softmax(q_c K^T) V \in \R^{1 \times d}$.
+
+As one can imagine, this saves a lot of computation, but also increases memory costs. [Kwon 2023 - PagedAttention](https://arxiv.org/pdf/2309.06180.pdf) shows that serving a `13B` model on NVIDIA A100 with 40GB of memory:
+- $65\%$ of memory is model parameters
+- $>30\%$ is the KV cache
+- A small amount of memory is used ephemerally for activation
 
 
 
