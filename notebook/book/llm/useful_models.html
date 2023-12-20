@@ -176,12 +176,45 @@
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
 <h1 id="useful-models"><a class="header" href="#useful-models">Useful Models</a></h1>
-<p>There are too many models on Huggingface, so I try to keep track of useful ones here.</p>
-<ul>
-<li><a href="https://huggingface.co/distilgpt2">distilgpt2</a>. 88 million parameters, super small model that is feasible to run on CPU. Unfortunately the performance seems quite poor.</li>
-<li><a href="https://huggingface.co/docs/transformers/model_doc/bloom">BLOOM</a>. Architecture of BLOOM is essentially similar to GPT3, but is trained on 46 different languages. The original BLOOM has <code>176B</code> parameters, but a <a href="https://huggingface.co/bigscience/bloom-7b1">7B version</a> exists as well. Current score of the <code>7B</code> model on the <a href="https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard">openllm_leaderboard</a> is 42.21.</li>
-<li><a href="https://huggingface.co/upstage/SOLAR-10.7B-Instruct-v1.0">SOLAR-10.7B-Instruct-v1.0</a>. <code>10.7B</code> parameters, but with an openllm score of 74.2! This model was trained using Supervised Finetuning (SFT) and Direct Preference Optimization (DPO).</li>
-</ul>
+<p>There are too many models on Huggingface, so I try to keep track of useful ones here. Generally the <a href="https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard">open_llm_leaderboard</a> is a good place to start.</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: center">Model Name</th><th style="text-align: center"># Params (Billions)</th><th style="text-align: center">openllm score</th><th style="text-align: center">Comments</th></tr></thead><tbody>
+<tr><td style="text-align: center"><a href="https://huggingface.co/upstage/SOLAR-10.7B-Instruct-v1.0">SOLAR-10.7B-Instruct-v1.0</a></td><td style="text-align: center">10.7B</td><td style="text-align: center">74.2</td><td style="text-align: center">This model was trained using Supervised Finetuning (SFT) and Direct Preference Optimization (DPO) for single-turn chat. Seems to be derived from Llama. Verified that the outputs are sensible.</td></tr>
+</tbody></table>
+</div>
+<h2 id="testing-solar-107b"><a class="header" href="#testing-solar-107b">Testing SOLAR-10.7B</a></h2>
+<p>Here are some results from testing out <code>SOLAR-10.7B-Instruct-v1.0</code> on Google Colab, with a T4 GPU. First we install packages and load the model. Note that we are quantizing it to <code>4bits</code> to save memory, and specifying the compute type of <code>torch.float16</code> as that is the tensor type that this model was trained in. Using <code>torch.float32</code> (which is the default) will incur unnecessary conversion cost and slow down inference.</p>
+<pre><code class="language-python">%pip install transformers~=4.36 torch~=2.1.1 bitsandbytes accelerate optimum
+
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+import torch
+
+quantization_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_compute_dtype=torch.float16
+)
+
+MODEL_NAME = &quot;Upstage/SOLAR-10.7B-Instruct-v1.0&quot;
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+model = AutoModelForCausalLM.from_pretrained(
+    MODEL_NAME,
+    device_map=&quot;auto&quot;,
+    quantization_config=quantization_config,
+)
+</code></pre>
+<p>We define a generate function.</p>
+<pre><code class="language-python">def generate(prompt: str, max_length: int = 2048):  
+    conversation = [{'role': 'user', 'content': prompt}] 
+    prompt = tokenizer.apply_chat_template(conversation, tokenize=False, add_generation_prompt=True)
+    inputs = tokenizer(prompt, return_tensors=&quot;pt&quot;).to(model.device)
+    outputs = model.generate(**inputs, use_cache=True, max_length=max_length)
+    output_text = tokenizer.decode(outputs[0])
+    return output_text
+</code></pre>
+<p>And now we can test it out on a few prompts.</p>
+<p>Prompt: <code>Can you explain web3 to a 5 year old?</code> Response: Web3 is like a special world on the internet that lets people share and use things in a new and more open way. Imagine a playground where everyone can add their own swings, slides, and sandboxes without needing permission from a big boss. This makes it easier for people to work together and create new fun things online. (Inference time: <code>8s</code>)</p>
+<p>Prompt: <code>Can a firefighter transit into the finance industry?</code> Response: While it may not be a typical career transition, it is possible for a firefighter to transition into the finance industry. To make a successful move, the firefighter would need to acquire the necessary skills and qualifications relevant to the finance sector. This could involve pursuing additional education or training in finance, accounting, or business administration. Networking, gaining relevant work experience, and showcasing transferable skills from the firefighting profession can also help in making the transition.\n\nSome transferable skills from firefighting to finance could include strong problem-solving abilities, teamwork, decision-making under pressure, and the ability to manage risk. However, it's essential to note that the finance industry has its unique requirements, and the firefighter would need to demonstrate a strong commitment to learning and adapting to the new environment. (Inference time: <code>19s</code>)</p>
+<p>Seems to be pretty decent performance at a somewhat reasonable inference time out of the box.</p>
+<p><a href="https://huggingface.co/docs/transformers/perf_infer_gpu_one">Speeding up GPU inference</a>.</p>
 
                     </main>
 
