@@ -1,0 +1,16 @@
+[book]
+authors = ["Charles Low"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Chux's Bible Notes"
+
+[output.html]
+copy-fonts = true
+default_theme = "ayu"
+
+[output.html.playground]
+runnable = false
+
+[preprocessor.format]
+command = "python3 format.py"
