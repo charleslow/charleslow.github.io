@@ -9,6 +9,7 @@
     - [Diversity]()
     - [Exposure Bias]()
 - [LLMs](./llm/llm.md)
+    - [Fine-tuning](./llm/fine_tuning.md)
     - [Useful Models](./llm/useful_models.md)
 - [Miscellaneous](./misc.md)
     - [Bradley-Terry Model](./misc/bradley-terry.md)
