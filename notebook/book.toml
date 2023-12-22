@@ -7,7 +7,7 @@ title = "Chux's Notebook"
 
 [output.html]
 copy-fonts = true
-default_theme = "coal"
+default_theme = "ayu"
 additional-css = ["katex.min.css"]
 
 [output.html.playground]

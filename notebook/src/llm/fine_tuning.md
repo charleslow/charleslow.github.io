@@ -56,6 +56,20 @@ Objective (3) may not be directly optimized, because we need to generate $y \sim
 
 ## Direct Preference Optimization
 
+The RLHF process in general is unstable and requires tricks to make it work. Hence the authors of DPO set out to create an optimization procedure that:
+1. Avoids fitting an explicit, standalone reward model
+2. Avoids using reinforcement learning
+
+DPO starts off with the KL-constrained reward maximization objective from Equation (3) above. The first step is to show that the optimal policy for this objective is of the form:
+
+$$
+\begin{align*}
+\pi_r(y\ |\ x) &= \frac{1}{Z(x)} \pi_{ref}(y\ |\ x)\ exp\ \left( \frac{1}{\beta} r(x,\ y) \right) & (4)
+\end{align*}
+$$
+
+ 
+
 ## References
 
 - [Ouyang 2022 - InstructGPT](https://arxiv.org/pdf/2203.02155.pdf)

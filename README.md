@@ -2,6 +2,8 @@
 
 [Notebook](https://charleslow.github.io/notebook/book) of personal references pertaining to python, recommender systems, machine learning etc.
 
+[Bible reflections](https://charleslow.github.io/bible/book) from my own readings. 
+
 [Handwritten notes](https://charleslow.github.io/notes/foundations_of_ml.pdf) from taking David Rosenberg's Foundations of ML course.
 
 Older d3.js visualizations:
