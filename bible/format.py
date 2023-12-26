@@ -59,7 +59,6 @@ def add_bible_verses(input_text: str):
     lines = input_text.split("\n")
     for i, line in enumerate(lines):
         if line.startswith("\B"):
-            print(line, file=sys.stderr)
             book, remnant = line[3:].split(" ")
             chapter, verses = remnant.split(":")
             verses = verses.split("-")
