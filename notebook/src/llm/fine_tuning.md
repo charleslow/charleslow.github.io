@@ -24,7 +24,7 @@ p^*(y_1 \triangleright y_2\ |\ x) &= \frac{e^{r^*(x,\ y_1)}}{e^{r^*(x,\ y_1)} + 
 \end{align*}
 $$
 
-Suppose we have a static dataset of comparisons $\mathcal{D} = \{\ x^{(i)}, y_w^{(i)}, y_l^{(i)}\ \}^N_{i=1}$ sampled from the human preference model of $p^*$. We can create a reward model $r_\phi(x,\ y)$ and use the BT-model to express the negative log likelihood of $\mathcal{D}$. Note that are we using [the re-parametrization of the BT-model as a sigmoid function](../misc/bradley-terry.md#re-parametrization). With this NLL expression, we can optimize for $r_\phi$ using gradient descent to learn the reward model from $\mathcal{D}$.
+Suppose we have a static dataset of comparisons $\mathcal{D} = \{\ x^{(i)}, y_w^{(i)}, y_l^{(i)}\ \}^N_{i=1}$ sampled from the human preference model of $p^*$. We can create a reward model $r_\phi(x,\ y)$ and use the BT-model to express the negative log likelihood of $\mathcal{D}$. Note that are we using [the re-parametrization of the BT-model as a sigmoid function](../misc/bradley-terry.md#re-parametrization). With this NLL expression, we can optimize for $r_\phi$ using gradient descent to learn the reward model from $\mathcal{D}$. Notice that the heart of Equation (2) is essentially just a difference in reward between the winning answer $y_w$ and losing answer $y_l$.
 
 $$
 \begin{align*}
@@ -37,10 +37,12 @@ Note that $r_\phi$ is usually initialized using the SFT model $\pi^{SFT}$, but w
 Having learned the reward model, we then need to use the learned reward function to <fine-tune $\pi^{SFT}$ using reinforcement learning>. Specifically, we set $\pi_{ref} := \pi^{SFT}$ as the reference model, and initialize a new $\pi_\theta$ model that we wish to train. Usually, $\pi_\theta$ is also initialized as a copy of $\pi^{SFT}$. The objective function we wish to maximize is:
 
 $$
+% Equation (3)
 \begin{align*}
-&\max_{\pi_\theta} 
-    \mathbb{E}_{\ x \sim \mathcal{D},\ y \sim \pi_\theta(y|x)} 
-    \quad r_\phi(x,\ y) 
+&\max_{\pi_\theta} \mathbb{E}_{\ x \sim \mathcal{D},\ y \sim \pi_\theta(y|x)}
+    \left[
+        r_\phi(x,\ y) 
+    \right]
     - \beta \cdot \mathbb{D}_{KL} 
     \left[  
         \pi_\theta(y\ |\ x)\ ||\ \pi_{ref}(y\ |\ x)
@@ -56,17 +58,78 @@ Objective (3) may not be directly optimized, because we need to generate $y \sim
 
 ## Direct Preference Optimization
 
-The RLHF process in general is unstable and requires tricks to make it work. Hence the authors of DPO set out to create an optimization procedure that:
+The RLHF process in general is unstable, requires more memory / computation and requires tricks to make it work. Hence the authors of DPO set out to create an optimization procedure that:
 1. Avoids fitting an explicit, standalone reward model
 2. Avoids using reinforcement learning
 
 DPO starts off with the KL-constrained reward maximization objective from Equation (3) above. The first step is to show that the optimal policy for this objective is of the form:
 
 $$
+% Equation (4)
 \begin{align*}
-\pi_r(y\ |\ x) &= \frac{1}{Z(x)} \pi_{ref}(y\ |\ x)\ exp\ \left( \frac{1}{\beta} r(x,\ y) \right) & (4)
+\pi_r(y\ |\ x) &= \frac{1}{Z(x)} \pi_{ref}(y\ |\ x)\ exp\ \left( \frac{1}{\beta} r(x,\ y) \right) & (4)\\
+\text{where partition fn}\quad Z(x) &= \sum_y \pi_{ref}(y\ |\ x)\ exp\ \left( \frac{1}{\beta} r(x,\ y) \right)\\
 \end{align*}
 $$
+
+The <derivation for Equation (4)> is as follows. For a given reward function $r(x, y)$:
+
+$$
+\begin{align*}
+&\max_{\pi} \mathbb{E}_{x \sim \mathcal{D}, y \sim \pi(y\ |\ x)} 
+    \left[ r(x, y) \right]
+    - \beta \cdot 
+    \mathbb{D}_{KL} \left[
+        \pi(y|x)\ ||\ \pi_{ref}(y|x)
+    \right]\\
+    &= \max_{\pi} \mathbb{E}_{x \sim \mathcal{D}, y \sim \pi(y\ |\ x)} 
+    \left[
+        r(x, y) - \beta \log \frac{\pi(y|x)}{\pi_{ref}(y|x)}
+    \right]\\
+    &= \min_{\pi} \mathbb{E}_{x \sim \mathcal{D}, y \sim \pi(y\ |\ x)} 
+    \left[
+        \log \frac{\pi(y|x)}{\pi_{ref}(y|x)} - \frac{1}{\beta} r(x, y)
+    \right]\\
+    &= \min_{\pi} \mathbb{E}_{x \sim \mathcal{D}, y \sim \pi(y\ |\ x)} 
+    \left[
+        \log 
+        \frac{\pi(y|x)}
+        {\frac{1}{Z(x)} \pi_{ref}(y|x) \exp \left( \frac{1}{\beta} r(x, y) \right)} - \log Z(x)
+    \right]\\
+    \text{where }\quad Z(x) &= \sum_y \pi_{ref}(y\ |\ x)\ exp\ \left( \frac{1}{\beta} r(x,\ y) \right)\\
+\end{align*}
+$$
+
+For line 2 above, recall that $\mathbb{D}_{KL}(P||Q)$ is the expected value of $\log P(Y) - \log Q(Y)$ if the random variable $Y$ is drawn from $P$. Since the outer expectation is over draws from $\pi$, we can breakdown the KL-divergence by bringing the log difference into the expectation. Line 3 simply divides by $-\beta$ and flips max to min. Line 4 uses $\log \exp$ to bring the reward term into the denominator of the left term, then introduces an arbitrary $Z(x)$. Note that the two $Z(x)$ can be cancelled out if we brought them together, but we will be using them later on.
+
+Now let us define the optimal policy $\pi^*(y|x) = \frac{1}{Z(x)} \pi_{ref}(y|x) \exp \left( \frac{1}{\beta} r(x,y) \right)$. We will need to prove that $\pi^*$ is indeed optimal. Note that $\pi^*$ is a valid probability distribution as:
+- $\pi^*(y|x) \geq 0 \ \forall \ y$; and
+- $\sum_y \pi^*(y|x) = 1$, since the denominator is just the sum over $y$ of the numerator
+
+Since $Z(x)$ is not a function of $y$, we can sub in $\pi^*$ and take $\log Z(x)$ out. The left term becomes a KL-divergence between $\pi$ which we are optimizing over and the optimal policy $\pi^*$.
+
+$$
+\begin{align*}
+&\min_{\pi} \mathbb{E}_{x \sim \mathcal{D}} \left[
+    \mathbb{E}_{y \sim \pi(y\ |\ x)} \left[
+        \log \frac{\pi(y|x)}{\pi^*(y|x)}
+    \right]
+    -
+    \log Z(x)
+\right]\\
+&= \min_{\pi} \mathbb{E}_{x \sim \mathcal{D}} \left[
+    \mathbb{D}_{KL} \left(
+        \pi(y|x) \ || \ \pi^*(y|x)
+    \right)
+    -
+    \log Z(x)
+\right]\\
+\end{align*}
+$$
+
+Finally, note that $Z(x)$ does not depend on $\pi$, so we only need to consider the KL-divergence term. Gibb's inequality tells us that KL-divergence is minimized at $0$ if and only if the two distributions are identical. This <completes our derivation of (4)> by showing that $\pi^*$ is indeed the optimal policy.
+
+Now that we have completed the derivation, let's consider what Equation (4) is saying. It tells us that we have an analytical solution for the policy $\pi_r$ that optimizes (3), and that it can be expressed in terms of $\pi_{ref}$ (which we already have) and a given reward function $r(x, y)$. Since we previously learned a reward model $r_\phi$, we could simply plug that in 
 
  
 
