@@ -62,7 +62,7 @@ The RLHF process in general is unstable, requires more memory / computation and 
 1. Avoids fitting an explicit, standalone reward model
 2. Avoids using reinforcement learning
 
-DPO starts off with the KL-constrained reward maximization objective from Equation (3) above. The first step is to show that the optimal policy for this objective is of the form:
+DPO starts off with the KL-constrained reward maximization objective from Equation (3) above. The first step is to show that the optimal policy for this objective is of the following form for an arbitrary reward model $r(x, y)$:
 
 $$
 % Equation (4)
@@ -129,7 +129,55 @@ $$
 
 Finally, note that $Z(x)$ does not depend on $\pi$, so we only need to consider the KL-divergence term. Gibb's inequality tells us that KL-divergence is minimized at $0$ if and only if the two distributions are identical. This <completes our derivation of (4)> by showing that $\pi^*$ is indeed the optimal policy.
 
-Now that we have completed the derivation, let's consider what Equation (4) is saying. It tells us that we have an analytical solution for the policy $\pi_r$ that optimizes (3), and that it can be expressed in terms of $\pi_{ref}$ (which we already have) and a given reward function $r(x, y)$. Since we previously learned a reward model $r_\phi$, we could simply plug that in 
+Now that we have completed the derivation, let's consider what Equation (4) is saying. It tells us that we have an analytical solution for the policy $\pi_r$ that optimizes (3), and that it can be expressed in terms of $\pi_{ref}$ (which we already have) and a given reward function $r(x, y)$. 
+
+Since we previously learned a reward model $r_\phi$, we could simply plug that into (4) to get our optimal policy. Specifically, for a new input prompt $x$, we can compute $\pi_{ref}(y|x) \exp \left( \frac{1}{\beta} r_\phi(x,y) \right)$ for all possible values of $y$ and pick the best $y$. We can ignore $Z(x)$ since it is fixed for a given prompt $x$. Intuitively, the new model scales the probability of high reward answers $y$ up, and the degree of scaling is controlled by $\beta$. However, this is not computationally practical as we need to evaluate over a very large space of $y|x$ (i.e. all possible answers for a given prompt $x$).
+
+Hence, we want to find a form of the optimal policy which does not involve the partition function $Z(x)$ nor the reward model $r(x,y)$. We start by re-arranging Equation (4), taking log on both sides and re-arranging:
+
+$$
+\begin{align*}
+& r(x,y) = \beta \log \frac{\pi_r(y\ |\ x)}{\pi_{ref}(y\ |\ x)} + \beta \log Z(x) & (5)
+\end{align*}
+$$
+
+Since Equation (5) holds for any arbitrary reward model, we can use the optimal (unknown) human reward model back in Equation (1), $r := r^*$. Also, note that $\pi_r$ in Equation (5) refers to the optimal policy under $r$, so since we are using the optimal reward $r^*$, we can call this optimal policy $\pi^*$ as well. Now we plug Equation (5) back into Equation (1).
+
+$$
+\begin{align*}
+p^*(y_1 \triangleright y_2\ |\ x)
+    &= \frac{\exp \left( {r^*(x,\ y_1)} \right)}{\exp \left( r^*(x,\ y_1) \right) + \exp \left( r^*(x,\ y_2) \right) }\\
+    &= \frac{
+        \exp \left(
+            \beta \log \frac{\pi_r(y_1\ |\ x)}{\pi_{ref}(y_1\ |\ x)} + \beta \log Z(x)
+        \right)
+    }{
+        \exp \left(
+            \beta \log \frac{\pi_r(y_1\ |\ x)}{\pi_{ref}(y_1\ |\ x)} + \beta \log Z(x)
+        \right)
+        +
+        \exp \left(
+            \beta \log \frac{\pi_r(y_2\ |\ x)}{\pi_{ref}(y_2\ |\ x)} + \beta \log Z(x)
+        \right)
+    }\\
+    &= \frac{
+        1
+    }{
+        \exp \left(
+            \beta \log \frac{\pi_r(y_2\ |\ x)}{\pi_{ref}(y_2\ |\ x)}
+            -
+            \beta \log \frac{\pi_r(y_1\ |\ x)}{\pi_{ref}(y_1\ |\ x)}
+        \right)
+    }\\
+    &= \sigma \left( 
+            \beta \log \frac{\pi_r(y_2\ |\ x)}{\pi_{ref}(y_2\ |\ x)}
+            -
+            \beta \log \frac{\pi_r(y_1\ |\ x)}{\pi_{ref}(y_1\ |\ x)}
+    \right) & (6)
+\end{align*}
+$$
+
+The derivation of the above is quite simple, we just need to note that it is of the form $\\exp (x) / (\exp (x) + \exp (y))$, and use [the re-parametrization of the BT-model as a sigmoid function](../misc/bradley-terry.md#re-parametrization). The great thing is that the pesky partition function $Z(x)$ cancels out because the BT-model simply ends up with the difference between two scores / rewards.
 
  
 

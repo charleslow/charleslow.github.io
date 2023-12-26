@@ -16,5 +16,3 @@ P(i \triangleright j) &= \frac{e^{s_i}}{e^{s_i} + e^{s_j}}\\
 $$
 
 Where $\sigma(x) = 1 / (1 + e^{-x})$ is the sigmoid function.
-
-
