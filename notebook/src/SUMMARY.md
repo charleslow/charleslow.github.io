@@ -19,3 +19,4 @@
     - [Schnabel 2016 - Recs as Treatments](./papers/schnabel_2016.md)
     - [Burges 2010 - RankNET to LambdaMART](./papers/burges_2010.md)
     - [Dao 2022 - Flash Attention](./papers/dao_2022.md)
+    - [Rafailov 2023 - Direct Preference Optimization](./papers/rafailov_2023.md)

@@ -26,7 +26,7 @@ $$
 
 This likelihood function can then be minimized by differentiating wrt $p_i$ and solved by setting to zero.
 
-## Re-Parametrization
+## BT Model as a Sigmoid Function
 
 We can also express the likelihood as a function of the difference in scores $\beta_i - \beta_j$. Recall that the sigmoid function is $\sigma(x) = 1 / (1 + e^{-x})$. Then:
 $$
