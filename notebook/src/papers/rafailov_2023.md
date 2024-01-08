@@ -174,16 +174,15 @@ The benefit of this new formulation is that we can write the maximum likelihood 
 
 $$
 \begin{align*}
-\mathcal{L}_{DPO}(\pi_\theta; \pi_{ref}) = \mathbb{E}_{(x,y_w,y_l) \sim \mathcal{D}} \left[
+& \mathcal{L}_{DPO}(\pi_\theta; \pi_{ref}) = \mathbb{E}_{(x,y_w,y_l) \sim \mathcal{D}} \left[
     \log \sigma \left(
         \beta \log \frac{\pi_\theta(y_w\ |\ x)}{\pi_{ref}(y_w\ |\ x)}
         -
         \beta \log \frac{\pi_\theta(y_l\ |\ x)}{\pi_{ref}(y_l\ |\ x)}
     \right)
-\right]
+\right] & (7)
 \end{align*}
 $$
-
  
 
 ## References
