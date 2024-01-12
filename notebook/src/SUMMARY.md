@@ -21,3 +21,4 @@
     - [Dao 2022 - Flash Attention](./papers/dao_2022.md)
     - [Rafailov 2023 - Direct Preference Optimization](./papers/rafailov_2023.md)
     - [Ma 2018 - Entire Space Multi-Task Model](./papers/ma_2018.md)
+    - [Guo 2017 - DeepFM](./papers/guo_2017.md)
