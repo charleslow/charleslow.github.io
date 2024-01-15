@@ -22,3 +22,4 @@
     - [Rafailov 2023 - Direct Preference Optimization](./papers/rafailov_2023.md)
     - [Ma 2018 - Entire Space Multi-Task Model](./papers/ma_2018.md)
     - [Guo 2017 - DeepFM](./papers/guo_2017.md)
+    - [He 2020 - LightGCN](./papers/he_2020.md)
