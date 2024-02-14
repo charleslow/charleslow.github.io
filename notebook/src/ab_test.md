@@ -61,13 +61,88 @@ The appeal of the bayesian approach is two-fold:
 1. It allows us to make <faster decisions>. Suppose an experiment is wildly successful, and it is clear within a day that variant B is better. Bayesian analysis will be able to reveal this result, whereas frequentist analysis will tell us to wait longer (since we estimated the effect size to be smaller).
 2. It allows us to <control risk>. Since we are making decisions based on minimizing risk (supposing we had picked the poorer variant), we may be sure that even if we are wrong, it will not severely degrade our product. So supposing that there is no significant engineering cost between variant A and B, we can more rapidly roll out new iterations with the assurance that on average our product will be improving.
 
+## Power Analysis
+
+Reference: [Probing into Minimum Sample Size by Mintao Wei](https://towardsdatascience.com/probing-into-minimum-sample-size-formula-derivation-and-usage-8db9a556280b)
+
+How to determine the minimum sample size required to achieve a certain significance level and power desired?
+
+The following table helps us understand how type I and type II errors come into play:
+
+| | Null Hypothesis: A is True | Alternate Hypothesis: B is True |
+|:------:|:-------:|:--------:|
+|Reject A| Type I Error | Good statistical power |
+|Accept A| Good significance level | Type II Error |
+
+<Type I Error> refers to rejecting the null hypothesis when it is actually true, e.g. when we think that an AA test has significant difference. In short, it means we were <too eager to deploy a poor variant>. This should happen with probability $\alpha$, which is the significance level which we set (typically 5%). We have a better handle on type I error because the baseline conversion rate is typically known prior to an experiment. 
+
+<Type II Error> refers to failing to reject the null hypothesis when the alternate is actually true, i.e. we failed to get a significant effect on an improvement that is *known* to be better. In short, we were <too conservative and failed to deploy a winning variant>. In order to reason about type II error, we need to make a guess on what is the distribution of test variant `B`. Typically, this is done by assuming a minimum effect $\delta$ we wish to detect, and setting $\mu_B = \mu_A + \delta$, and re-using the standard deviation from `A`. With these assumptions in place, we use $power = 1-\beta$ to determine the type II error that should only occur with probability $\beta$ (typically 20%). Note that since $\delta$ is the *minimum* effect we wish to detect, if the actual effect turned out to be larger, the type II error can only be smaller than our desired amount, which is ok.
+
+Now we can derive the formula for the minimum sample size required to achieve the desired levels of type I and type II error respectively.
+
+Let us define the baseline conversion rate as $p$, and the minimum relative detectable effect rate as $d$. Consequently, the minimum detectable delta is $\delta = d \times p$. Let the desired power level be $1-\beta$, and the desired significance level as $\alpha$. Assume the scenario where we are running an AA or AB test with two variants of sample size $N$ each.
+
+Firstly, we write down the distribution of the sample mean difference supposing we knew the true population means and standard deviations. Let $\mathbb{E}(X_A) = \mu_A, Var(X_A) = \sigma_A^2$ and $\mathbb{E}(X_B) = \mu_B, Var(X_B) = \sigma_B^2$. Note that $X_A, X_B$ may have arbitrary distributions, e.g. they could measure proportions, revenue etc.
+
+Under the central limit theorem, the sample means will be distributed like so with $N$ samples: $\bar{X}_A \sim N \left( \mu_A, \frac{\sigma_A^2}{N} \right)$, $\bar{X}_B \sim N \left( \mu_B, \frac{\sigma_B^2}{N} \right)$. Importantly, the difference of the sample means will have the distribution below. Note that we add the variances together because $Var(B-A) = Var(B) + Var(A)$ for any two independent random variables $A, B$.
+
+$$
+    \bar{X}_{D} = \bar{X}_B - \bar{X}_A \sim N \left( \mu_B - \mu_A, \frac{\sigma_A^2 + \sigma_B^2}{N} \right)
+$$
+
+Now we can start working from the desired $\alpha, \beta$ levels to the minimum sample size. We need to ensure that both objectives below are achieved with our sample size $N$:
+1. Assuming null hypothesis to be true, ensure that type I error $\leq \alpha$.
+2. Assuming alternate hypothesis to be true, ensure that type II error $\leq 1 - \beta$.
+
+Our overall strategy is thus:
+1. Write the true distribution of sample mean difference $\bar{X}_D$ as a function of $N$
+2. Write an equation that enforces objective 1
+    - Assume the null hypothesis is true
+    - This equation should express that the probability of the observed sample mean difference $\bar{x}_D$ falling in the critical region of the distribution $\bar{X}_D$ is $\leq \alpha$.
+    - This should simply enforce that we set the critical value at $z_{\alpha | \bar{X}_D, H_0}$ 
+    - We cannot set it any lower because we will violate objective 1
+3. Write an equation that enforces objective 2
+    - Now importantly, the minimal detectable effect $\delta$ must lie beyond the critical value derived earlier.$z_{\alpha | \bar{X}_D, H_0}$ Why? Suppose otherwise. Then 
+
+
+Let us first tackle objective 1. Assuming the null hypothesis is true, observe that $\bar{X}_D \sim N \left( 0, \frac{\sigma_A^2 + \sigma_B^2}{N} \right)$. For a given level of significance $\alpha$, under the null hypothesis, denote the critical value for rejecting the null as $z_{\alpha|\bar{X}_D, H_0}$. Now, under the null hypothesis, the probability of committing a type I error is:
+
+$$
+\begin{align*}
+    P \left( \bar{X}_{D} \geq z_{H_0}(\alpha) \right) &= 
+    P \left( Z \geq \frac{\bar{x}_{D} - 0}{\sqrt{\frac{\sigma_A^2 + \sigma_B^2}{N}}} \right)
+\end{align*}
+$$
+
+Notice that the minimal effect $\delta$ should not enter into this equation, because type I error simply assumes the null hypothesis, so the alternate hypothesis does not and should not show up here.
+
+Since we wish to control the type I error to be $\leq \alpha$ by controlling $N$, we derive the following:
+
+$$
+\begin{align*}
+    P \left( Z \geq \frac{\bar{x}_{D}}{\sqrt{\frac{\sigma_A^2 + \sigma_B^2}{N}}} \right) &\leq \alpha\\
+    z_{H_0}(\alpha) \leq \frac{\delta}{\sqrt{\frac{\sigma_A^2 + \sigma_B^2}{N}}}\\
+    N \geq \frac{z_{H_0}^2 \left[ \sigma_A^2 + \sigma_B^2 \right] }{\delta^2}
+\end{align*}
+$$
+
+Line 2 of the above is saying that we wish the critical value of the distribution to be *less* than the minimal detectable effect
+
+We write down the probability of wrongly rejecting the null hypothesis (i.e. committing a type I error):
+
+$$
+
+$$
+
 ## References
 
-- [Experiments at Airbnb](https://medium.com/airbnb-engineering/experiments-at-airbnb-e2db3abf39e7)
-- [Evan Miller's AB Testing Tools](https://www.evanmiller.org/ab-testing/)
-- [PostHog AB Testing Examples](https://posthog.com/product-engineers/ab-testing-examples)
-- [How we experiment at Monzo](https://monzo.com/blog/2022/05/24/pellets-not-cannonballs-how-we-experiment-at-monzo)
-- [Ron Kohavi 2022 - AB Testing Intuition Busters](https://drive.google.com/file/d/1oK2HpKKXeQLX6gQeQpfEaCGZtNr2kR76/view)
+- General:
+    - [Experiments at Airbnb](https://medium.com/airbnb-engineering/experiments-at-airbnb-e2db3abf39e7)
+    - [Evan Miller's AB Testing Tools](https://www.evanmiller.org/ab-testing/)
+    - [PostHog AB Testing Examples](https://posthog.com/product-engineers/ab-testing-examples)
+    - [How we experiment at Monzo](https://monzo.com/blog/2022/05/24/pellets-not-cannonballs-how-we-experiment-at-monzo)
+    - [Ron Kohavi 2022 - AB Testing Intuition Busters](https://drive.google.com/file/d/1oK2HpKKXeQLX6gQeQpfEaCGZtNr2kR76/view)
+    - [Francesco Casalegno - AB Testing A Complete Guide](https://towardsdatascience.com/a-b-testing-a-complete-guide-to-statistical-testing-e3f1db140499)
 
 - On Bayesian AB Testing:
     - [Convoy - The Power of Bayesian AB Testing](https://medium.com/convoy-tech/the-power-of-bayesian-a-b-testing-f859d2219d5)
