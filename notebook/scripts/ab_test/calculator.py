@@ -28,7 +28,7 @@ def compute_minimal_sample_size(
     baseline_conversion_rate : float
         The conversion rate of the baseline.
     minimum_detectable_effect : float
-        The minimum detectable effect.
+        The relative minimum detectable effect.
 
     Returns
     -------

@@ -84,55 +84,51 @@ Let us define the baseline conversion rate as $p$, and the minimum relative dete
 
 Firstly, we write down the distribution of the sample mean difference supposing we knew the true population means and standard deviations. Let $\mathbb{E}(X_A) = \mu_A, Var(X_A) = \sigma_A^2$ and $\mathbb{E}(X_B) = \mu_B, Var(X_B) = \sigma_B^2$. Note that $X_A, X_B$ may have arbitrary distributions, e.g. they could measure proportions, revenue etc.
 
-Under the central limit theorem, the sample means will be distributed like so with $N$ samples: $\bar{X}_A \sim N \left( \mu_A, \frac{\sigma_A^2}{N} \right)$, $\bar{X}_B \sim N \left( \mu_B, \frac{\sigma_B^2}{N} \right)$. Importantly, the difference of the sample means will have the distribution below. Note that we add the variances together because $Var(B-A) = Var(B) + Var(A)$ for any two independent random variables $A, B$.
+Under the central limit theorem, the sample means will be distributed like so with $N_A, N_B$ samples: $\bar{X}_A \sim N \left( \mu_A, \frac{\sigma_A^2}{N_A} \right)$, $\bar{X}_B \sim N \left( \mu_B, \frac{\sigma_B^2}{N_B} \right)$. Importantly, the difference of the sample means will have the distribution below. Note that we add the variances together because $Var(B-A) = Var(B) + Var(A)$ for any two independent random variables $A, B$.
 
 $$
-    \bar{X}_{D} = \bar{X}_B - \bar{X}_A \sim N \left( \mu_B - \mu_A, \frac{\sigma_A^2 + \sigma_B^2}{N} \right)
+\begin{align}
+    \bar{X}_{D} = \bar{X}_B - \bar{X}_A \sim N \left( \mu_B - \mu_A, \frac{\sigma_A^2}{N_A} + \frac{\sigma_B^2}{N_B} \right)
+\end{align}
 $$
 
-Now we can start working from the desired $\alpha, \beta$ levels to the minimum sample size. We need to ensure that both objectives below are achieved with our sample size $N$:
+Now we can start working from the desired $\alpha, \beta$ levels to the minimum sample size. We need to ensure that both objectives below are achieved with our sample size $N_A,N_B$:
 1. Assuming null hypothesis to be true, ensure that type I error $\leq \alpha$.
 2. Assuming alternate hypothesis to be true, ensure that type II error $\leq 1 - \beta$.
 
-Our overall strategy is thus:
-1. Write the true distribution of sample mean difference $\bar{X}_D$ as a function of $N$
-2. Write an equation that enforces objective 1
-    - Assume the null hypothesis is true
-    - This equation should express that the probability of the observed sample mean difference $\bar{x}_D$ falling in the critical region of the distribution $\bar{X}_D$ is $\leq \alpha$.
-    - This should simply enforce that we set the critical value at $z_{\alpha | \bar{X}_D, H_0}$ 
-    - We cannot set it any lower because we will violate objective 1
-3. Write an equation that enforces objective 2
-    - Now importantly, the minimal detectable effect $\delta$ must lie beyond the critical value derived earlier.$z_{\alpha | \bar{X}_D, H_0}$ Why? Suppose otherwise. Then 
+Let us define some notation first.
+- Let $z(\phi)$ denote the critical value under the standard normal distribution such that $P(Z \leq z(\phi)) = \phi$. This is basically the `scipy.stats.norm.ppf` function, e.g. $z(0.975) = 1.96$. 
+- We also want to denote the critical value under the distribution $\bar{X}_D$ of the sample mean difference under the null or alternate hypothesis (these are non-standard normal distributions). Let these be $z_{\bar{X}_D | H_0}(\phi)$ and $z_{\bar{X}_D | H_1}(\phi)$ respectively.
 
+For objective 1, assuming the null hypothesis and using equation (1) above, we have $\bar{X}_D | H_0 \sim N(0, \frac{2\ \sigma_A^2}{N_A})$. Since $\alpha$ is a two-tailed probability and we want the critical region on the right-side, let $\alpha' = 1 - \alpha / 2$. E.g. $\alpha=0.05$ implies $\alpha'=0.975$. Then:
 
-Let us first tackle objective 1. Assuming the null hypothesis is true, observe that $\bar{X}_D \sim N \left( 0, \frac{\sigma_A^2 + \sigma_B^2}{N} \right)$. For a given level of significance $\alpha$, under the null hypothesis, denote the critical value for rejecting the null as $z_{\alpha|\bar{X}_D, H_0}$. Now, under the null hypothesis, the probability of committing a type I error is:
+$$
+\begin{align}
+    z_{\bar{X}_D | H_0}(\alpha') = z(\alpha') \cdot \sqrt{\frac{2\ \sigma_A^2}{N_A}}
+\end{align}
+$$
+
+Note that equation (2) above tells us the critical value such that we will reject the null hypothesis if the sample mean of $B$ is greater than this value. To satisfy objective 2, we must thus ensure that the probability of rejecting the null hypothesis is at least $1-\beta$. In other words, we want $z_{\bar{X}_D | H_1}(\beta) \geq z_{\bar{X}_D | H_0}(\alpha')$. Assuming the alternate hypothesis and again using equation (1), we have $\bar{X}_D | H_1 \sim N(\delta, \frac{\sigma_A^2}{N_A} + \frac{\sigma_B^2}{N_B})$. So then:
 
 $$
 \begin{align*}
-    P \left( \bar{X}_{D} \geq z_{H_0}(\alpha) \right) &= 
-    P \left( Z \geq \frac{\bar{x}_{D} - 0}{\sqrt{\frac{\sigma_A^2 + \sigma_B^2}{N}}} \right)
+    z_{\bar{X}_D | H_1}(\beta) &\geq z_{\bar{X}_D | H_0}(\alpha')\\
+    \delta - z(\beta) \times \sqrt{\frac{\sigma_A^2}{N_A} + \frac{\sigma_B^2}{N_B}} &\geq z(\alpha') \times \sqrt{\frac{2\ \sigma_A^2}{N_A}}\\
 \end{align*}
 $$
 
-Notice that the minimal effect $\delta$ should not enter into this equation, because type I error simply assumes the null hypothesis, so the alternate hypothesis does not and should not show up here.
-
-Since we wish to control the type I error to be $\leq \alpha$ by controlling $N$, we derive the following:
+For the purpose of getting a minimum $N$, we assume $N = N_A = N_B$. Then using this and squaring both sides:
 
 $$
 \begin{align*}
-    P \left( Z \geq \frac{\bar{x}_{D}}{\sqrt{\frac{\sigma_A^2 + \sigma_B^2}{N}}} \right) &\leq \alpha\\
-    z_{H_0}(\alpha) \leq \frac{\delta}{\sqrt{\frac{\sigma_A^2 + \sigma_B^2}{N}}}\\
-    N \geq \frac{z_{H_0}^2 \left[ \sigma_A^2 + \sigma_B^2 \right] }{\delta^2}
+    \delta^2 &\geq z(\beta)^2 \times \frac{\sigma_A^2 + \sigma_B^2}{N} + z(\alpha')^2 \times \frac{2\ \sigma_A^2}{N}\\
+    N &\geq \frac{z_(\beta)^2 \cdot (\sigma_A^2 + \sigma_B^2) + 2 \cdot z(\alpha')^2 \cdot \sigma_A^2}{\delta^2}\\
 \end{align*}
 $$
 
-Line 2 of the above is saying that we wish the critical value of the distribution to be *less* than the minimal detectable effect
+Which gives us the required minimum sample size equation.
 
-We write down the probability of wrongly rejecting the null hypothesis (i.e. committing a type I error):
 
-$$
-
-$$
 
 ## References
 
