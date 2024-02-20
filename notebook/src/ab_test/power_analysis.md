@@ -45,7 +45,7 @@ $$
 \end{align}
 $$
 
-Note that equation (2) above tells us the critical value such that we will reject the null hypothesis if the sample mean of $B$ is greater than this value. To satisfy objective 2, we must thus ensure that the probability of rejecting the null hypothesis is at least $1-\beta$. In other words, we want $z_{\bar{X}_D | H_1}(\beta) \geq z_{\bar{X}_D | H_0}(\alpha')$. Assuming the alternate hypothesis and again using equation (1), we have $\bar{X}_D | H_1 \sim N(\delta, \frac{\sigma_A^2}{N_A} + \frac{\sigma_B^2}{N_B})$. So then:
+Note that equation (2) above tells us the critical value such that we will reject the null hypothesis if the sample mean of $B$ is greater than this value. To satisfy objective 2, we must thus ensure that the probability of rejecting the null hypothesis is at least $\beta$. In other words, we want $z_{\bar{X}_D | H_1}(\beta) \geq z_{\bar{X}_D | H_0}(\alpha')$. Assuming the alternate hypothesis and again using equation (1), we have $\bar{X}_D | H_1 \sim N(\delta, \frac{\sigma_A^2}{N_A} + \frac{\sigma_B^2}{N_B})$. So then:
 
 $$
 \begin{align*}
@@ -70,5 +70,5 @@ The equation (3) above for the minimum sample size requires us to know the stand
 
 Specifically, the variance of a bernoulli random variable with probability $p$ is $p \cdot (1-p)$. Thus, if $X_A \sim Bernoulli(p_A)$, then $Var(X_A) = p_A \cdot (1-p_A)$, and likewise for $X_B$. 
 
-So we can use $\sigma_A = \sqrt{p_A \cdot (1-p_A)}$ and $\sigma_B = \sqrt{(p_A + \delta) \cdot (1- p_A - \delta)}$ and substitute these into equation (3). We will then be able to have a minimum sample size formula by just specifying $\alpha$, $\beta$, $\p_A$ and minimum relative difference $d$. This is the formula used by [Evan Miller's sample size calculator](https://www.evanmiller.org/ab-testing/sample-size.html).
+So we can use $\sigma_A = \sqrt{p_A \cdot (1-p_A)}$ and $\sigma_B = \sqrt{(p_A + \delta) \cdot (1- p_A - \delta)}$ and substitute these into equation (3). We will then be able to have a minimum sample size formula by just specifying $\alpha$, $\beta$, baseline conversion $p_A$ and minimum relative difference $d$. This is the formula used by [Evan Miller's sample size calculator](https://www.evanmiller.org/ab-testing/sample-size.html).
 
