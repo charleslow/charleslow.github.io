@@ -45,12 +45,12 @@ $$
 \end{align}
 $$
 
-Note that equation (2) above tells us the critical value such that we will reject the null hypothesis if the sample mean of $B$ is greater than this value. To satisfy objective 2, we must thus ensure that the probability of rejecting the null hypothesis is at least $\beta$. In other words, we want $z_{\bar{X}_D | H_1}(\beta) \geq z_{\bar{X}_D | H_0}(\alpha')$. Assuming the alternate hypothesis and again using equation (1), we have $\bar{X}_D | H_1 \sim N(\delta, \frac{\sigma_A^2}{N_A} + \frac{\sigma_B^2}{N_B})$. So then:
+Note that equation (2) above tells us the critical value such that we will reject the null hypothesis if the sample mean of $B$ is greater than this value. To satisfy objective 2, we must thus ensure that the probability of rejecting the null hypothesis is at least $power = 1-\beta$. In other words, we want $\delta - z_{\bar{X}_D | H_1}(1-\beta) \geq z_{\bar{X}_D | H_0}(\alpha')$. Assuming the alternate hypothesis and again using equation (1), we have $\bar{X}_D | H_1 \sim N(\delta, \frac{\sigma_A^2}{N_A} + \frac{\sigma_B^2}{N_B})$. So then:
 
 $$
 \begin{align*}
-    z_{\bar{X}_D | H_1}(\beta) &\geq z_{\bar{X}_D | H_0}(\alpha')\\
-    \delta - z(\beta) \times \sqrt{\frac{\sigma_A^2}{N_A} + \frac{\sigma_B^2}{N_B}} &\geq z(\alpha') \times \sqrt{\frac{2\ \sigma_A^2}{N_A}}\\
+    \delta - z_{\bar{X}_D | H_1}(1 - \beta) &\geq z_{\bar{X}_D | H_0}(\alpha')\\
+    \delta - z(1-\beta) \times \sqrt{\frac{\sigma_A^2}{N_A} + \frac{\sigma_B^2}{N_B}} &\geq z(\alpha') \times \sqrt{\frac{2\ \sigma_A^2}{N_A}}\\
 \end{align*}
 $$
 
@@ -58,11 +58,17 @@ For the purpose of getting a minimum $N$, we assume $N = N_A = N_B$. Then using 
 
 $$
 \begin{align}
-    N &\geq \frac{z_(\beta)^2 \cdot (\sigma_A^2 + \sigma_B^2) + 2 \cdot z(\alpha')^2 \cdot \sigma_A^2}{\delta^2}\\
+    N &\geq \frac{\left( z(1-\beta) \sqrt{\sigma_A^2 + \sigma_B^2} + z(\alpha') \sigma_A \sqrt{2} \right)^2}{\delta^2}\\
 \end{align}
 $$
 
-Which gives us the required minimum sample size equation.
+Which gives us the required minimum sample size equation. If we assume $\sigma_A = \sigma_B$, as is often assumed because we do not know the variance of the treatment, then it simplifies to the following form (as seen in [Ron Kohavi's paper](https://drive.google.com/file/d/1oK2HpKKXeQLX6gQeQpfEaCGZtNr2kR76/view)).
+
+$$
+\begin{align}
+    N &\geq \frac{2 \sigma_A^2 \cdot \left( z(1-\beta) + z(\alpha')\right)^2}{\delta^2}\\
+\end{align}
+$$
 
 ## Bernoulli Events
 
