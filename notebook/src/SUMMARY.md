@@ -27,3 +27,4 @@
     - [Ma 2018 - Entire Space Multi-Task Model](./papers/ma_2018.md)
     - [Guo 2017 - DeepFM](./papers/guo_2017.md)
     - [He 2020 - LightGCN](./papers/he_2020.md)
+    - [Borisyuk 2024 - GNN at LinkedIn](./papers/borisyuk_2024.md)
