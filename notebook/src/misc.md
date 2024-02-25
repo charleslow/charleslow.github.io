@@ -29,6 +29,13 @@ To search not just in the filename but also in the full path (e.g. we only want 
 find . -wholename "*Desktop*python*"
 ```
 
+Note that if we want to locate executable binaries, another useful command is `whereis`:
+```bash
+whereis cat
+---
+cat: /usr/bin/cat /usr/share/man/man1/cat.1.gz
+```
+
 ## Numpy Indexing
 
 Suppose we have a 2D array `X` and would like to take a slice of certain rows and columns. We might try, for e.g., to take the first two rows of X and the 3rd/4th column of X, i.e. we expect to get a 2 by 2 matrix.
@@ -186,4 +193,24 @@ This will give us an array like so, showing the spike in memory in the middle of
 
 ```
 [17.375, 17.5234375, 17.5234375, 19.34765625, 93.59765625, 93.59765625, 17.53125, 17.53125, 17.53125]
+```
+
+## CUDA
+
+PyTorch may sometimes throw errors if the installed torch version does not match the installed CUDA version. To address this, we need to first check the CUDA version using the `nvcc` command:
+
+```bash
+/usr/local/cuda/bin/nvcc --version
+---
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2022 NVIDIA Corporation
+Built on Wed_Jun__8_16:49:14_PDT_2022
+Cuda compilation tools, release 11.7, V11.7.99
+Build cuda_11.7.r11.7/compiler.31442593_0
+```
+
+Then install the correct version of torch:
+
+```bash
+pip install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 ```

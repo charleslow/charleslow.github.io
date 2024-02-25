@@ -28,3 +28,4 @@
     - [Guo 2017 - DeepFM](./papers/guo_2017.md)
     - [He 2020 - LightGCN](./papers/he_2020.md)
     - [Borisyuk 2024 - GNN at LinkedIn](./papers/borisyuk_2024.md)
+    - [Hamilton 2017 - GraphSAGE](./papers/hamilton_2017.md)
