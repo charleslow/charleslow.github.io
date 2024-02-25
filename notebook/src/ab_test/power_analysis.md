@@ -37,6 +37,10 @@ Let us define some notation first.
 - Let $z(\phi)$ denote the critical value under the standard normal distribution such that $P(Z \leq z(\phi)) = \phi$. This is basically the `scipy.stats.norm.ppf` function, e.g. $z(0.975) = 1.96$. 
 - We also want to denote the critical value under the distribution $\bar{X}_D$ of the sample mean difference under the null or alternate hypothesis (these are non-standard normal distributions). Let these be $z_{\bar{X}_D | H_0}(\phi)$ and $z_{\bar{X}_D | H_1}(\phi)$ respectively.
 
+| ![Illustration for Power Analysis Derivation](../images/diagram_power_analysis.png) |
+| :--: |
+| Illustration for Power Analysis Derivation |
+
 For objective 1, assuming the null hypothesis and using equation (1) above, we have $\bar{X}_D | H_0 \sim N(0, \frac{2\ \sigma_A^2}{N_A})$. Since $\alpha$ is a two-tailed probability and we want the critical region on the right-side, let $\alpha' = 1 - \alpha / 2$. E.g. $\alpha=0.05$ implies $\alpha'=0.975$. Then:
 
 $$

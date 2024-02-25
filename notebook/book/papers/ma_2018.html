@@ -194,7 +194,7 @@
 <h2 id="esmm-model"><a class="header" href="#esmm-model">ESMM Model</a></h2>
 <p>The ESMM model breaks down the <code>pCTCVR</code> task into its constituents, and uses two neural networks to model <code>pCTR</code> and <code>pCVR</code> simultaneously. Based on the diagram, it seems to embed each user field and item field into a fixed-size embedding, where the user field embeddings are summed up element-wise to produce an overall user embedding. The same is done to produce an overall item embedding. The user and item embeddings are then concatenated together, and this combined embedding is fed into a dense layer to finally output a real score representing either <code>pCVR</code> or <code>pCTR</code>. The two scores are then multiplied together to form the final prediction of <code>pCTCVR</code>.</p>
 <p>Importantly, the projection (or lookup) layer from raw features to embedding is shared between the two neural networks. This allows the <code>pCVR</code> network in particular to benefit from the richer sample data that the <code>pCTR</code> network enjoys and addresses the <span style="color:orange">data sparsity</span> issue.</p>
-<div class="table-wrapper"><table><thead><tr><th style="text-align: center"><img src="/images/esmm_diagram.png" alt="ESMM Architecture" /></th></tr></thead><tbody>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: center"><img src="../images/esmm_diagram.png" alt="ESMM Architecture" /></th></tr></thead><tbody>
 <tr><td style="text-align: center">ESMM Model Architecture (Figure 2 from ESMM Paper)</td></tr>
 </tbody></table>
 </div>
