@@ -29,3 +29,7 @@
     - [He 2020 - LightGCN](./papers/he_2020.md)
     - [Borisyuk 2024 - GNN at LinkedIn](./papers/borisyuk_2024.md)
     - [Hamilton 2017 - GraphSAGE](./papers/hamilton_2017.md)
+- [Database Course](./database_course/intro.md)
+    - [Lecture 1](./database_course/lecture01.md)
+    - [Lecture 2](./database_course/lecture02.md)
+    - [Lecture 3](./database_course/lecture03.md)
