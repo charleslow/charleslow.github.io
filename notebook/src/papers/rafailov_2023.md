@@ -183,6 +183,20 @@ $$
 \right] & (7)
 \end{align*}
 $$
+
+## Application to Dual Encoder Retrieval
+
+The DPO framework offers a way to fine-tune a policy according to human preferences, whilst ensuring stability against a reference model. In the original formulation, $\pi(y\ |\ x)$ represents the probability of generative model generating $y$ given an input prompt $x$. 
+
+A related problem is that of fine-tuning embedding models for search retrieval, in what is known as the <dual encoder> framework. In this case, we also have preference data in the form of triplets `(query, positive_passage, negative_passage)`, and we wish to fine-tune embeddings such that the dot-product or cosine similarity between `(query, positive_passage)` is high whilst that of `(query, negative_passage)` is low. In this formulation, we could let the policy $\pi(q,\ p)$ represent the normalized probability of a relevant match between query and passage. We can then borrow the framework of DPO to fine-tune our embeddings. The benefit of DPO compared to typical optimization objectives for dual encoder is the stability of the policy against the reference policy, which hopefully is a good form of regularization even when preference data is limited.
+
+Specifically, we define a dual encoder policy $\pi(q,\ p)$, where $q$ represents a query and $p$ represents a passage, like so:
+1. Encode $q$ into a vector $\in \R^d$ using a BERT model
+2. Encode $p$ into a vector $\in \R^d$ using a BERT model (can be same model as the query encoder)
+3. Take the dot product
+4. Run the dot product through a sigmoid layer to convert it into a probability
+
+We can then apply this method to a reference encoder model and call it $\pi_{ref}(q,\ p)$, and optimize another encoder model against this reference model. Will need to conduct experiments to see if this method offers gains against the typical dual encoder objectives, such as [Karpuhkhin 2020](https://ar5iv.labs.arxiv.org/html/2004.04906).
  
 
 ## References
