@@ -219,3 +219,120 @@ This is an advantage of the attention representation of text. Another advantage 
 - Attention will do it in 1 step by masking the attention matrix suitably. This makes it much faster to train attention models.
 
 <Truncated Backpropagation> is one technique to reduce computation. e.g. in the context of RNN, we might forward propagate through positions `1-10` and compute the gradients. For the next positions `11-20`, the hidden state from position `10` is used for forward propagation, but we do not backpropagate the gradients back to positions `1-10`.
+
+# Lecture 5: Transformers
+
+[Lecture 5 Link](https://www.youtube.com/watch?v=QkGwxtALTLU)
+
+Transformers started as cross attention (Bahdanau 2014) and evolved to self-attention (Vaswani 2017). There are two main types of transformers:
+1. <Encoder-Decoder> model, e.g. T5 or BART. Encoder-decoder models have a separate encoder and decoder module. The encoder takes the input sequence and passes it into a transformer block to return a "context" embedding. The decoder then takes in both the "context" embedding and the output sequence (e.g. the same sentence in French for translation, or the same sentence itself shifted right for self-attention) with appropriate masking and generates a probability for each position in the output sequence. Note that the encoder module has un-masked full attention over the entire input sequence, but the decoder module is masked.
+
+    The benefit of the encoder-decoder model is that we get an embedding representation of a given input sequence which can be used for downstream tasks. But it is also less flexible because we need to have a concept of the "input sequence" vs the "output sequence", which is suitable for tasks like translation but not in text generation tasks there is no clear input/output.
+
+2. <Decoder only> model, e.g. GPT or LLaMa. The decoder model simply takes in the input sequence and passes it through a transformer module, resulting in a probability for each position in the input sequence. Using appropriate causal masking, we can train the network to predict the next token at each position given only information about tokens at previous positions.
+
+    The benefit of the decoder model is fewer parameters than the encoder-decoder model. It's also more suitable for text generation tasks. In the encoder decoder framework, at each time step we need to recompute the encoder representation, because the representation at earlier positions can change with the addition of a new token. In the decoder only framework, the previous cached Q, K, V values do not change due to the causal masking, so we can re-use those in decoding the next time step. We should thus expect decoder only models to be faster at decoding.
+
+## Core concepts
+
+<Multi-head attention>. The intuition for having multiple attention heads is that information from different parts of the sentence can be useful to disambiguate in different ways. Typically for a given word to attend to nearby words is useful for learning syntax, but attending to further words is useful for learning semantics.
+
+Multi-head attention basically comprises of multiple attention modules, each with their own weights $W_{Q_i}, W_{K_i}, W_{V_i}$. The attention outputs are computed for each head, and then concatenated together. Since the resulting matrix will have $n_{head}$ times the size on one dimension, we pass it through a final linear transformation to get the desired dimension size (as though we only used one attention head).
+
+In practice the attention weights across all the heads are concatenated together first before the matrix multiplication to vectorize the computation. The resulting matrix is then sliced and attention computed on each head, before concatenating together again for the final matrix multiplication.
+
+<Positional Encoding>. There is no notion of position in the transformer. Positional encoding simply adds an embedding at each position to the word embedding to encode this information. Note that it is added right at the beginning to the raw token embeddings. 
+
+1. <Sinusoidal Encoding> was the original proposal in the Vaswani 2017 paper. The position embedding is a fixed vector at each position $t$, where the $i^{th}$ element is $sin(\omega_k \cdot t)$ for even $i = 2k$ and $cos(\omega_k \cdot t)$ for odd $i = 2k+1$, and $\omega_k := \frac{1}{10000^{2k/d}}$. Here $k$ is an index on the dimension going from $1, ... \frac{d}{2}$ and $d$ is the dimension of the embedding. 
+
+    The method is rather counter-intuitive but the basic idea is that we want the dot product between two embeddings to be high when the relative position is near and decay as we move away. The intuition is covered nicely in [Kazemnejad 2019](https://kazemnejad.com/blog/transformer_architecture_positional_encoding/) and basically we can think of each positional embedding as analogous to a binary encoding represented by $0, 1$ bits at each dimension. Instead of a hard $0$ or $1$, the $sine$ and $cosine$ functions provide a smoothed version so that we get a nice relative decay. 
+
+    Note that this method does allow us to extrapolate the position embedding to longer sequences that we have not seen before in training.
+
+2. <Learnable Embeddings>. This was proposed in Shaw 2018, which basically just allows the embedding at each position to be a learnable vector. The problem of this approach is that it becomes impossible to extrapolate to longer sequences in inference time.
+
+3. <Rotary Positional Encodings> or <RoPE>. This was proposed in Su 2021. The fundamental idea is that we want the dot product of embeddings to result in a function of relative position.
+
+    Specifically, we desire that for given positions $m, n$, and the respective word embeddings $x_m, x_n$, the dot product of the resulting embeddings may be expressed purely as a function of their relative distance $m-n$, and in so doing we lose notion of the absolute position entirely. 
+    $$
+    f_q(x_m, m) \cdot f_k(x_n, n) = g(x_m, x_n, m - n)
+    $$
+
+    The paper uses trigonometry and imaginary numbers to come up with a function that satisfies this property. The benefit of losing notion of absolute position entirely means that we can extrapolate to longer sequences that we have not seen before, and RoPE extrapolates better than sinusoidal embeddings. LLaMa uses RoPE embeddings.
+
+<Stability>. Problem of gradient vanishing or exploding as we pass through the layers of an rnn or transformer. <Layer normalization> (Ba 2016) is the traditional way to deal with this issue. The intuition is that it normalizes the outputs of each attention layer to a consistent range, preventing too much variance in the scale of outputs.
+
+$$
+\text{LayerNorm}(X;g,b) = \frac{g}{\sigma_x} \cdot (X - \mu_x) + b
+$$
+
+Here, $X \in \R^{d \times n}$ is the output of an attention layer of embedding dimension $d$ and sequence length $n$, $\mu_x$ and $\sigma_x$ are the element-wise mean and standard deviation respectively across the time positions, and $g$ and $b$ are learnable vectors of dimension $d$. Hence, if $X$ has very large or small values, the normalization process standardizes the range of values. The parameters $g$ and $b$ allow the model flexibility to shift the values to a different part of the space.  
+
+A simplification of layer norm is <RMSNorm> (Zhang and Sennrich 2019). It removes the mean and bias terms but does not hurt performance empirically. It is used in Llama. The only learnable parameters per layer is $g$.
+$$
+\begin{align*}
+    RMS(X) = \sqrt{\frac{1}{n} \sum_{i=1}^n x_i^2}\\
+    RMSNorm(X) = \frac{X}{RMS(X)} \cdot g
+\end{align*}
+$$
+
+<Residual Connections>. Add an additive connection between input (to an attention layer) and the output.
+$$
+    \text{Residual}(X, f) = f(X) + X
+$$
+
+Where $f$ is the attention layer function. It prevents vanishing gradients (since we get $X$) and also allows $f$ to focus on learning the difference from the input. In the self-attention context, having the residual connection also prevents the need for tokens to attend to themselves, since that is provided by $X$ itself.
+
+<Post vs Pre Layer Norm> (Xiong 2020). This paper found that applying LayerNorm after the attention layer (and the residual connection) broke the residual connection, because we have $\text{LayerNorm}(f(X) + X)$, which means that we are no longer guaranteed to get the input $X$. This led to some instability in transformer training. Instead, they found it is better to apply $f(\text{LayerNorm}(X)) + X$, which led to more stable training, since the residual connection is preserved.
+
+<Activation functions>.
+- Vaswani used $ReLU(x) = max(0, x)$
+- LLaMA uses Swish or SiLU (Hendricks and Gimpel 2016), which is
+$$
+    Swish(x; \beta) = x \cdot \sigma(\beta \cdot x)
+$$
+    Looks a lot like ReLU but avoids the zero gradient problem.
+
+Transformers are powerful but fickle - Vaswani 2017 used Adam with learning rate increase and decrease (warm up). This is no longer that necessary after the pre-layer norm (Xiong 2020).
+
+<AdamW> (Loshchilov and Hutter 2017) is now more popular. It applies weight decay for regularization to Adam.
+
+In summary, some comparisons. The Mamba paper found that the LLaMA architecture is 10x more efficient in terms of scaling law compared to the original Vaswani.
+
+| | Vaswani | LLaMA |
+|: --- :|: ---- :|: ---- :|
+| Norm Position | Post      | Pre     |
+| Norm Type     | LayerNorm | RMSNorm |
+| Non-linearity | ReLU      | SiLU    |
+| Position-Encoding | Sinusoidal | RoPE |
+
+# Lecture 6: Decoding Strategies
+
+What is an LLM? It is a model that defines a conditional probability distribution of a sequence given some input sequence $X$.
+
+$$
+    P(Y|X) = \prod_{j=1}^J P(y_j | X, y_1, ..., y_{j-1})
+$$
+
+The nice thing about the conditional distribution is that we get some notion of the model's confidence about the next token to generate. The problem with the conditional distribution is <hallucination>, since models generally assign some small but non-zero probability to  incorrect tokens, even if all the pre-training data is factual. See Kalai and Kempala 2023.
+
+<Ancestral Sampling> is to sample the next token based on the indicated confidence by the model. The nice thing is that the resultant generations follow exactly the distribution of the model.
+
+$$
+    y_j \sim P(y_j | X, y_1, ..., y_{j-1})
+$$
+
+The problem with ancestral sampling is the <long tail> problem. Most language models have around 30k tokens, and the probabilities from the long tail adds up, so that there's a somewhat good chance of sampling something really unlikely. 
+
+The obvious solution to this problem is to ignore the long tail and only sampling from the top-k most probably tokens. This is <top-k sampling>. This results in only tokens that the model is somewhat confident in. 
+
+Alternatively, we could only sampling from the top-p probability mass. This is called <top-p or nucleus sampling>. This is to account for the case where top-k sampling is not so desirable because if most of the probability mass is only on say 3 tokens, we may only want to sample from them. 
+
+Another alternative is <epsilon sampling>, where we only sample tokens with some minimum probability. This ensures that we only sample from tokens where the model is somewhat confident.
+
+Another strategy is to modify the "peakiness" of the data by controlling the <distribution temperature>. This is done by modifying the scaling factor for the final softmax layer. This allows the user to put more weights on the top results (`temperature < 1.0`) for factual answers, or spread the weights out more by increasing the temperature for say story generaion.
+
+<Contrastive Decoding> is a newer idea - the idea is that we use a smaller model to improve the performance of a larger model. Instead of just decoding from the larger model's distribution, we contrastively decode by choosing outputs where the expert model thinks are more likely than the smaller model. The intuition is that both the big and small model are degenerate in similar ways (e.g. keep repeating itself), but the expert has knowledge which the smaller model does not have. Hence taking the probability difference helps to eliminate the degenerate cases. 
+
+
+

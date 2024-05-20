@@ -29,6 +29,7 @@
     - [He 2020 - LightGCN](./papers/he_2020.md)
     - [Gao 2021 - SimCSE](./papers/gao_2021.md)
     - [Dao 2022 - Flash Attention](./papers/dao_2022.md)
+    - [Tunstall 2022 - SetFit](./papers/tunstall_2022.md)
     - [Rafailov 2023 - Direct Preference Optimization](./papers/rafailov_2023.md)
     - [Borisyuk 2024 - GNN at LinkedIn](./papers/borisyuk_2024.md)
 - [NLP Course](./nlp_course/intro.md)

@@ -14,6 +14,8 @@ The SBERT paper presents 3 different training objectives, all of which perform w
 
 1. <Classification objective>. This is for tasks where the objective is to predict a label given two sentences A, B. We pass each sentence into the BERT network and a pooling layer to get two vector representations, $u$ and $v$. The pooling layer can be (i) take the `[CLS]` token embedding, (ii) take the element-wise mean or (iii) take the element-wise max. We then create a concatenated vector $(u,\ v,\ |u-v|)$ which is fed into a softmax classifer. The network is trained using cross-entropy loss.
 
+    Note that this siamese approach (where each sentence is passed into the same network) differs a little from the typical cross-encoder approach, where the sentences are concatenated as a <string> with the `[SEP]` token before passed into the network. The latter approach is presumably more powerful because the attention mechanism can attend to all pairwise relationships
+
 2. <Regression objective>. This is for tasks where the objective is to predict a float given two sentences A, B. Given the vectors $u$ and $v$, the cosine similarity is simply taken to generate a float between $-1$ and $1$. The cosine similarity is then compared with the actual float value using mean-squared error to generate a loss.
 
 3. <Triplet objective>. This is for tasks where each data point is a triplet (anchor sentence $a$, positive sentence $p$, negative sentence $n$). We then minimize the loss function, where $m$ is the margin:
@@ -26,5 +28,5 @@ $$max(||s_a - s_p|| - ||s_a - s_n|| + m, 0)$$
 
 ## Takeaway
 
-It is interesting that the classification objective, which uses a cross-encoder framework, is also able to learn useful embeddings by adding the difference operation $|u-v|$. This suggests that we can train a cross encoder and simultaneously get useful embeddings for nearest neighbour retrieval at the same time.
+It is interesting that the classification objective, which is close to a cross-encoder framework, is also able to learn useful embeddings by adding the difference operation $|u-v|$. This suggests that we can train a cross encoder and simultaneously get useful embeddings for nearest neighbour retrieval at the same time.
 
