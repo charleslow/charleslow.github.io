@@ -2,6 +2,18 @@
 
 A collection of miscellaneous, useful notes.
 
+
+## f-strings
+
+To surround a `text` with a symbol (say `=`) to a fixed length:
+
+```python
+>>> text = "Title"
+>>> print(f"{text:=^20}")
+
+=======Title========
+```
+
 ## Vim
 
 Command to interactively change each 'foo' to 'bar'. `:%s` triggers the substitute global command, followed by the search and replace phrases respectively. Finally `g` means replace all occurrences and `c` means with confirmation. Note that `:s` will only do the same for one line.

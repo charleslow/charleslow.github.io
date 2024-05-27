@@ -33,7 +33,6 @@
     - [Rafailov 2023 - Direct Preference Optimization](./papers/rafailov_2023.md)
     - [Borisyuk 2024 - GNN at LinkedIn](./papers/borisyuk_2024.md)
 - [NLP Course](./nlp_course/intro.md)
-    - [Lecture 1](./nlp_course/lecture01.md)
 - [Database Course](./database_course/intro.md)
     - [Lecture 1](./database_course/lecture01.md)
     - [Lecture 2](./database_course/lecture02.md)
