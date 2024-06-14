@@ -29,4 +29,3 @@ $$max(||s_a - s_p|| - ||s_a - s_n|| + m, 0)$$
 ## Takeaway
 
 It is interesting that the classification objective, which is close to a cross-encoder framework, is also able to learn useful embeddings by adding the difference operation $|u-v|$. This suggests that we can train a cross encoder and simultaneously get useful embeddings for nearest neighbour retrieval at the same time.
-

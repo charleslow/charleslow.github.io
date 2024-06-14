@@ -5,6 +5,7 @@
 - [Recommender Systems]()
     - [Gradient Boosting](./gradient_boosting.md)
     - [TF-IDF](./tfidf.md)
+    - [Cross Encoders](./cross_encoders.md)
     - [Two Tower]()
     - [Diversity]()
     - [Exposure Bias]()
