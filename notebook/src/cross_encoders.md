@@ -18,7 +18,7 @@ As opposed to bi-encoders (or dual encoders), which take a dot product between t
 
 ## Contrastive Loss
 
-The vanilla binary cross entropy loss proposed above may be thought of as a <point-wise> loss, in which each document is either relevant or irrelevant in absolute terms. However, treating relevance as a <relative> concept often better reflects reality. For example, given the first page of search results for a Google query, most of the documents should be relevant to some extent, but some are more relevant than the rest (and get clicked on).
+The vanilla binary cross entropy loss proposed above may be thought of as a <point-wise> loss, in which each document is either relevant or irrelevant in absolute terms. However, treating relevance as a <relative> concept often better reflects reality. For example, given the first page of search results for a Google query, most of the documents should be relevant to some extent, but some are more relevant than the rest (and get clicked on). Simply treating all clicks as relevant and all non-clicks as irrelevant naively ignores the context (i.e. the neighbouring search results) in which the clicks were generated. It assumes that across query sessions, the average <absolute> level of relevance of the results is comparable. Treating relevance as a <relative> concept within the same query session weakens this assumption and hence often works better.
 
 Thus <Gao 2021> proposes the Local Contrastive Estimation loss. For a given query `q`, a positive document $d_q^+$ is selected, and a few negative documents $d_q^-$ are sampled using a retriever (e.g. BM25). The contrastive loss then seeks to maximize the softmax probability of the positive document against the negative documents.
 
@@ -32,6 +32,10 @@ L_{LCE} = \frac{1}{|Q|} \sum_{q \in Q,\ G_q}
 $$
 
 It is confirmed in multiple experiments in <Gao 2021> and <Pradeep 2022> that LCE consistently out-performs point-wise cross entropy loss. Furthermore, the performance consistently improves as the number of negative documents per query (i.e. $|G_q|$) increases. In <Gao 2021>, up to `7` negatives (i.e. batch size of `8`) were used. <Pradeep 2022> shows that increasing the batch size up to `32` continues to yield gains consistently (albeit diminishingly).
+
+## Other details
+
+<Pradeep 2022>'s experiments show that using a stronger retrieval model (a <ColBERT>-based model) during inference generates slight gains in final performance (as opposed to BM25). Although <Gao 2021> argues that it is also important to use the same retrieval model during model training (so that the cross encoder sees the same distribution of negatives during training and inference), <Pradeep 2022> argues that the alignment is not as important as the stronger retrieval performance during inference. 
 
 
 
