@@ -33,6 +33,7 @@
     - [Tunstall 2022 - SetFit](./papers/tunstall_2022.md)
     - [Rafailov 2023 - Direct Preference Optimization](./papers/rafailov_2023.md)
     - [Borisyuk 2024 - GNN at LinkedIn](./papers/borisyuk_2024.md)
+    - [Liu 2023 - Meaning Representations from Trajectories](./papers/liu_2023.md)
 - [NLP Course](./nlp_course/intro.md)
 - [Database Course](./database_course/intro.md)
     - [Lecture 1](./database_course/lecture01.md)
