@@ -209,7 +209,7 @@
 <li>On the <code>query</code> side, during inference, we use the same encoder model to embed the query and compute similarity against the <code>n</code> prospective queries. The similarity scores form a representation of size <code>n</code> for the query.</li>
 <li>We may then compute similarity between the size <code>n</code> query and size <code>n</code> document representations and perform retrieval with standard nearest neighbour vector databases.</li>
 </ul>
-<p>In contrast to standard embedding vectors where each position encodes an unknown quality, these representation vectors have clear semantic meaning in each position (indicating the strength of relation to a particular prospective query). </p>
+<p>In contrast to standard embedding vectors where each position encodes an unknown quality, these representation vectors have <span style="color:orange">clear semantic meaning</span> in each position (indicating the strength of relation to a particular prospective query). This setup also allows us to trade-off precision against recall by <span style="color:orange">tweaking the sparsity of the representation vectors</span> using score thresholding or top-k thresholding on either (or both) the query and document side.</p>
 
                     </main>
 
