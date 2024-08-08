@@ -9,4 +9,4 @@ The shame of the gospel seems to take on a slightly different note today. It is 
 
 Thus the Christian finds himself in a tricky situation. Because the shame of the gospel is subtle and seldom articulated, we are subconsciously tempted to skirt around it. For example, in conversation with friends we have not seen in awhile, we feel an implicit pressure to talk about things that they are interested in - technology, finance etc. There is a subtle fear of disapproval or ridicule should we start talking about spiritual matters.
 
-In Paul's case, the shame also comes in the form of chains. He is a condemned criminal in the eyes of society, and subject to various deprivations and humiliation. In light
+In Paul's case, the shame also comes in the form of chains. He is a condemned criminal in the eyes of society, and subject to various deprivations and humiliation. Thus the shame may refer to the disgraceful status of being labelled as a criminal. It could also refer to <suffering itself as a source of shame>. In a society where successful and honorable lives may 
