@@ -2,7 +2,7 @@
 
 [Notebook](https://charleslow.github.io/notebook/book) of personal references pertaining to python, recommender systems, machine learning etc.
 
-[Bible reflections](https://charleslow.github.io/bible/book) from my own readings. 
+[LADR notes](https://charleslow.github.io/linear_algebra_done_right/book) from Sheldon Axler's LADR book.
 
 [Handwritten notes](https://charleslow.github.io/notes/foundations_of_ml.pdf) from taking David Rosenberg's Foundations of ML course.
 
