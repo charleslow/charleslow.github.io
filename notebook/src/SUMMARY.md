@@ -16,6 +16,7 @@
     - [Encoder vs Decoder](./llm/encoder_vs_decoder.md)
 - [Miscellaneous](./misc.md)
     - [Bradley-Terry Model](./misc/bradley-terry.md)
+    - [Setting up WSL](./misc/wsl-setup.md)
 - [Identities](./identities.md)
     - [Sigmoid](./identities/sigmoid.md)
     - [Statistics](./identities/statistics.md)
