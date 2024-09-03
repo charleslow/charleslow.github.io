@@ -176,9 +176,9 @@
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="borisyuk-2024---gnn-at-linkedin"><a class="header" href="#borisyuk-2024---gnn-at-linkedin">Borisyuk 2024 - GNN at LinkedIn</a></h1>
-<p><a href="https://arxiv.org/html/2402.11139v1">Paper Link</a>.</p>
+<p><a href="https://arxiv.org/abs/2402.11139v1">Borisyuk 2024 - LiGNN: Graph Neural Networks at LinkedIn</a></p>
 <p>This is an applied paper documenting learning points from LinkedIn's latest Graph Neural Network (GNN) models, geared toward industry practitioners.</p>
-<p>The main architecture is based on <a href="https://ar5iv.labs.arxiv.org/html/1706.02216">GraphSAGE</a>. The graph is heterogenous, where nodes can represent a company or member or post etc., and edges can represent (i) engagement of a user with a post, (ii) affinity between a member and a creator, and (iii) whether a member or company has a particular attribute. Edges are weighted by the strength of the engagement, except attribute edges which all have a weight of <code>1.0</code>.</p>
+<p>The main architecture is based on <a href="https://ar5iv.labs.arxiv.org/html/1706.02216">GraphSAGE</a>. The graph is heterogenous, where nodes can represent a company or member or post etc., and edges can represent (i) engagement of a user with a post, (ii) affinity between a member and a creator, and (iii) whether a member or company has a particular attribute. Edges are weighted by the strength of the engagement, except attribute edges which all have a weight of <code>2.0</code>.</p>
 <p>The GNN's are trained as encoders for the various types of nodes, and the generated embeddings may be used for downstream link prediction tasks. They are trained using the GraphSAGE framework, which inductively generates the node embeddings using graph sampling and neighbourhood aggregation. The graph sampling is powered by the <a href="https://github.com/microsoft/DeepGNN">Microsoft DeepGNN Graph Engine</a>, which is run on a Kubernetes CPU cluster.</p>
 <h2 id="temporal-gnn"><a class="header" href="#temporal-gnn">Temporal GNN</a></h2>
 <p>One of the main innovations of this paper is to adapt the GraphSAGE framework to the temporal nature of a live recommender system, where items lose relevance very quickly with time and modelling the activity sequence is important.</p>
@@ -238,22 +238,6 @@
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

@@ -4,8 +4,8 @@ import re
 
 
 def transform_text(input_text):
-    """Transform text inside <text> to add color"""
-    pattern = re.compile(r"<(.*?)>")
+    """Transform text inside <<text>> to add color"""
+    pattern = re.compile(r"<<(.*?)>>")
     output_text = pattern.sub(r'<span style="color:orange">\1</span>', input_text)
     return output_text
 
@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
     # Write arXiv URLs to a file
     with open("arxiv_urls.txt", "w") as f:
-        for url in sorted(arxiv_urls):
+        for url in sorted(set(arxiv_urls)):
             f.write(url + "\n")
 
     # we are done with the book's modification, we can just print it to stdout

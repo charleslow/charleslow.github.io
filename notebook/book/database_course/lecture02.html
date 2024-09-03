@@ -187,7 +187,7 @@
 <li>Data Definition Language (DDL)</li>
 <li>Data Control Language (DCL)</li>
 </ul>
-<p>Important: <span style="color:orange">SQL is based on bags</span> (with duplicates) not sets (no duplicates).</p>
+<p>Important: <SQL is based on bags> (with duplicates) not sets (no duplicates).</p>
 <p>We should try to do everything on the database, in one big query.</p>
 <p>Example database:</p>
 <ul>
@@ -291,22 +291,6 @@ SELECT * FROM cteSource
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

@@ -1,10 +1,10 @@
 # Borisyuk 2024 - GNN at LinkedIn
 
-[Paper Link](https://arxiv.org/html/2402.11139v1).
+[Borisyuk 2024 - LiGNN: Graph Neural Networks at LinkedIn](https://arxiv.org/abs/2402.11139v1)
 
 This is an applied paper documenting learning points from LinkedIn's latest Graph Neural Network (GNN) models, geared toward industry practitioners. 
 
-The main architecture is based on [GraphSAGE](https://ar5iv.labs.arxiv.org/html/1706.02216). The graph is heterogenous, where nodes can represent a company or member or post etc., and edges can represent (i) engagement of a user with a post, (ii) affinity between a member and a creator, and (iii) whether a member or company has a particular attribute. Edges are weighted by the strength of the engagement, except attribute edges which all have a weight of `1.0`.
+The main architecture is based on [GraphSAGE](https://ar5iv.labs.arxiv.org/html/1706.02216). The graph is heterogenous, where nodes can represent a company or member or post etc., and edges can represent (i) engagement of a user with a post, (ii) affinity between a member and a creator, and (iii) whether a member or company has a particular attribute. Edges are weighted by the strength of the engagement, except attribute edges which all have a weight of `2.0`.
 
 The GNN's are trained as encoders for the various types of nodes, and the generated embeddings may be used for downstream link prediction tasks. They are trained using the GraphSAGE framework, which inductively generates the node embeddings using graph sampling and neighbourhood aggregation. The graph sampling is powered by the [Microsoft DeepGNN Graph Engine](https://github.com/microsoft/DeepGNN), which is run on a Kubernetes CPU cluster.
 
@@ -38,7 +38,7 @@ Personalized Page Rank (PPR) is an adaptation of the well-known Page Rank algori
 
 In training the GNN under the GraphSAGE framework, embeddings of neighbours to a node `s` are aggregated together to form the representation for `s`. A terse way of saying the same thing is that "GNNs propagate signals across graphs". Hence, how neighbours are sampled is crucial in determining the performance of the GNN.
 
-The simple way is <Random Sampling>, which simply chooses neighbours randomly amongst nodes connected to node `s`. This can done over a single-hop or multi-hops, and is efficient but not the most performant. The better way is <PPR sampling>, which chooses neighbours weighted by their PPR score, with the search space limited to nodes connected to `s` over `k` hops. This is slower but a better measure of neighbourhood. 
+The simple way is <<Random Sampling>>, which simply chooses neighbours randomly amongst nodes connected to node `s`. This can done over a single-hop or multi-hops, and is efficient but not the most performant. The better way is <<PPR sampling>>, which chooses neighbours weighted by their PPR score, with the search space limited to nodes connected to `s` over `k` hops. This is slower but a better measure of neighbourhood. 
 
 From their experiments, 2-hop PPR sampling contributes 2.1% validation AUC lift. Adding more hops beyond 2 hops contributes marginally to performance, hence 2-hops is chosen for efficiency.
 
@@ -47,9 +47,9 @@ From their experiments, 2-hop PPR sampling contributes 2.1% validation AUC lift.
 
 The paper is full of practical tips on how to speed up training and improve stability. Here are some that stood out to me:
 
-<Adaptive Graph Sampling>. IO time is correlated with number of neighbours sampled. So they start training with a small number of neighbours and increases it only when validation metric starts to stall. It seems that the final number of neighbours is capped at `200`.
+<<Adaptive Graph Sampling>>. IO time is correlated with number of neighbours sampled. So they start training with a small number of neighbours and increases it only when validation metric starts to stall. It seems that the final number of neighbours is capped at `200`.
 
-<Mixed Precision>. Mixed precision (`float-16`) gave roughly 10% speed up in training. But they had to be careful to retain `float32` in the last layer otherwise it degraded the training process. 
+<<Mixed Precision>>. Mixed precision (`float-16`) gave roughly 10% speed up in training. But they had to be careful to retain `float32` in the last layer otherwise it degraded the training process. 
 
-<Data Bound>. One reflection point they made is that GNN training is generally data-bound rather than compute bound. So the focus on the paper was to make data loading and processing more efficient. For example, they implemented a shared memory queue, and use the `multiprocessing` package to have different processes pre-fetch data from the DeepGNN Graph Engine and pre-process it simultaneously. 
+<<Data Bound>>. One reflection point they made is that GNN training is generally data-bound rather than compute bound. So the focus on the paper was to make data loading and processing more efficient. For example, they implemented a shared memory queue, and use the `multiprocessing` package to have different processes pre-fetch data from the DeepGNN Graph Engine and pre-process it simultaneously. 
 

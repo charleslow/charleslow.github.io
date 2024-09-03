@@ -176,7 +176,7 @@
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="large-language-models"><a class="header" href="#large-language-models">Large Language Models</a></h1>
-<p>LLMs are generally used in an <span style="color:orange">auto-regressive</span> way, where the user supplies a prompt and the LLM returns a generated response. This framework makes it amenable to a wide range of tasks.</p>
+<p>LLMs are generally used in an <auto-regressive> way, where the user supplies a prompt and the LLM returns a generated response. This framework makes it amenable to a wide range of tasks.</p>
 <p>HuggingFace has a great <a href="https://huggingface.co/blog/optimize-llm">blog post</a> explaining how we can run LLMs on humble hardware. Typically, LLMs have billions of parameters. The following rules of thumb helps us know how much memory we need to load the LLM into memory. For a model with <code>X billion</code> parameters:</p>
 <ul>
 <li>Loading in <code>float32</code> requires <code>4X GB</code> of VRAM</li>
@@ -286,22 +286,6 @@ model.generate(..., use_cache=True)
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

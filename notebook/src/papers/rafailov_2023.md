@@ -2,7 +2,7 @@
 
 Here we trace the derivations from the [DPO paper](https://arxiv.org/pdf/2305.18290.pdf). Denote the model after SFT as $\pi^{SFT}(y | x)$, i.e. the policy $\pi^{SFT}$ is a probability function for each pair of inputs and answers `(x, y)`. Naturally, we can use this policy to generate tokens by choosing the response with the highest probability (or approximate it in a greedy token-by-token manner).
 
-To perform RLHF, we first need to build a <reward model>. First, we prompt the SFT model to obtain pairs of answers $(y_1, y_2) \sim \pi^{SFT}(y\ |\ x)$. These samples are presented to human labellers who record their preferences in the form $y_w \triangleright y_l\ |\ x$, where $y_w$ wins and $y_l$ loses. These preferences are assumed to be generated from an underlying reward model $r^*(x, y)$ which we do not have access to.
+To perform RLHF, we first need to build a <<reward model>>. First, we prompt the SFT model to obtain pairs of answers $(y_1, y_2) \sim \pi^{SFT}(y\ |\ x)$. These samples are presented to human labellers who record their preferences in the form $y_w \triangleright y_l\ |\ x$, where $y_w$ wins and $y_l$ loses. These preferences are assumed to be generated from an underlying reward model $r^*(x, y)$ which we do not have access to.
 
 We wish to learn this reward model. Since we only have access to pairwise preferences instead of the reward score, a common approach is to model the pairwise preferences using the [Bradley-Terry](../misc/bradley-terry.md) model. Specifically, we assume that the observed human preference decisions are related to the underlying human reward model in the following way:
 
@@ -22,7 +22,7 @@ $$
 
 Note that $r_\phi$ is usually initialized using the SFT model $\pi^{SFT}$, but with an additional linear layer over the final transformer layer to generate a scalar value as the reward.
 
-Having learned the reward model, we then need to use the learned reward function to <fine-tune $\pi^{SFT}$ using reinforcement learning>. Specifically, we set $\pi_{ref} := \pi^{SFT}$ as the reference model, and initialize a new $\pi_\theta$ model that we wish to train. Usually, $\pi_\theta$ is also initialized as a copy of $\pi^{SFT}$. The objective function we wish to maximize is:
+Having learned the reward model, we then need to use the learned reward function to <<fine-tune $\pi^{SFT}$ using reinforcement learning>>. Specifically, we set $\pi_{ref} := \pi^{SFT}$ as the reference model, and initialize a new $\pi_\theta$ model that we wish to train. Usually, $\pi_\theta$ is also initialized as a copy of $\pi^{SFT}$. The objective function we wish to maximize is:
 
 $$
 % Equation (3)
@@ -60,7 +60,7 @@ $$
 \end{align*}
 $$
 
-The <derivation for Equation (4)> is as follows. For a given reward function $r(x, y)$:
+The <<derivation for Equation (4)>> is as follows. For a given reward function $r(x, y)$:
 
 $$
 \begin{align*}
@@ -115,7 +115,7 @@ $$
 \end{align*}
 $$
 
-Finally, note that $Z(x)$ does not depend on $\pi$, so we only need to consider the KL-divergence term. Gibb's inequality tells us that KL-divergence is minimized at $0$ if and only if the two distributions are identical. This <completes our derivation of (4)> by showing that $\pi^*$ is indeed the optimal policy.
+Finally, note that $Z(x)$ does not depend on $\pi$, so we only need to consider the KL-divergence term. Gibb's inequality tells us that KL-divergence is minimized at $0$ if and only if the two distributions are identical. This <<completes our derivation of (4)>> by showing that $\pi^*$ is indeed the optimal policy.
 
 Now that we have completed the derivation, let's consider what Equation (4) is saying. It tells us that we have an analytical solution for the policy $\pi_r$ that optimizes (3), and that it can be expressed in terms of $\pi_{ref}$ (which we already have) and a given reward function $r(x, y)$. 
 
@@ -188,7 +188,7 @@ $$
 
 The DPO framework offers a way to fine-tune a policy according to human preferences, whilst ensuring stability against a reference model. In the original formulation, $\pi(y\ |\ x)$ represents the probability of generative model generating $y$ given an input prompt $x$. 
 
-A related problem is that of fine-tuning embedding models for search retrieval, in what is known as the <dual encoder> framework. In this case, we also have preference data in the form of triplets `(query, positive_passage, negative_passage)`, and we wish to fine-tune embeddings such that the dot-product or cosine similarity between `(query, positive_passage)` is high whilst that of `(query, negative_passage)` is low. In this formulation, we could let the policy $\pi(q,\ p)$ represent the normalized probability of a relevant match between query and passage. We can then borrow the framework of DPO to fine-tune our embeddings. The benefit of DPO compared to typical optimization objectives for dual encoder is the stability of the policy against the reference policy, which hopefully is a good form of regularization even when preference data is limited.
+A related problem is that of fine-tuning embedding models for search retrieval, in what is known as the <<dual encoder>> framework. In this case, we also have preference data in the form of triplets `(query, positive_passage, negative_passage)`, and we wish to fine-tune embeddings such that the dot-product or cosine similarity between `(query, positive_passage)` is high whilst that of `(query, negative_passage)` is low. In this formulation, we could let the policy $\pi(q,\ p)$ represent the normalized probability of a relevant match between query and passage. We can then borrow the framework of DPO to fine-tune our embeddings. The benefit of DPO compared to typical optimization objectives for dual encoder is the stability of the policy against the reference policy, which hopefully is a good form of regularization even when preference data is limited.
 
 Specifically, we define a dual encoder policy $\pi(q,\ p)$, where $q$ represents a query and $p$ represents a passage, like so:
 1. Encode $q$ into a vector $\in \R^d$ using a BERT model

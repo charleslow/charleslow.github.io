@@ -176,8 +176,8 @@
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="lecture-3-database-storage-1"><a class="header" href="#lecture-3-database-storage-1">Lecture 3: Database Storage 1</a></h1>
-<p>Class will shift gears towards how to implement a DBMS. Focus is on a single node machine first, then move to concurrency. Today's focus is on the <span style="color:orange">Disk Manager</span>.</p>
-<p>Focus on <span style="color:orange">disk-based architecture</span>, i.e. the DBMS assumes that the primary storage location of the database is on non-volatile disk. The DBMS's components manage the movement of data between volatile (e.g. RAM) and non-volatile storage.</p>
+<p>Class will shift gears towards how to implement a DBMS. Focus is on a single node machine first, then move to concurrency. Today's focus is on the <Disk Manager>.</p>
+<p>Focus on <disk-based architecture>, i.e. the DBMS assumes that the primary storage location of the database is on non-volatile disk. The DBMS's components manage the movement of data between volatile (e.g. RAM) and non-volatile storage.</p>
 <p>Storage hierarchy. Higher rank is faster, smaller, expensive.</p>
 <ol>
 <li>CPU Registers</li>
@@ -246,8 +246,8 @@
 </ol>
 <h2 id="file-storage"><a class="header" href="#file-storage">File Storage</a></h2>
 <p>The DBMS stores a database as one or more files on disk typically in a proprietary format. The OS doesn't know anything about the contents of these files. There are portable file formats (e.g. parquet etc.). Early systems in 1980s further used custom <em>filesystems</em> on raw block storage. Most newer DBMSs do not do this.</p>
-<p>The <span style="color:orange">storage manager</span> is responsible for maintaining a database's files. It organizes the files as a collection of pages, and tracks the data read / written to pages, and tracks the available space in each page. A DBMS does not typically maintain multiple copies of a page on disk. This happens above or below the storage manager.</p>
-<p>A <span style="color:orange">page</span> is a fixed-size block of data. It can contain tuples, meta-data, indexes, logs etc. Most systems do not mix page types. Some systems require a page to be self-contained, i.e. all the information needed to understand the data in the page is contained within the page itself (e.g. Oracle). Each page is given a unique identifier. The DBMS uses an indirection layer to map page IDs to physical locations (e.g. in memory or in S3 or whatever).</p>
+<p>The <storage manager> is responsible for maintaining a database's files. It organizes the files as a collection of pages, and tracks the data read / written to pages, and tracks the available space in each page. A DBMS does not typically maintain multiple copies of a page on disk. This happens above or below the storage manager.</p>
+<p>A <page> is a fixed-size block of data. It can contain tuples, meta-data, indexes, logs etc. Most systems do not mix page types. Some systems require a page to be self-contained, i.e. all the information needed to understand the data in the page is contained within the page itself (e.g. Oracle). Each page is given a unique identifier. The DBMS uses an indirection layer to map page IDs to physical locations (e.g. in memory or in S3 or whatever).</p>
 <p>There are 3 different notions of what a page is:</p>
 <ol>
 <li>Hardware page (typically <code>4KB</code>). A hardware page is the largest block of data that the storage device can guarantee failsafe writes (i.e. if it says it wrote <code>4KB</code>, it actually happened).</li>
@@ -263,7 +263,7 @@
 <li>Sequential / Sorted File Organization (ISAM)</li>
 <li>Hashing file organization</li>
 </ul>
-<p>A <span style="color:orange">heap file</span> is an unordered collection of pages with tuples that are stored in random order.</p>
+<p>A <heap file> is an unordered collection of pages with tuples that are stored in random order.</p>
 
                     </main>
 
@@ -288,22 +288,6 @@
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

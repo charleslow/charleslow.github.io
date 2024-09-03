@@ -1,6 +1,6 @@
 # Lecture 1
 
-Course about how to design and implement a database management system. Textbook: <Database System Concepts> by Silberschatz, Korth and Sudarshan. 
+Course about how to design and implement a database management system. Textbook: <<Database System Concepts>> by Silberschatz, Korth and Sudarshan. 
 
 Agenda:
 - Database Systems Background
@@ -18,9 +18,9 @@ Store our database as a csv file that we manage. e.g. each line corresponds to a
 - Data types are not stored on the csv file, we need to know which is an integer etc.
 - Concurrent writes to the file are not supported
 
-A <Database Management System (DBMS)> is a software that allows applications to store and analyze information in a database. A general purpose DBMS supports the definition, creation, querying, update and administrations of databases in accordance with some data model. Usually first choice is postgres or sqlite.
+A <<Database Management System (DBMS)>> is a software that allows applications to store and analyze information in a database. A general purpose DBMS supports the definition, creation, querying, update and administrations of databases in accordance with some data model. Usually first choice is postgres or sqlite.
 
-A <data model> is a collection of concepts for describing the data in a database. A <schema> is a description of a particular collection of data, using a given data model. Examples of data models:
+A <<data model>> is a collection of concepts for describing the data in a database. A <<schema>> is a description of a particular collection of data, using a given data model. Examples of data models:
 1. Relational
 2. Key / Value 
 3. Graph
@@ -40,11 +40,11 @@ Early database applications were difficult to write. Every time the database sch
 - Physical storage left up to the DBMS implementation
 - Access data through high-level language, DBMS figures out the best execution model
 
-A <relation> is an unordered set that contain the relationship of attributes that represent entities. An n-ary relation is equivalent to a table with n columns. A <tuple> is a set of attributes values (also known as its domain) in the relation. The special value `NULL` is a member of every domain.
+A <<relation>> is an unordered set that contain the relationship of attributes that represent entities. An n-ary relation is equivalent to a table with n columns. A <<tuple>> is a set of attributes values (also known as its domain) in the relation. The special value `NULL` is a member of every domain.
 
-A relation's <primary key> uniquely identifies a single tuple. Some DBMSs automatically create an internal primary key if a table does not define one. Primary key is a constraint that the DBMS will enforce to ensure no duplicates exist. A <foreign key> specifies that an attribute from one relation maps to a tuple in another relation. E.g. If we have an artist table with the artist id, and an album table with an artist column, the artist column is a foreign key.
+A relation's <<primary key>> uniquely identifies a single tuple. Some DBMSs automatically create an internal primary key if a table does not define one. Primary key is a constraint that the DBMS will enforce to ensure no duplicates exist. A <<foreign key>> specifies that an attribute from one relation maps to a tuple in another relation. E.g. If we have an artist table with the artist id, and an album table with an artist column, the artist column is a foreign key.
 
-We can impose <constraints> on the database that must hold for any tuple. DBMS will then prevent any modification that could violate those constraints. Unique and foreign key constraints are the most common. e.g. `CREATE ASSERTION` in SQL. 
+We can impose <<constraints>> on the database that must hold for any tuple. DBMS will then prevent any modification that could violate those constraints. Unique and foreign key constraints are the most common. e.g. `CREATE ASSERTION` in SQL. 
 
 ## Data Manipulation Languages (DML)
 
@@ -56,30 +56,30 @@ There are two broad methods to store and retrieve information from a database:
 
 Fundamental operations to retrieve and manipulate tuples in a relation. Based on set algebra (unordered lists with no duplicates). Each operator takes one or more relations as its inputs and outputs a new relation. We can thus chain operators together to create more complex operations. The operations are:
 
-- <SELECT>. Choose a subset of the tuples from a relation that satisfies a selection predicate (filter). Predicates act as filters to retain only tuples that fulfill the qualifying requirement. We can combine multiple predicates using conjunctions / disjunctions.
+- <<SELECT>>. Choose a subset of the tuples from a relation that satisfies a selection predicate (filter). Predicates act as filters to retain only tuples that fulfill the qualifying requirement. We can combine multiple predicates using conjunctions / disjunctions.
     - Syntax: $\sigma_{predicate}(R)$
     - `SELECT * from TABLE where id="a"`
-- <PROJECTION>. Generate a relation with tuples that contains only the specified attributes. E.g. re-arrange ordering, manipulate values ($+,-$ etc.) and remove unwanted attributes.
+- <<PROJECTION>>. Generate a relation with tuples that contains only the specified attributes. E.g. re-arrange ordering, manipulate values ($+,-$ etc.) and remove unwanted attributes.
     - Syntax: $\pi_{A1, A2, ...}(R)$
     - Example: `SELECT b_{id} - 100`
-- <UNION>. Generate a relation that contains all tuples that appear in one or both input relations. Note that R and S must have the same schema.
+- <<UNION>>. Generate a relation that contains all tuples that appear in one or both input relations. Note that R and S must have the same schema.
     - Syntax: $(R \bigcup S)$
     - Example: `(SELECT * from R) UNION (SELECT * from S)`
-- <INTERSECTION>. Generate a relation that contains only the tuples that appear in both of the input relations.
+- <<INTERSECTION>>. Generate a relation that contains only the tuples that appear in both of the input relations.
     - Syntax: $(R \bigcap S)$
     - Example: `(SELECT * from R) INTERSECT (SELECT * from S)`
-- <DIFFERENCE>. Generate a relation that contains only the tuples that appear in the first and not the second of the input relations.
+- <<DIFFERENCE>>. Generate a relation that contains only the tuples that appear in the first and not the second of the input relations.
     - Syntax: $(R - S)$
     - Example: `(SELECT * from R) EXCEPT (SELECT * from S)`
-- <JOIN>. Generate a relation that contains all tuples that are a combination of two tuples (one from each input relation) with a common value for one or more attributes.
+- <<JOIN>>. Generate a relation that contains all tuples that are a combination of two tuples (one from each input relation) with a common value for one or more attributes.
     - Syntax: $(R \ \infty \ S)$
     - Example: `SELECT * FROM R NATURAL JOIN S;`
-- <Rename> $\rho$
-- <Assignment> $R \leftarrow S$
-- <Duplicate Elimination> $\delta$
-- <Aggregation> $\gamma$
-- <Sorting> $\tau$
-- <Division> $(R \div S)$
+- <<Rename>> $\rho$
+- <<Assignment>> $R \leftarrow S$
+- <<Duplicate Elimination>> $\delta$
+- <<Aggregation>> $\gamma$
+- <<Sorting>> $\tau$
+- <<Division>> $(R \div S)$
 
 Relational algebra defines an ordering of the high level steps of how to compute a query. E.g.
 - $\sigma_{b_{id}=102}(R \ \infty \ S)$ vs $R \ \infty \ (\sigma_{b_{id}=102}(S))$. The former will do a huge join before filtering, whereas the latter filters first before joining, which is much better.
@@ -88,7 +88,7 @@ Instead of specifying the exact operations, DBMS allow us to state the high leve
 
 ## Document Data Model
 
-A collections of record documents containing a hierarchy of named field / value pairs. A field's value can be a scalar type, array, or another document. Modern implementations use `JSON`. Main reason for this model is to avoid <relational object impedance msimatch>, i.e. relational databases store data in rows with relationships between tables, but in object oriented languages like Python data is stored in objects with nested attributes, which could result in inefficient queries when we try to map between the two. In contrast, Document Databases store data in a nested json which closely resembles the object-oriented approach, making it easier to work with. The down side is that we could end up storing a lot of duplicate data in the json objects.
+A collections of record documents containing a hierarchy of named field / value pairs. A field's value can be a scalar type, array, or another document. Modern implementations use `JSON`. Main reason for this model is to avoid <<relational object impedance msimatch>>, i.e. relational databases store data in rows with relationships between tables, but in object oriented languages like Python data is stored in objects with nested attributes, which could result in inefficient queries when we try to map between the two. In contrast, Document Databases store data in a nested json which closely resembles the object-oriented approach, making it easier to work with. The down side is that we could end up storing a lot of duplicate data in the json objects.
 - Examples: MongoDB, RavenDB, DynamoDB etc.
 
 ## Vector Data Model

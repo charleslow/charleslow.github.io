@@ -176,11 +176,11 @@
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="encoder-vs-decoder"><a class="header" href="#encoder-vs-decoder">Encoder vs Decoder</a></h1>
-<p>There are broadly two categories of LLMs: <span style="color:orange">Encoder-Decoder</span> architecture (typified by BERT) and <span style="color:orange">Decoder only</span> architecture (typified by GPT-2 series). There are some innate differences between the two that affect the type of application each is well suited for.</p>
+<p>There are broadly two categories of LLMs: <Encoder-Decoder> architecture (typified by BERT) and <Decoder only> architecture (typified by GPT-2 series). There are some innate differences between the two that affect the type of application each is well suited for.</p>
 <h2 id="encoder-decoder-architecture"><a class="header" href="#encoder-decoder-architecture">Encoder-Decoder Architecture</a></h2>
 <p>The Encoder-Decoder architecture was proposed in the original <a href="https://ar5iv.labs.arxiv.org/html/1706.03762">Attention is All You Need paper by Vaswani et al</a>. As the name suggests, there is a separate encoder and decoder module. The design choice of two distinct modules is easier to understand when we consider that the original paper was designed for the machine translation task, such that the inputs may be in English and the outputs may be in French.</p>
 <p>On the encoder-side, the encoder module sees the full input sequence and encodes it into an numeric encoding representation matrix of size <code>(seq_len, embed_dim)</code>. There is no input masking required because we assume we see the full English text before we begin translation. This encoding representation is passed to the decoder module as context.</p>
-<p>On the decoder-side, we cannot allow the decoder module to see the full output sequence during training, since that would cause data leakage and the model to collapse. Note that the decoder simultaneously (in one forward pass) predicts a token for each position in the output sequence during training. Hence to avoid data leakage, <span style="color:orange">causal masking</span> is applied such that for each position being predicted, the decoder module is only allowed to "see" tokens in previous positions.</p>
+<p>On the decoder-side, we cannot allow the decoder module to see the full output sequence during training, since that would cause data leakage and the model to collapse. Note that the decoder simultaneously (in one forward pass) predicts a token for each position in the output sequence during training. Hence to avoid data leakage, <causal masking> is applied such that for each position being predicted, the decoder module is only allowed to "see" tokens in previous positions.</p>
 <p>Note that this can be implemented simply by masking the attention matrix in each self-attention block in a triangular manner. The feedforward layers only map information from position <code>i</code> to position <code>i</code>, so there is no need to adjust that.</p>
 <div class="table-wrapper"><table><thead><tr><th style="text-align: center"><img src="../images/encoder_decoder_architecture.png" alt="BERT Encoder Decoder Architecture" /></th></tr></thead><tbody>
 <tr><td style="text-align: center">BERT Encoder Decoder Architecture (From Attention is All You Need)</td></tr>
@@ -190,8 +190,8 @@
 <p>The paper instead chose to take the <code>Q</code> matrix from the <em>decoder</em> and the <code>K, V</code> matrices from the <em>encoder</em>. Since the attention mechanism is <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">so</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mord mathnormal">t</span><span class="mord mathnormal">ma</span><span class="mord mathnormal">x</span><span class="mopen">(</span><span class="mord mathnormal">Q</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.0913em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8413em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mord mathnormal" style="margin-right:0.22222em;">V</span></span></span></span>, this allows every token on the decoder representation to attend to every token on the encoder representation. The result is a weighted combination of the <code>V</code> vectors taken from the encoder representation which is eventually used to generate the tokens for each decoder position.</p>
 <p>Here we can already observe some <em>inductive biases</em> baked into the encoder-decoder architecture. These comments are inspired by / taken from <a href="https://www.youtube.com/watch?v=orDKvo8h71o">Hyung Won Chung's lecture</a>:</p>
 <ol>
-<li>There is a <span style="color:orange">clear distinction between the tokens on the encoder-side and the decoder-side</span>, such that tokens on either side cannot directly attend to each other until the final block when the mixing happens. This may be suitable for the translation task but not for generic chat completion, where it is quite arbitary which point in the conversation we determine as the encoding and which point we determine as the decoding.</li>
-<li>The <code>V</code> matrix is taken entirely from the encoder-side, which may again <span style="color:orange">limit the expressiveness</span> of the model (what if there are important tokens on the decoder-side that would be useful to taken the <code>V</code> values from?). One may argue that in translation, the tokens on the encoder-side capture the full meaning of the sentence to be translated, so it is comprehensive. But the same is not true of generic chat completions.</li>
+<li>There is a <clear distinction between the tokens on the encoder-side and the decoder-side>, such that tokens on either side cannot directly attend to each other until the final block when the mixing happens. This may be suitable for the translation task but not for generic chat completion, where it is quite arbitary which point in the conversation we determine as the encoding and which point we determine as the decoding.</li>
+<li>The <code>V</code> matrix is taken entirely from the encoder-side, which may again <limit the expressiveness> of the model (what if there are important tokens on the decoder-side that would be useful to taken the <code>V</code> values from?). One may argue that in translation, the tokens on the encoder-side capture the full meaning of the sentence to be translated, so it is comprehensive. But the same is not true of generic chat completions.</li>
 <li>The separation of an encoder and decoder module suggests that there is significant difference between the tokens on the encoder-side and decoder-side. Again, this inductive bias</li>
 </ol>
 
@@ -224,22 +224,6 @@
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

@@ -2,7 +2,7 @@
 
 [Paper](https://ar5iv.labs.arxiv.org/html/1706.02216).
 
-This paper presents a framework to efficiently generate node embeddings, especially for previously unseen nodes. It calls this <inductive> learning, i.e. the model is able to generalize to new nodes, as opposed to previous frameworks which are <transductive> and only learn embeddings for seen nodes. For example, matrix factorization methods are transductive because we can only make predictions on a graph with fixed nodes, and need to be retrained when new nodes are added.
+This paper presents a framework to efficiently generate node embeddings, especially for previously unseen nodes. It calls this <<inductive>> learning, i.e. the model is able to generalize to new nodes, as opposed to previous frameworks which are <<transductive>> and only learn embeddings for seen nodes. For example, matrix factorization methods are transductive because we can only make predictions on a graph with fixed nodes, and need to be retrained when new nodes are added.
 
 GraphSAGE (i.e. Sample and Aggregation) aggregates feature information from the neighbourhood of a node to represent a given node. Feature information can include structural information (e.g. degree of a node) or other content-based information about a node, e.g. description of a job for a job node etc. 
 
@@ -26,7 +26,7 @@ The intuition behind the forward propagation is that we use the neighbours of $v
 
 ## Loss
 
-To train the weights, we define an <unsupervised loss> based on how well the embeddings are able to reconstruct the graph. Specifically, we have a loss which:
+To train the weights, we define an <<unsupervised loss>> based on how well the embeddings are able to reconstruct the graph. Specifically, we have a loss which:
 - Rewards positive pairs for having a high dot product
 - Penalizes negative pairs ($v_n$ being sampled negatives according to the negative sampling distribution $P_n$)
 
@@ -36,7 +36,7 @@ $$
         Q \cdot \mathbf{E}_{v_n \sim P_n(v)} log(\sigma(-z_u^T z_{v_n}))
 $$
 
-Alternatively, we can also define a <supervised loss> based on classification cross entropy loss, with presumably some form of negative sampling. The authors did not elaborate on this.
+Alternatively, we can also define a <<supervised loss>> based on classification cross entropy loss, with presumably some form of negative sampling. The authors did not elaborate on this.
 
 ## Aggregation Methods
 
