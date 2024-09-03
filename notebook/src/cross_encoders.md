@@ -31,16 +31,11 @@ L_{LCE} = \frac{1}{|Q|} \sum_{q \in Q,\ G_q}
     }
 $$
 
-It is confirmed in multiple experiments in <Gao 2021> and <Pradeep 2022> that LCE consistently out-performs point-wise cross entropy loss. Furthermore, the performance consistently improves as the number of negative documents per query (i.e. $|G_q|$) increases. In <Gao 2021>, up to `7` negatives (i.e. batch size of `8`) were used. <Pradeep 2022> shows that increasing the batch size up to `32` continues to yield gains consistently (albeit diminishingly).
+It is confirmed in multiple experiments in <<Gao 2021>> and <<Pradeep 2022>> that LCE consistently out-performs point-wise cross entropy loss. Furthermore, the performance consistently improves as the number of negative documents per query (i.e. $|G_q|$) increases. In <<Gao 2021>>, up to `7` negatives (i.e. batch size of `8`) were used. <<Pradeep 2022>> shows that increasing the batch size up to `32` continues to yield gains consistently (albeit diminishingly).
 
 ## Other details
 
-<Pradeep 2022>'s experiments show that using a stronger retrieval model (a <ColBERT>-based model) during inference generates slight gains in final performance (as opposed to BM25). Although <Gao 2021> argues that it is also important to use the same retrieval model during model training (so that the cross encoder sees the same distribution of negatives during training and inference), <Pradeep 2022> argues that the alignment is not as important as the stronger retrieval performance during inference. 
-
-
-
-
-
+<<Pradeep 2022>>'s experiments show that using a stronger retrieval model (a <<ColBERT>>-based model) during inference generates slight gains in final performance (as opposed to BM25). Although <<Gao 2021>> argues that it is also important to use the same retrieval model during model training (so that the cross encoder sees the same distribution of negatives during training and inference), <<Pradeep 2022>> argues that the alignment is not as important as the stronger retrieval performance during inference. 
 
 ## References
 

@@ -1,6 +1,6 @@
 # Large Language Models
 
-LLMs are generally used in an <auto-regressive> way, where the user supplies a prompt and the LLM returns a generated response. This framework makes it amenable to a wide range of tasks.
+LLMs are generally used in an <<auto-regressive>> way, where the user supplies a prompt and the LLM returns a generated response. This framework makes it amenable to a wide range of tasks.
 
 HuggingFace has a great [blog post](https://huggingface.co/blog/optimize-llm) explaining how we can run LLMs on humble hardware. Typically, LLMs have billions of parameters. The following rules of thumb helps us know how much memory we need to load the LLM into memory. For a model with `X billion` parameters:
 - Loading in `float32` requires `4X GB` of VRAM

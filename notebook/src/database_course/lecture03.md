@@ -97,4 +97,4 @@ How do DBMSs map page IDs to physical location? Different approaches:
 - Sequential / Sorted File Organization (ISAM)
 - Hashing file organization
 
-A <heap file> is an unordered collection of pages with tuples that are stored in random order. 
+A <<heap file>> is an unordered collection of pages with tuples that are stored in random order. 
