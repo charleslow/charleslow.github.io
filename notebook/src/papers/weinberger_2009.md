@@ -101,7 +101,7 @@ The authors argue that this method is especially useful in the multi-task learni
 The authors suggest the following approach:
 - Use the hashing trick to hash each term $v$ into the hashed space. e.g. `data` is passed into a global hash function $\phi_0$ and assigned to a position
 - Each user gets his/her own hash function $\phi_u$. This may be implemented by using the same hash function but appending the `user_id` like so: `user1_data`, which hashes the same term into a new position.
-- We may thus represent each instance by $\phi_0(x) + \phi_u(x) \in \R^m$
+- We may thus represent each instance by $\phi_0(x) + \phi_u(x) \in \R^m$, capturing both a global element (some terms are universally spam-indicative) and a personalized element (some terms are specifically indicative for a user)
 - Finally, we learn a weight parameter $w_h \in \R^m$ by training it in the hashed space
 
 Empirically, for their task of $|\mathcal{V}|=\text{40 million}$, $|\mathcal{U}| = \text{400,000}$, they found that performance starts to saturate with $m \approx \text{4 million}$. This is a very small fraction of the total space $|\mathcal{V}| \times |\mathcal{U}|$, showing the effectiveness of their method. Nevertheless, we should note that `4 million` is still a rather large space.
