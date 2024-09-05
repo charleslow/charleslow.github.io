@@ -1,213 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
 
-    <title>SSOC 2015 Tree Diagram</title>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SSOC Codes Hierarchical Graph</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.23.0/cytoscape.min.js"></script>
+  <script src="https://unpkg.com/layout-base/layout-base.js"></script>
+  <script src="https://unpkg.com/avsdf-base/avsdf-base.js"></script>
+  <script src="https://unpkg.com/cose-base/cose-base.js"></script>
+  <script src="https://unpkg.com/cytoscape-cise/cytoscape-cise.js"></script>
+  <style>
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
 
-    <style>
+    #cy {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
 
-		.node circle {
-		   fill: #7570b3;
-		 }
-
-		.node text { 
-		    font: 12px sans-serif;
-		    font-weight : 300;
-		}
-
-		.link {
-		   fill: none;
-		   opacity: 0.1;
-		   stroke: #7570b3;
-		   stroke-width: 1.8px;
-		}
-	  
-	  div.buttons {
-	    position: fixed;
-	    top: 5px;
-	    left: 10px;
-	  }
-
-	  div.buttons div {
-	    background-color: #cacaca;
-	    padding-left : 15px;
-	   	padding-right : 15px;
-	   	padding-bottom : 2px;
-	   	padding-top : 2px;
-	    margin: 1px;
-	  }
-
-	.svg-container {
-	    display: inline-block;
-	    position: relative;
-	    width: 100%;
-	    padding-bottom: 49%; /* aspect ratio */
-	    vertical-align: top;
-	    overflow: hidden;
-	}
-
-	.svg-content-responsive {
-	    display: inline-block;
-	    position: absolute;
-	    top: 10px;
-	    left: 0;
-	}
- 
-    </style>
-
-  </head>
-
-  <body>
-
-<!-- load the d3.js library --> 
-<script src="https://d3js.org/d3.v3.min.js"></script>
- 
-<script>
-
-// ************** Generate the tree diagram  *****************
-var width = 1200,
-		height = 700;
- 
-var i = 0;
-
-var tree = d3.layout.tree()
- .size([height, width]);
-
-var diagonal = d3.svg.diagonal()
- .projection(function(d) { return [d.y, d.x]; });
-
-var svg = d3.select("body")
-	.append("div")
-	.classed("svg-container", true)
-	.append("svg")
-	.attr("preserveAspectRatio", "xMinYMin meet")
-  .attr("viewBox", "0 0 1500 700")
-  .classed("svg-content-responsive", true)
-	// .attr("width", width + margin.right + margin.left)
-	// .attr("height", height + margin.top + margin.bottom)
-  .append("g");
- // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-d3.json("data.json", function(error, treeData) {
-
-  update(treeData, 1);
-
-  var selections = [
-    {"id" : 0, "name" : "Legislators, Senior Officials & Managers"}, 
-    {"id" : 1, "name" : "Professionals"},
-    {"id" : 2, "name" : "Associate Professionals & Technicians"},
-    {"id" : 3, "name" : "Clerical Support Workers"},
-    {"id" : 4, "name" : "Service And Sales Workers"},
-    {"id" : 5, "name" : "Agricultural & Fishery Workers"},
-    {"id" : 6, "name" : "Craftsmen & Related Trades Workers"},
-    {"id" : 7, "name" : "Plant, Machine Operators & Assemblers"},
-    {"id" : 8, "name" : "Cleaners, Labourers & Related Workers"}
+<body>
+  <div id="cy"></div>
+  <script>
+    const colorScale = [
+      '#4e79a7', '#f28e2c', '#e15759', '#76b7b2', '#59a14f',
+      '#edc949', '#af7aa1', '#ff9da7', '#9c755f', '#bab0ab'
     ];
 
-  var buttons = d3.select("body")
-                  .append("div")
-                  .attr("class", "buttons")
-                  .selectAll("div")
-                  .data(selections)
-                  .enter()
-                  .append("div")
-                  .text(function(d) { return d.name; })
-                  .style("font-size", "13px")
-                  .style("font-family", "sans-serif");
+    fetch("data.json")
+      .then(response => response.json())
+      .then(data => {
+        const elements = [];
+        let nodeIndex = 0;
+        const firstLevelNodes = new Map();
 
-  buttons.on("click", function(d) {
-      d3.select(".buttons")
-        .selectAll("div")
-        .transition()
-        .duration(500)
-        .style("color", "black")
-        .style("background", "#cacaca");
+        function processNode(node, parentId = null, depth = 0, firstLevelAncestor = null) {
+          const id = `node_${nodeIndex++}`;
 
-      d3.select(this)
-        .transition()
-        .duration(500)
-        .style("background", "orange")
-        .style("color", "white");
-      
-      update(treeData, d.id);
-  });
-});
+          if (depth === 1) {
+            firstLevelAncestor = id;
+            firstLevelNodes.set(id, firstLevelNodes.size);
+          }
 
+          elements.push({
+            data: {
+              id,
+              label: node.name,
+              depth: depth,
+              firstLevelAncestor: firstLevelAncestor
+            }
+          });
 
+          if (parentId) {
+            elements.push({
+              data: { source: parentId, target: id }
+            });
+          }
 
-function update(data, selection) {
+          if (node.children) {
+            node.children.forEach(child => processNode(child, id, depth + 1, firstLevelAncestor));
+          }
+        }
 
-  d3.selectAll("g.node").remove();
-  d3.selectAll("path.link").remove();
+        processNode(data);
 
-  // Compute the new tree layout based on what user selects
-  var root = data['children'][selection]
-  var nodes = tree.nodes(root),
-      links = tree.links(nodes);
+        const cy = cytoscape({
+          container: document.getElementById('cy'),
+          elements: elements,
+          style: [
+            {
+              selector: 'node',
+              style: {
+                'label': 'data(label)',
+                'text-valign': 'bottom',
+                'text-halign': 'center',
+                'text-wrap': 'wrap',
+                'text-max-width': 80,
+                'background-color': '#666',
+                'color': '#000',
+                'text-outline-color': '#fff',
+                'text-outline-width': 1
+              }
+            },
+            {
+              selector: 'edge',
+              style: {
+                'curve-style': 'unbundled-bezier',
+                'control-point-distances': 40,
+                'control-point-weights': 0.2,
+                'target-arrow-shape': 'triangle',
+                'arrow-scale': 0.8,
+                'width': 1,
+                'line-color': '#888',
+                'opacity': 0.7
+              }
+            }
+          ],
+          layout: {
+            name: 'cise',
+            animate: false,
+            fit: true,
+            padding: 50,
+            nodeSeparation: 200,
+            idealInterClusterEdgeLengthCoefficient: 2.5,
+            springCoeff: 0.15,
+            nodeRepulsion: 15000,
+            gravity: 0.1,
+            gravityRange: 4.5,
+            clusters: function (node) {
+              return null;
+            },
+            // Add a custom force to push deeper nodes outward
+            customForce: function (node) {
+              const depth = node.data('depth');
+              const maxDepth = cy.nodes().max(n => n.data('depth')).value;
+              const force = (depth / maxDepth) * 1000; // Adjust this multiplier as needed
+              const center = { x: 0, y: 0 };
+              const position = node.position();
+              const dx = position.x - center.x;
+              const dy = position.y - center.y;
+              const length = Math.sqrt(dx * dx + dy * dy);
+              if (length > 0) {
+                return {
+                  x: (dx / length) * force,
+                  y: (dy / length) * force
+                };
+              }
+              return { x: 0, y: 0 };
+            }
+          }
+        });
 
-	// These functions compute y and font-size based on depth
-  // Change font size for different depth
-  function font_sizing(depth) {
-    var font_sizes = [15, 13, 10, 7.5];
-    return font_sizes[depth];
-  }
+        // Color and size the nodes based on their hierarchy level
+        cy.nodes().forEach(node => {
+          const firstLevelAncestor = node.data('firstLevelAncestor');
+          const depth = node.data('depth');
+          let color;
+          if (firstLevelAncestor) {
+            const colorIndex = firstLevelNodes.get(firstLevelAncestor);
+            color = colorScale[colorIndex % colorScale.length];
+          } else {
+            // Root node
+            color = '#999'; // or any color you prefer for the root
+          }
+          node.style('background-color', color);
 
-  // Change y-value for different depth
-  function y_sizing(depth) {
-    var y_sizes = [100, 350, 700, 1050];
-    return y_sizes[depth];
-  }
+          // Adjust size based on depth
+          const maxSize = 40;
+          const minSize = 10;
+          const maxDepth = cy.nodes().max(n => n.data('depth')).value;
+          const size = maxSize - ((depth / maxDepth) * (maxSize - minSize));
+          node.style('width', size);
+          node.style('height', size);
 
-  // Change circle radius for different depth
-  function r_sizing(depth) {
-    var r_sizes = [4, 4, 3, 2];
-    return r_sizes[depth];
-  }
+          // Adjust font size based on depth
+          const maxFont = 16;
+          const minFont = 8;
+          const fontSize = maxFont - ((depth / maxDepth) * (maxFont - minFont));
+          node.style('font-size', fontSize);
+        });
 
-  // Adjust x, y position of nodes
-  nodes.forEach(function(d) { d.y = y_sizing(d.depth); });
+        // Add zoom and pan functionality
+        cy.on('tap', 'node', function (evt) {
+          const node = evt.target;
+          cy.fit(node, 50);
+        });
 
-  // Declare the nodes
-  var node = svg.selectAll("g.node")
-   .data(nodes, function(d) { return d.id || (d.id = ++i); });
+        // Double-tap to zoom out
+        let tappedBefore;
+        cy.on('tap', function (event) {
+          const tappedNow = event.target;
+          if (tappedNow === tappedBefore) {
+            cy.fit(50);
+          }
+          tappedBefore = tappedNow;
+          setTimeout(function () { tappedBefore = null; }, 300);
+        });
 
-  // Enter the nodes.
-  var nodeEnter = node.enter().append("g")
-   .attr("class", "node")
-   .attr("transform", function(d) { 
-    return "translate(" + d.y + "," + d.x + ")"; 
-   });
+        // Log any errors
+        cy.on('layoutstop', function (event) {
+          console.log('Layout finished');
+        });
 
-  nodeEnter.append("circle")
-  	.attr("opacity", function(d) { return d.depth==0 ? 0 : 1; })
-  	.attr("r", function(d) { return r_sizing(d.depth); });
+        cy.on('error', function (event) {
+          console.error('Cytoscape error:', event);
+        });
+      })
+      .catch(error => console.error("Error loading the JSON file:", error));
+  </script>
+</body>
 
-
-  nodeEnter.append("text")
-   .attr("x", function(d) { return d.depth==0 ? -80 : 13; })
-   .attr("y", function(d) { return d.depth==0 ? 0 : 0; })
-   .attr("text-anchor", function(d) { return d.depth==0 ? "start" : "start"; })
-   .style("font-weight", function(d) { return d.depth==0 ? "bold" : ""; })
-   .style("letter-spacing", "-0.5px")
-   .attr("dy", ".35em")
-   .text(function(d) { return d.name; })
-   .style("font-size", function(d) { return font_sizing(d.depth); });
-
-   debugger;
-
-  // Declare the links
-  var link = svg.selectAll("path.link")
-   .data(links, function(d) { return d.target.id; });
-
-  // Enter the links.
-  link.enter().insert("path", "g")
-   .attr("class", "link")
-   .attr("d", diagonal);
-
-}
-
-</script>
- 
-  </body>
 </html>
