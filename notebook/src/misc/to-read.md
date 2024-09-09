@@ -6,3 +6,10 @@
 - https://arxiv.org/abs/2305.12102
 - https://arxiv.org/abs/1709.03933
 - https://arxiv.org/abs/2101.08769
+- https://arxiv.org/abs/1205.2618 # BPR
+- https://arxiv.org/abs/2312.08520 # InfoNCE+
+- https://arxiv.org/abs/2308.06091 # MAWU
+- https://arxiv.org/abs/2109.12613 # CCL
+- https://arxiv.org/abs/2201.02327 # SSM
+- https://arxiv.org/abs/2206.12811 # DirectAU
+- [KG-BERT](https://arxiv.org/abs/1909.03193)

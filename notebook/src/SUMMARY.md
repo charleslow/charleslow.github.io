@@ -19,6 +19,8 @@
     - [Bradley-Terry Model](./misc/bradley-terry.md)
     - [Setting up WSL](./misc/wsl-setup.md)
     - [To Read](./misc/to-read.md)
+    - [Packages](./misc/packages.md)
+    - [Skills](./misc/skills.md)
 - [Identities](./identities.md)
     - [Sigmoid](./identities/sigmoid.md)
     - [Statistics](./identities/statistics.md)
