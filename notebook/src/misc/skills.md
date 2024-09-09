@@ -55,5 +55,29 @@ The <<positive labels>> are taken from edges in the human curated graph. The <<n
 - Sibling pairs with the same parent e.g. `Tensorflow` vs `Pytorch`
 - Loosely related pairs that are 3 or more steps apart
 
-The nice thing about this architecture is the <<clean separation>> of the human curated data from the AI-generated one. The human-in-the-loop setup allows humans to review the AI-generated graph and add new edges to the human curated graph, which in turn improves the AI-generated graph. This seems superior over mixing both AI-generated edges and human-curated edges in the same graph.
+The nice thing about this architecture is the <<clean separation of the human curated graph from the AI-generated one>>. The human-in-the-loop setup allows humans to review the AI-generated graph and add new edges to the human curated graph, which in turn improves the AI-generated graph. This seems superior over mixing both AI-generated edges and human-curated edges in the same graph.
+
+## [December 2023 - Extracting skills from content to fuel the LinkedIn Skills Graph](https://www.linkedin.com/blog/engineering/skills-graph/extracting-skills-from-content)
+
+This post takes a deeper look into how skills are extracted from data by LinkedIn from various contexts, such as job listings or member profiles.
+
+Note that skills can be mentioned either directly or indirectly (e.g. `you are expected to know how to apply different techniques to extract information from data and communicate insights through meaningful visualizations`). Hence, a simple span extraction approach will not be exhaustive in extracting skills. On the other hand, not constraining the problem to span extraction could lead to false positive errors, so our model has to be very accurate.
+
+| ![LinkedIn Skills Extraction](../images/linkedin/skill_extraction_overview.png) |
+| :--: |
+| An overview of the skills extraction architecture |
+
+At a high level, the steps are:
+1. The <<Skill Segmenter>> organizes the raw text into structured input, e.g. a resume is split into the `qualification`, `career history` etc. sections
+2. The next step aims to generate a candidate list of skills from the context:
+    - 2a. The <<Text Skill Tagger>> is a trie-based model that simply finds matches in the text that exactly match a node in the Skills Taxonomy. This puts the burden on the Skills Taxonomy to have all the aliases that cover every possible utterance of the skill. However, this model is very fast
+    - 2b. The <<Semantic Tagger>> aims to overcome the coverage issues above and uses BERT semantic match to surface more candidates
+    - 2c. The skills from 2a. and 2b. are expanded into more skills using the Skills Graph. It seems like they add immediate parents, children and siblings of each skill.
+3. Each skill candidate is scored against the context to generate a confidence score. This section has a Shared Model and Domain-specific Model. 
+    - The <<Shared Model>> contains a `context-encoder`, which encodes the text surrounding the skill into an embedding, and a `entity-encoder`, which encodes surrounding skills, the job title, etc. All these embeddings are fed as context into the next stage. The Shared Model assumes that the relationship between the context surrounding each skill and the skill itself is constant across the different domains and thus benefit from a shared module. Their AB tests confirm this hypothesis and show that such multi-task training does increase lift in online metrics.
+    - Each domain (job posting, member profile, course) has its own scoring model. The embeddings from the Shared Model and each skill candidate are fed into the <<Domain-specific Model>>, which is presumably a form of cross encoder that generate a confidence score for each skill candidate. Finally, some threshold is applied and a final list of skills is generated.
+
+LinkedIn needs to generate skill extractions within `100ms` for a high volume of edits. Hence, they used knowledge distillation to distil the BERT model down 80% in parameters.  
+
+As we can see, the LinkedIn architecture is fairly complex and context specific. A natural question for smaller players is how we can tap on LLMs today to simplify parts of this architecture to achieve comparable performance.
 
