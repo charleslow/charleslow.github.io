@@ -841,6 +841,26 @@ Build cuda_11.7.r11.7/compiler.31442593_0
 <p>Then install the correct version of torch:</p>
 <pre><code class="language-bash">pip install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 </code></pre>
+<h2 id="list-comprehension"><a class="header" href="#list-comprehension">List Comprehension</a></h2>
+<p>When doing nested list comprehensions in python, the later loop becomes nested as the inner loop. So this:</p>
+<pre><code class="language-python">l = [i * j for i in range(4) for j in range(5)]
+</code></pre>
+<p>Is equivalent to:</p>
+<pre><code class="language-python">l = []
+for i in range(4):
+    for j in range(5):
+        l.append(i*j)
+</code></pre>
+<p>This also explains why flattening a list of lists is of the following form:</p>
+<pre><code class="language-python">list_of_lists = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
+flattened = [item for sublist in list_of_lists for item in sublist]
+</code></pre>
+<p>When we translate it into a nested for loop, we can see that the inner loop should indeed be placed at the end:</p>
+<pre><code class="language-python">flattened = []
+for sublist in list_of_lists:
+    for item in sublist:
+        flattened.append(item)
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="bradley-terry-model"><a class="header" href="#bradley-terry-model">Bradley-Terry Model</a></h1>
 <p>Based on <a href="https://en.wikipedia.org/wiki/Bradley%E2%80%93Terry_model">wikipedia</a>. The Bradley-Terry model (1952) is a probability model that allows us to infer scores for individual objects based on a dataset of pairwise comparisons between them. Specifically, it estimates the probability that <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">▹</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.854em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span></span></span></span> (i.e. <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal">i</span></span></span></span> is preferred to <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.854em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span></span></span></span>) as:</p>

@@ -226,3 +226,37 @@ Then install the correct version of torch:
 ```bash
 pip install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 ```
+
+## List Comprehension
+
+When doing nested list comprehensions in python, the later loop becomes nested as the inner loop. So this:
+
+```python
+l = [i * j for i in range(4) for j in range(5)]
+```
+
+Is equivalent to:
+
+```python
+l = []
+for i in range(4):
+    for j in range(5):
+        l.append(i*j)
+```
+
+This also explains why flattening a list of lists is of the following form:
+
+```python
+list_of_lists = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
+flattened = [item for sublist in list_of_lists for item in sublist]
+```
+
+When we translate it into a nested for loop, we can see that the inner loop should indeed be placed at the end:
+
+```python
+flattened = []
+for sublist in list_of_lists:
+    for item in sublist:
+        flattened.append(item)
+```
+
