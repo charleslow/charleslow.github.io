@@ -21,6 +21,7 @@
     - [To Read](./misc/to-read.md)
     - [Packages](./misc/packages.md)
     - [Skills](./misc/skills.md)
+    - [Hash Collisions](./misc/hash_collision.md)
 - [Identities](./identities.md)
     - [Sigmoid](./identities/sigmoid.md)
     - [Statistics](./identities/statistics.md)
