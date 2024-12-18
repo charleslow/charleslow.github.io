@@ -13,3 +13,6 @@
 - https://arxiv.org/abs/2201.02327 # SSM
 - https://arxiv.org/abs/2206.12811 # DirectAU
 - [KG-BERT](https://arxiv.org/abs/1909.03193)
+- [XR-Transformer](https://arxiv.org/abs/2110.00685)
+- [SetFit](https://arxiv.org/abs/2209.11055)
+- [Lora vs Fine tuning](https://arxiv.org/abs/2410.21228)
