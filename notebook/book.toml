@@ -15,6 +15,7 @@ runnable = false
 
 [preprocessor.katex]
 after = ["links"]
+macros = "src/macros.txt"
 
 [preprocessor.format]
 command = "python3 format.py"
