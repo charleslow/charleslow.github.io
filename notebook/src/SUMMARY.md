@@ -35,6 +35,7 @@
     - [Hamilton 2017 - GraphSAGE](./papers/hamilton_2017.md)
     - [Ma 2018 - Entire Space Multi-Task Model](./papers/ma_2018.md)
     - [Reimers 2019 - Sentence-BERT](./papers/reimers_2019.md)
+    - [Yi 2019 - LogQ Correction for In Batch Sampling](./papers/yi_2019.md)
     - [He 2020 - LightGCN](./papers/he_2020.md)
     - [Lewis 2020 - Retrieval Augmented Generation](./papers/lewis_2020.md)
     - [Gao 2021 - SimCSE](./papers/gao_2021.md)

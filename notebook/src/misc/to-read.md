@@ -18,3 +18,5 @@
 - [Lora vs Fine tuning](https://arxiv.org/abs/2410.21228)
 - [Better Generalization with semantic IDs](https://arxiv.org/abs/2306.08121)
 - [Mutual Information Neural Estimation](https://arxiv.org/abs/1801.04062)
+- [Contrastive Learning with Hard Negatives](https://arxiv.org/abs/2010.04592)
+- [Decoupled Contrastive Learning](https://arxiv.org/abs/2110.06848)
