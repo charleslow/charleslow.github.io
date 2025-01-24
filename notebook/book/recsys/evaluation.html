@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Database Course - Chux&#x27;s Notebook</title>
+        <title>Evaluation - Chux&#x27;s Notebook</title>
 
 
         <!-- Custom HTML head -->
@@ -154,18 +154,28 @@
                 <div id="content" class="content">
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<h1 id="database-course"><a class="header" href="#database-course">Database Course</a></h1>
-<p>Based on CMU 15-445/645 Intro to Database Systems course taught by Andy Pavlo and Jignesh Patel in Fall 2023. The <a href="https://www.youtube.com/playlist?list=PLSE8ODhjZXjbj8BMuIrRcacnQh20hmY9g">youtube playlist</a>.</p>
+<h1 id="evaluation"><a class="header" href="#evaluation">Evaluation</a></h1>
+<p>Evaluation is a non-trivial topic for recsys, and different approaches measure different things. Suppose we have a dataset of user-item interactions with a timestamp.</p>
+<p><span style="color:orange">Random splitting</span> simply takes a random split of say 75% for train and 25% for test. The problems with this approach:</p>
+<ul>
+<li>No guarantee of overlap in users across train and test. If a user does not appear in the train set, it is not possible to recommend items for him/her in the test set.</li>
+<li>Chronological overlap between train and test set, leading to data leakage issues.</li>
+</ul>
+<p><span style="color:orange">Stratified splitting</span> addresses the user overlap issue by ensuring that the number of rows per user in the train and test set are approximately 75% and 25% of the number of rows in the original data respectively. This ensures that we have sufficient training and test data for each user, so that the collaborative filtering algorithm has a fair chance of recommending items for each user.</p>
+<p>However, stratified splitting still involves randomly assigning rows for each user into the train and test set, which does not address the chronological overlap issue. <span style="color:orange">Temporal stratified splitting</span> addresses this issue by assigning the 75% and 25% of train and test data based on chronological order. In other words, the oldest 75% of data for each user is assigned to the train set.</p>
+<p>The extreme version of temporal stratified splitting is <span style="color:orange">leave last out</span> splitting, in which all but the latest row for each user is put into the train set. This is suitable for settings where the task is to predict the very next action which the user will take (e.g. which song will the user listen to next).</p>
+<p>Note that temporal stratified splitting may potentially introduce temporal overlap between the train and test sets across users. That is, the train set period for user A may potentially overlap with the test set period for user B. Hence, if there are strong concerns with temporal effects in the dataset, we may need to be mindful of this.</p>
+<p><span style="color:orange">Global temporal splitting</span> addresses this issue by assigning the oldest 75% of data across all users to the train set. This addresses the data leakage issue and more closely resembles actual production setting. However, there is no guarantee on the amount of train/test data for each user. Hence we may need to drop rows where there exists test data for user A but no corresponding train data due to the global temporal cutoff.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../nlp_course/intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../recsys/collab_filtering.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../database_course/lecture01.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../ab_test/init.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -175,11 +185,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../nlp_course/intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../recsys/collab_filtering.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../database_course/lecture01.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../ab_test/init.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

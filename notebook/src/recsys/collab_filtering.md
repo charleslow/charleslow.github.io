@@ -1,8 +1,9 @@
 # Collaborative Filtering
 
-This post is trying to grok my colleague [Yuxuan's](https://www.linkedin.com/in/yxtay) sharing on various losses for collaborative filtering. All credit goes to him.
 
 Collaborative filtering is typically done with implicit feedback in the RecSys setting. In this setting, interactions are often very sparse. Most of the time, only positive signals are recorded, but a non-interaction could either mean (i) user dislikes the item or (ii) the user was not exposed to the item. Hence, we cannot use algorithms like SVD which assume no interactions as irrelevance.
+
+A useful repository is https://github.com/recommenders-team/recommenders.
 
 A generic and fairly common architecture for the collaborative filtering model is to embed each user and item into separate fixed size vectors, and use the cosine similarity between the vectors to represent a score. This score is fed into a cross entropy loss against the labelled relevance of user to item to train the embeddings.
 
@@ -53,4 +54,24 @@ For cornac, this loss is adapted to the mini batch setting. Specifically, the al
 5. $\text{loss} = \text{sum}(E) + u \cdot ||U||^2_F + v \cdot ||V_{batch}||^2_F$
 
 Note that Adam optimizer is used, and gradients are clipped between `[-5, 5]`.
+
+## Bilateral Variational Autoencoder (BiVAE)
+
+[Recommenders BiVAE Deep Dive](https://github.com/recommenders-team/recommenders/blob/main/examples/02_model_collaborative_filtering/cornac_bivae_deep_dive.ipynb)
+[BiVAE Paper](https://dl.acm.org/doi/10.1145/3437963.3441759)
+
+A working implementation of BiVAE is available on Cornac.
+
+A variational autoencoder improves over traditional linear matrix factorization methods by using non-linearity and a probabilistic formulation. Given a user, the autoencoder encodes the data representing the entity into a vector in some latent space. A decoder then takes the vector in the latent space and decodes it into something close to the original data.
+
+The difference between VAE and a regular autoencoder is that it doesn't learn a fixed vector representation, but rather a probability distribution in the latent space. This allows it to model noisy, sparse interaction data better.
+
+## Splitting
+
+`recommenders` uses a few different types of data splitting:
+1. Stratified spltting. 
+
+
+
+
 

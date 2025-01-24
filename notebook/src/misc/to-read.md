@@ -20,3 +20,4 @@
 - [Mutual Information Neural Estimation](https://arxiv.org/abs/1801.04062)
 - [Contrastive Learning with Hard Negatives](https://arxiv.org/abs/2010.04592)
 - [Decoupled Contrastive Learning](https://arxiv.org/abs/2110.06848)
+- [Improving Graph Collaborative Filtering with Neighborhood-enriched Contrastive Learning](https://arxiv.org/abs/2202.06200)
