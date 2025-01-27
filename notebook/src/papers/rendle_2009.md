@@ -53,7 +53,31 @@ Now we can model the preference probability using a model as:
 $$
     p(i >_u j | \Theta) := \sigma{(\hat{y}_{uij}(\Theta))}
 $$
-Where $\hat_y$ denotes a BPR-agnostic model that generates a predicted real-valued score for the triplet $(u, i, j)$.
+Where $\hat{y}$ denotes a BPR-agnostic model that generates a predicted real-valued score for the triplet $(u, i, j)$. Note that $\sigma(x) := 1 / (1 + exp(-x))$ is the sigmoid function.
+
+To complete the bayesian modelling, a prior distribution $p(\Theta)$ is introduced over the model parameters. For simplicity, we let $p(\Theta)$ take the form of a multivariate normal distribution with zero-mean and all covariances zero, with equal variance for each parameter (i.e. $\lambda_\Theta \in \R$):
+$$
+    p(\Theta) \sim N(0, \lambda_\Theta I)
+$$
+
+The maximum posterior estimator for $\Theta$ is thus given by the following:
+$$
+\begin{align*}
+    & \text{argmax}_\Theta \ln p(>_u | \Theta) \cdot p(\Theta) \\
+    &= \ln \prod_{(u, i, j) \in D_S} \sigma(\hat{y}_{uij}) \cdot p(\Theta) \\
+    &= \sum_{(u, i, j) \in D_S} \ln \sigma(\hat{y}_{uij}) + \ln p(\Theta) \\
+    &= \sum_{(u, i, j) \in D_S} \ln \sigma(\hat{y}_{uij}) + \lambda_\Theta||\Theta||^2
+\end{align*}
+$$
+
+Note that in the last step, the log prior is translated into L2 regularization. This is apparently well studied and I will explore the derivation at a later time. A possible resource is [Yuki Shizuya - Understanding L1 and L2 regularization with analytical and probabilistic views](https://medium.com/intuition/understanding-l1-and-l2-regularization-with-analytical-and-probabilistic-views-8386285210fc#66b3).
+
+The paper suggests using SGD updates (i.e. batch size of `1`) by randomly sampling triplets with replacement from $D_S$. This converges much faster than doing user-wise SGD.
+
+Finally, we've assumed $\hat{y}$ is model-agnostic up to now. For matrix factorization, the authors suggest the following form. In other words, we compute the prediction for each user, item pair (usually via dot product of embeddings, but can be anything) and take the difference.
+$$
+    \hat{y}_{uij} = \hat{y}_{ui} - \hat{y}_{uj}
+$$
 
 ## Cornac Implementation
 
@@ -81,22 +105,5 @@ The main training loop samples a `(u, i, j)` triplet randomly each turn. It does
 - Pointers to the start of the relevant `u, i, j` embeddings are then obtained 
 - Note that `1` epoch comprises `len(user_ids)` number of triplets
 
-The Cython code then computes and manually applies the SGD updates as follows:
-$$
-\begin{align*}
-    s &= U_u \cdot (I_i - I_j) + (B_i - B_j) \\
-    z &= 1 / (1 + exp(s)) \\
-    U_u &\pluseq \text{lr} \sum \left[ 
-        z \times (I_i - I_j) - \lambda \times U_u
-    \right] \\
-\end{align*}
-$$
-
-Note that the prediction for the triplet is considered correct if $z < 0.5$.
-
-
-
-
-
-
-
+The Cython code then computes and manually applies the SGD updates derived in the paper. Will omit since we do not need to manually compute the updates if using autograd. 
+Note that the prediction for each triplet is considered correct if $z < 0.5$.
