@@ -29,6 +29,7 @@
     - [Statistics](./identities/statistics.md)
 - [Papers](./papers.md)
     - [Weinberger 2009 - Hashing for Multitask Learning](./papers/weinberger_2009.md)
+    - [Rendle 2009 - Bayesian Personalized Ranking](./papers/rendle_2009.md)
     - [Burges 2010 - RankNET to LambdaMART](./papers/burges_2010.md)
     - [Schroff 2015 - FaceNET](./papers/schroff_2015.md)
     - [Schnabel 2016 - Recs as Treatments](./papers/schnabel_2016.md)
