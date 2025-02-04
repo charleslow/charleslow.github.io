@@ -2,6 +2,7 @@
 
 [Introduction](intro.md)
 
+- [Current Focus](./current.md)
 - [Recommender Systems]()
     - [Gradient Boosting](./recsys/gradient_boosting.md)
     - [TF-IDF](./recsys/tfidf.md)
@@ -47,8 +48,9 @@
     - [Rafailov 2023 - Direct Preference Optimization](./papers/rafailov_2023.md)
     - [Blecher 2023 - Nougat](./papers/blecher_2023.md)
     - [Dong 2023 - MINE Loss](./papers/dong_2023.md)
-    - [Borisyuk 2024 - GNN at LinkedIn](./papers/borisyuk_2024.md)
     - [Liu 2023 - Meaning Representations from Trajectories](./papers/liu_2023.md)
+    - [Singh 2023 - Semantic IDs for Recs](./papers/singh_2023.md)
+    - [Borisyuk 2024 - GNN at LinkedIn](./papers/borisyuk_2024.md)
 - [NLP Course](./nlp_course/intro.md)
 - [Database Course](./database_course/intro.md)
     - [Lecture 1](./database_course/lecture01.md)

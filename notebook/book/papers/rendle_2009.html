@@ -219,8 +219,8 @@ Where <span class="katex"><span class="katex-html" aria-hidden="true"><span clas
 <li>Pointers to the start of the relevant <code>u, i, j</code> embeddings are then obtained</li>
 <li>Note that <code>1</code> epoch comprises <code>len(user_ids)</code> number of triplets</li>
 </ul>
-<p>The Cython code then computes and manually applies the SGD updates derived in the paper. Will omit since we do not need to manually compute the updates if using autograd.
-Note that the prediction for each triplet is considered correct if <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.5</span></span></span></span>.</p>
+<p>The Cython code then computes and manually applies the SGD updates derived in the paper. Will omit since we do not need to manually compute the updates if using autograd.</p>
+<p><span style="color:orange">Note</span>: This implementation of BPR assumes binary relevance (an item is interacted or not). It does not allow for finer-grained preference relationships (e.g. a floating point rating score to rank items), which in theory BPR does support.</p>
 
                     </main>
 

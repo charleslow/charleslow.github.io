@@ -106,4 +106,5 @@ The main training loop samples a `(u, i, j)` triplet randomly each turn. It does
 - Note that `1` epoch comprises `len(user_ids)` number of triplets
 
 The Cython code then computes and manually applies the SGD updates derived in the paper. Will omit since we do not need to manually compute the updates if using autograd. 
-Note that the prediction for each triplet is considered correct if $z < 0.5$.
+
+<<Note>>: This implementation of BPR assumes binary relevance (an item is interacted or not). It does not allow for finer-grained preference relationships (e.g. a floating point rating score to rank items), which in theory BPR does support.

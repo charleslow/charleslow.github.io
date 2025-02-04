@@ -1,5 +1,6 @@
 \grad:{\nabla}
 \R:\mathbb{R}
+\L:\mathcal{L}
 \E:\mathbb{E}
 \P:\mathcal{P}
 \pushright:{[1]{\ifmeasuring@#1\else\omit\hfill$\displaystyle#1$\fi\ignorespaces}}
