@@ -20,16 +20,18 @@ $$
 
 Where $\Tau$ denotes the set of all possible triplets in the dataset. The authors note that most triplets would easily satisfy the desired constraint, hence we need some way to picking good triplets to optimize the learning process.
 
-The loss we desire to minimize is thus as below. The intuition is that we wish to have small distances for the anchor-positive pair $d_{ap}$ but large distances for the anchor-negative pair $d_{an}$. 
-- Easy triplets where $d_{an} - d_{ap} > \alpha$ will contribute 0 loss
-- Semi-hard triplets where $0 < d_{an} - d_{ap} \leq \alpha$ contribute small losses
-- Hard triplets where $d_{an} - d_{ap} < 0$ contribute large losses
+The loss we desire to minimize is thus as below. The intuition is that we want the anchor-positive distance $d_{ap}$ to be small but the anchor-negative distance $d_{an}$ to be small.
 
 $$
     \mathcal{L} = \sum_{i=1}^N \left[
         ||f(x_i^a) - f(x_i^p)||^2_2 \ - \ ||f(x_i^a) - f(x_i^n)||^2_2 + \alpha
     \right]_+
 $$
+
+With this loss function, we see that we have 3 types of triplets:
+- <<Easy triplets>> where $\alpha < d_{an} - d_{ap}$. These will contribute 0 loss since $\L = d_{ap} - d_{an} + \alpha < 0$ will be a negative value, and the positive operator makes the loss 0. This makes sense because the model already categorizes these triplets well and there is nothing more to learn from these examples.
+- <<Semi-hard triplets>> where $0 < d_{an} - d_{ap} \leq \alpha$. These will contribute a small loss, since $0 \leq \L = d_{ap} - d_{an} + \alpha < \alpha$. These are triplets where the positive is already closer to the anchor than the negative (which is good), but the distance is still within the margin so we want to make the distance greater. In other words, .
+- <<Hard triplets>> where $d_{an} - d_{ap} < 0$. These will contribute a large loss. These are triplets where the negative is closer to the anchor than the negative. 
 
 ## Triplet Selection
 
@@ -44,7 +46,9 @@ However, this is undesirable because:
 Hence, the authors propose:
 - <<Mini batch negatives>>. Instead of finding the hardest negatives across the entire corpus, they mine for the hardest negatives in the mini-batch. This improves computational efficiency and mitigates the mislabelled/corrupted data issue.
 - <<Curriculum Learning>>. At the start of training, the authors select easier triplets, and gradually increase the difficulty as training goes along. Presumably, this is done by thresholding negatives based on $d_{an} - d_{ap} > t$ and starting from high $t$ to low $t$.
-- <<Semi-hard negatives>>. The authors mention that it is helpful to limit negatives to $d_{an} - d_{ap} > 0$, but it is unclear whether they always do this or only at the start of training. The intuition is to cap the difficulty of the triplets, as triplets that are *too* difficult may actually hinder learning.
+- <<Semi-hard negatives>>. The authors mention that it is helpful to limit negatives to $d_{an} - d_{ap} > 0$, but it is unclear whether they always do this or only at the start of training. The intuition is to cap the difficulty of the triplets, as triplets that are *too* difficult may actually hinder learning due to corrupted data or mislabelling. 
+
+    <<Note:>> In a later paper [Lee 2020 - Large Scale Video Representation Learning via Relational Graph Clustering](https://openaccess.thecvf.com/content_CVPR_2020/html/Lee_Large_Scale_Video_Representation_Learning_via_Relational_Graph_Clustering_CVPR_2020_paper.html), it implies that FaceNET uses semi-hard negatives throughout the entire training process, which makes sense given that the paper warns against using hard negatives. In light of this, I would presume FaceNET searches for the hardest semi-hard negatives in each mini batch as negatives for each triplet.
 
 ## Application to Semantic Search
 
