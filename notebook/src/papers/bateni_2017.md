@@ -39,7 +39,7 @@ So the algorithm really hinges on **Lemma 6** in the paper, which tells us that 
 <div style="margin-left: 2em; border: 2px solid grey; padding: 10px;">
 <<Lemma 6.>> Let $G' = (V', E')$ be a (not necessarily connected) subgraph of the input graph $G$. If an edge $e \in E'$ is not in the MST of $G'$, then it is not in the MST of $G$ either.
 
-**My proof by contradiction.** Suppose an edge $e \in E(G)$ exists between nodes $A, B$. Let $G'$ denote a subgraph containing nodes $A, B$, and suppose for contradiction that $e \notin E(G')$.
+**My proof by contradiction.** Suppose an edge $e \in E(G)$ exists between nodes $A, B$. Let $G'$ denote a subgraph containing nodes $A, B$, and suppose for contradiction that $e \in MST(G)$ but $e \notin MST(G')$.
 
 First cut $MST(G)$ by removing the edge $e$ such that $A, B$ are in different partitions $P_A, P_B$ (each partition is a set of nodes). Observe that since $e$ exists in $MST(G)$, it must be the lowest weight edge connecting $P_A$ and $P_B$, since otherwise we could have replaced $e$ with a lower weight edge to complete the MST.
 
