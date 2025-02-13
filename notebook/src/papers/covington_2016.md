@@ -54,7 +54,7 @@ The paper explored a few settings. At `depth 0`, the MLP simply transforms the d
 In terms of features, it is interesting that incorporating searches is very important for performance.
 - `Watches only` has MAP of around 6%
 - `Watches + Searches` has MAP of around 9%
-- `Watches + Searches` has MAP of around 10%
+- `Watches + Searches + Example Age` has MAP of around 10%
 - `All features` has MAP of around 11%
 
 ## Ranking
@@ -68,13 +68,15 @@ The difference between ranking and retrieval is that ranking aims to specialize 
 
 ### Ranking: Feature Engineering
 
-Despite the promise of deep learning, this paper found that significant time was still spent engineering features due to the nature of recommender systems. The main challenge for the authors was in representing a sequence of temporal user interactions and how these actions relate to the video being impressed. <<Note:>> The modern approach seems to move away from such intense feature engineering. Instead, the past interactions and video being impressed are simply embedded and passed into a self attention mechanism. The model can then learn interaction features in the hidden layers. The downside of the modern approach is paying higher compute cost at inference time, but it may still be worthwhile given the significant engineering effort required for generating and retrieving hundreds of features manually.
+Despite the promise of deep learning, this paper found that significant time was still spent engineering features due to the challenge of encoding features for recommender systems. The main challenge for the authors was in representing a sequence of temporal user interactions and how these actions relate to the video being impressed. <<Note:>> The modern approach seems to move away from such intense feature engineering. Instead, the past interactions and video being impressed are simply embedded and passed into a self attention mechanism. The model can then learn interaction features in the hidden layers. The downside of the modern approach is paying higher compute cost at inference time, but it may still be worthwhile given the significant engineering effort required for generating and retrieving hundreds of features manually.
 
 The paper highlighted <<User-item previous interaction features>> as the most important and impactful. This includes features such as:
-    - How many videos from this channel did the user watch before?
-    - When was the last time the user watched a video on this topic? These continuous features describing past user interactions on related items are especially powerful
-    - Features describing number of <<past impressions of this (user, item) pair>> are important for a responsive recommender system. For example, if the user was shown this item many times recently but did not interact with it, the recommender can learn to demote this item so that the user's recommendations can be "refreshed". <<Note:>> For YouTube, they maintain such impression features at up-to-the-second latency because of its importance. For other use cases, a latency of say 15 minutes might still be quite helpful.
-    - Feature scores from candidate generation step are also useful
+- How many videos from this channel did the user watch before?
+- When was the last time the user watched a video on this topic? These continuous features describing past user interactions on related items are especially powerful
+- Features describing number of <<past impressions of this (user, item) pair>> are important for a responsive recommender system. For example, if the user was shown this item many times recently but did not interact with it, the recommender can learn to demote this item so that the user's recommendations can be "refreshed".
+
+    <<Note:>> For YouTube, they maintain such impression features at up-to-the-second latency because of its importance. For other use cases, a latency of say 15 minutes might still be quite helpful.
+- Feature scores from candidate generation step are also useful
 
 Similar to the retrieval step, categorical features are represented by dense embeddings, with a separate embedding table per categorical feature. The vocabulary for each feature is determined by a single pass over the training data at training time, and the vocabulary size is capped at `1 million` based on impression count. Out of vocabulary values during inference time are simply mapped to the zero embedding. Multivalent features (e.g. a sequence of video IDs for watch history) are averaged element-wise before being concatenated. 
 
