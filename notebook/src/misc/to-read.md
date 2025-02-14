@@ -22,3 +22,4 @@
 - [Decoupled Contrastive Learning](https://arxiv.org/abs/2110.06848)
 - [Improving Graph Collaborative Filtering with Neighborhood-enriched Contrastive Learning](https://arxiv.org/abs/2202.06200)
 - [Semi-Supervised Classification with Graph Convolutional Networks](https://arxiv.org/abs/1609.02907)
+- [Ranking Distillation](https://arxiv.org/abs/1809.07428)
