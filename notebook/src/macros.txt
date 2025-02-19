@@ -3,5 +3,6 @@
 \L:\mathcal{L}
 \E:\mathbb{E}
 \P:\mathcal{P}
+\S:\mathcal{S}
 \pushright:{[1]{\ifmeasuring@#1\else\omit\hfill$\displaystyle#1$\fi\ignorespaces}}
 \pluseq:{\ \mathrel{{+}{=}} \ }
