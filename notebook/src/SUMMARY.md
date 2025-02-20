@@ -55,6 +55,7 @@
     - [Blecher 2023 - Nougat](./papers/blecher_2023.md)
     - [Dong 2023 - MINE Loss](./papers/dong_2023.md)
     - [Liu 2023 - Meaning Representations from Trajectories](./papers/liu_2023.md)
+    - [Klenitskiy 2023 - BERT4Rec vs SASRec](./papers/klenitskiy_2023.md)
     - [Singh 2023 - Semantic IDs for Recs](./papers/singh_2023.md)
     - [Borisyuk 2024 - GNN at LinkedIn](./papers/borisyuk_2024.md)
 - [NLP Course](./nlp_course/intro.md)
