@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>To Read - Chux&#x27;s Notebook</title>
+        <title>Wang 2024 - LLM for Pinterest Search - Chux&#x27;s Notebook</title>
 
 
         <!-- Custom HTML head -->
@@ -154,73 +154,72 @@
                 <div id="content" class="content">
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<h1 id="to-read"><a class="header" href="#to-read">To Read</a></h1>
+<h1 id="wang-2024---llm-for-pinterest-search"><a class="header" href="#wang-2024---llm-for-pinterest-search">Wang 2024 - LLM for Pinterest Search</a></h1>
+<p>This paper explains Pinterest use of pre-trained LLMs to improve their search ranking model. They first fine-tune a Llama-8B model on human-labelled search relevance data, then used the model to label large amounts of unlabelled data. The unlabelled data was used to train a smaller MLP, which led to significant improvement in search performance.</p>
+<h2 id="background"><a class="header" href="#background">Background</a></h2>
+<p>Pinterest curates human-labelled dataset for search relevance. For each query, a pin is classified into five ordered relevance levels:</p>
 <ul>
-<li>https://netflixtechblog.com/improve-your-next-experiment-by-learning-better-proxy-metrics-from-past-experiments-64c786c2a3ac</li>
-<li>https://netflixtechblog.com/sequential-a-b-testing-keeps-the-world-streaming-netflix-part-1-continuous-data-cba6c7ed49df</li>
-<li>https://arxiv.org/abs/2407.02464</li>
-<li>https://arxiv.org/abs/2305.12102</li>
-<li>https://arxiv.org/abs/1709.03933</li>
-<li>https://arxiv.org/abs/2101.08769</li>
-<li>https://arxiv.org/abs/1205.2618 # BPR</li>
-<li>https://arxiv.org/abs/2312.08520 # InfoNCE+</li>
-<li>https://arxiv.org/abs/2308.06091 # MAWU</li>
-<li>https://arxiv.org/abs/2109.12613 # CCL</li>
-<li>https://arxiv.org/abs/2201.02327 # SSM</li>
-<li>https://arxiv.org/abs/2206.12811 # DirectAU</li>
-<li><a href="https://arxiv.org/abs/1909.03193">KG-BERT</a></li>
-<li><a href="https://arxiv.org/abs/2110.00685">XR-Transformer</a></li>
-<li><a href="https://arxiv.org/abs/2209.11055">SetFit</a></li>
-<li><a href="https://arxiv.org/abs/2410.21228">Lora vs Fine tuning</a></li>
-<li><a href="https://arxiv.org/abs/2306.08121">Better Generalization with semantic IDs</a></li>
-<li><a href="https://arxiv.org/abs/1801.04062">Mutual Information Neural Estimation</a></li>
-<li><a href="https://arxiv.org/abs/2010.04592">Contrastive Learning with Hard Negatives</a></li>
-<li><a href="https://arxiv.org/abs/2110.06848">Decoupled Contrastive Learning</a></li>
-<li><a href="https://arxiv.org/abs/2202.06200">Improving Graph Collaborative Filtering with Neighborhood-enriched Contrastive Learning</a></li>
-<li><a href="https://arxiv.org/abs/1609.02907">Semi-Supervised Classification with Graph Convolutional Networks</a></li>
-<li><a href="https://arxiv.org/abs/1809.07428">Ranking Distillation</a></li>
-<li><a href="https://arxiv.org/abs/2205.04507">PinnerFormer</a></li>
-<li><a href="https://arxiv.org/abs/1904.06690">BERT4Rec</a></li>
-<li><a href="https://arxiv.org/abs/2212.02027">Retrieval as Attention</a></li>
-<li><a href="https://arxiv.org/abs/2209.10063">Generate Rather than Retrieve</a></li>
-<li><a href="https://arxiv.org/abs/2105.11108">PLM in Baidu Search</a></li>
-<li><a href="https://arxiv.org/abs/2006.11632">Emebdding Based Retrieval in Facebook Search</a></li>
-<li><a href="https://arxiv.org/abs/1808.09781">Self Attentive Sequential Recommendation</a></li>
-<li><a href="https://arxiv.org/abs/2309.07602">Is BERT4Rec really better than SASRec?</a></li>
-<li><a href="https://scontent.fsin4-1.fna.fbcdn.net/v/t39.8562-6/246721374_422204999475172_9039387325224382577_n.pdf?_nc_cat=104&amp;ccb=1-7&amp;_nc_sid=e280be&amp;_nc_ohc=adv7Euc5H4IQ7kNvgEHyaVc&amp;_nc_oc=Adh-DQ1sU1WSDRjqnODhkqDrDss2u4MkbNEHo74Sm7EaF2U0pPfNK_pqJf65fg1KKU0&amp;_nc_zt=14&amp;_nc_ht=scontent.fsin4-1.fna&amp;_nc_gid=An-5fgAThp16mU1IsiAhSVP&amp;oh=00_AYDbJULpLpX5Ekq9BeE8d2Ofno_1Boxkw3y_JnEdtA0RWA&amp;oe=67B90BFA">Transformers4Rec</a></li>
-<li><a href="https://arxiv.org/abs/2010.06467">Pretrained Transformers for Text Ranking: BERT and Beyond</a></li>
-<li><a href="https://arxiv.org/abs/2309.07602">Turning Dross Into Gold Loss: is BERT4Rec really better than SASRec?</a></li>
-<li><a href="https://arxiv.org/abs/2004.13313">Modularized Transfomer-based Ranking Framework</a></li>
-<li><a href="https://arxiv.org/abs/2106.03373">Pre-trained Language Model for Web-scale Retrieval in Baidu Search</a></li>
-<li><a href="https://arxiv.org/abs/1702.07969">Related Pins at Pinterest: The Evolution of a Real-World Recommender System</a></li>
-<li><a href="https://arxiv.org/abs/2410.17152">Improving Pinterest Search Relevance Using Large Language Models</a></li>
-<li><a href="https://arxiv.org/abs/1711.07601">Pixie: A System for Recommending 3+ Billion Items to 200+ Million Users in Real-Time</a></li>
-<li><a href="https://arxiv.org/abs/2006.02282">Towards Personalized and Semantic Retrieval: An End-to-End Solution for E-commerce Search via Embedding Learning</a></li>
-<li><a href="https://www.kdd.org/kdd2016/papers/files/adf0361-yinA.pdf">Ranking Relevance in Yahoo Search</a></li>
-<li><a href="https://arxiv.org/abs/2310.08319">Fine-Tuning LLaMA for Multi-Stage Text Retrieval</a></li>
-<li><a href="https://arxiv.org/abs/2106.11959">Revisiting Deep Learning Models for Tabular Data</a></li>
-<li><a href="https://arxiv.org/abs/2404.16260">OmniSearchSage: Multi-Task Multi-Entity Embeddings for Pinterest Search</a></li>
-<li><a href="https://arxiv.org/abs/2006.05639">Search-based User Interest Modeling with Lifelong Sequential Behavior Data for Click-Through Rate Prediction</a></li>
-<li><a href="https://arxiv.org/abs/1905.06874">Behavior Sequence Transformer for E-commerce Recommendation in Alibaba</a></li>
-<li><a href="https://arxiv.org/abs/1806.01973">Graph Convolutional Neural Networks for Web-Scale Recommender Systems</a></li>
-<li><a href="https://arxiv.org/abs/2007.03634">PinnerSage: Multi-Modal User Embedding Framework for Recommendations at Pinterest</a></li>
-<li><a href="https://arxiv.org/abs/2205.11728">ItemSage: Learning Product Embeddings for Shopping Recommendations at Pinterest</a></li>
-<li><a href="https://arxiv.org/abs/2210.10634">RankT5: Fine-Tuning T5 for Text Ranking with Ranking Losses</a></li>
-<li><a href="https://arxiv.org/abs/2306.01599">Pretrained Language Model based Web Search Ranking: From Relevance to Satisfaction</a></li>
-<li><a href="https://arxiv.org/abs/2101.08751">Rethink Training of BERT Rerankers in Multi-Stage Retrieval Pipeline</a></li>
-<li><a href="https://arxiv.org/abs/2203.05765">Tevatron: An Efficient and Flexible Toolkit for Dense Retrieval</a></li>
-<li><a href="https://arxiv.org/abs/2207.02578">SimLM: Pre-training with Representation Bottleneck for Dense Passage Retrieval</a></li>
+<li>L5: Excellent / Highly Relevant</li>
+<li>L4: Good / Relevant</li>
+<li>L3: Complementary / Marginally Relevant</li>
+<li>L2: Poor / Irrelevant</li>
+<li>L1: Highly Irrelevant</li>
 </ul>
+<h2 id="teacher-model"><a class="header" href="#teacher-model">Teacher Model</a></h2>
+<p>The <span style="color:orange">teacher model</span> takes the form of a standard cross encoder setup. The teacher model is either a BERT-based LLM or a decoder-style LLM. The text inputted to the LLM is of the following format:</p>
+<pre><code>[CLS] Query [SEP] Pin Text
+</code></pre>
+<p>The embedding of the <code>[CLS]</code> token is taken for BERT-based models, whilst the embedding of the final non-padding token is taken for decoder-based models (such as Llama). The embedding is passed through several fully-connected layers, and the final output dimension corresponds to the <code>5</code> relevance levels. The LLMs are fine-tuned during training by minimizing the pointwise multi-class cross entropy loss.</p>
+<p>To enhance the representation of the pin text for the teacher model, several features are concatenated together:</p>
+<ul>
+<li>Pin <span style="color:orange">titles</span> and <span style="color:orange">descriptions</span> are used as-is</li>
+<li><span style="color:orange">Synthetic image captions</span> are generated using an off-the-shelf model called BLIP</li>
+<li>High-engagement <span style="color:orange">query tokens</span>. Queries resulting in high engagement with a pin are aggregated over the past 2 years, and the top tokens are selected.</li>
+<li>User-curated <span style="color:orange">Board Titles</span>. Users curate their pins onto boards. The board titles are aggregated across users and top tokens are selected.</li>
+<li><span style="color:orange">Link Titles and Descriptions</span>. A long click is defined as when a user clicks into a link to the webpage of a pin and stays <code>10 seconds</code> there. The incoming link url and description contains useful text which is mined.</li>
+</ul>
+<p>A few off-the-shelf LLMs are tested as teacher models and the results reported below.</p>
+<h2 id="student-model"><a class="header" href="#student-model">Student Model</a></h2>
+<p>The teacher model is used to label large amounts of unlabelled search impressions data. Specifically, for each row of data, the teacher model generates a softmax probability distribution over the 5-point relevance labels. The student model is then taught to mimic the predicted probability distribution using cross-entropy loss.</p>
+<blockquote>
+<p>Note: The exact loss function for knowledge distillation is not covered in the paper. But the classical way is to perform knowledge distillation using KL-divergence loss. An implementation of the loss can be found <a href="https://nn.labml.ai/distillation/index.html">here</a>. The basic idea is to minimize KL-divergence between the teacher predicted probability distribution over labels and the student predicted probability distribution.</p>
+</blockquote>
+<p>The student model is a simple feed forward network on a diverse set of features. It seems like some feature engineering is performed to optimize performance. Features include:</p>
+<ul>
+<li>Query-side embeddings. Pinterest has classifiers to categorize the query into a query interest type, shopping interest type etc. These categorical features are embedded using an embedding table. The SearchSage embedding for the query is also included.</li>
+<li>Pin-side embeddings. The PinSage pin embedding, SearchSage pin embedding etc. are included</li>
+<li>Query-pin interaction features. Standard query-pin match scores like BM25 score, % of query terms matched are also included as features</li>
+</ul>
+<p>All features are presumably concatenated together, and passed into the MLP network. As mentioned above, this student network is trained using knowledge distillation from the teacher predictions above.</p>
+<h2 id="results"><a class="header" href="#results">Results</a></h2>
+<p>The teacher and student model are evaluated using human-annotated search relevance dataset. The train set for the teacher model is around 280k rows of human-annotated data, and the remaining 30k rows are used for evaluation. The teacher model is then used to run inference on 30 million rows of unlabelled data, and then used to train the student model.</p>
+<p>For the teacher model, scaling up the base model consistently produces better test performance (accuracy):</p>
+<ul>
+<li>BERT-base: 53.5%</li>
+<li>T5-base: 56.9%</li>
+<li>DeBERTaV3-base: 58.0%</li>
+<li>Llama3-8b: 60.2%</li>
+</ul>
+<p>Note that the Llama3-8b model was trained using qLora.</p>
+<p>The experiments also showed that:</p>
+<ul>
+<li>Scaling up the amount of teacher-inferred data was crucial for improving student model performance</li>
+<li>The teacher LLM was able to successfully transfer learning from a purely English human-annotated dataset to multiple other languages, thus allowing the student model to learn multi-lingual behaviour.</li>
+<li>The inclusion of additional text features for the teacher model above helped to improve performance significantly.</li>
+</ul>
+<h2 id="takeaways"><a class="header" href="#takeaways">Takeaways</a></h2>
+<p>This is a simple paper that shows the power of using LLM models to bootstrap learning from a smaller product-specific dataset to distill an effective student model. This is a useful paradigm because in search systems, we often have vast amounts of unlabelled impressions data that we can use a teacher model to run inference on.</p>
+<p>The paper also shows that scaling up the LLM is able to produce non-trivial increases in search relevance performance on the human-annotated dataset.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../misc/wsl-setup.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../papers/borisyuk_2024.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../misc/packages.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../nlp_course/intro.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -230,11 +229,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../misc/wsl-setup.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../papers/borisyuk_2024.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../misc/packages.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../nlp_course/intro.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

@@ -68,3 +68,5 @@ The authors use the full sequence of item interactions for each user. The last (
 > Note: I think the other reason sampling negatives is not robust is because it does not directly mirror the retrieval task, which requires choosing an item from the full catalogue.
 
 The results show that SASRec with `3,000` negatives is consistently the best model, beating BERT4Rec consistently. It also trains around $\frac{1}{2}$ to $\frac{1}{4}$ times faster than BERT4Rec. Hence the authors recommend sampled softmax SASRec as the de-facto standard instead of BERT4Rec.
+
+The authors do note that for the smaller datasets, SASRec may overfit relatively quickly (validation loss peaks and declines) and hence it is important to use early stopping. In contrast, BERT4Rec is more robust to overfitting and validation performance generally does not decline (it plateaus near the peak).
