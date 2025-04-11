@@ -82,3 +82,36 @@ Specifically, the variance of a bernoulli random variable with probability $p$ i
 
 So we can use $\sigma_A = \sqrt{p_A \cdot (1-p_A)}$ and $\sigma_B = \sqrt{(p_A + \delta) \cdot (1- p_A - \delta)}$ and substitute these into equation (3). We will then be able to have a minimum sample size formula by just specifying $\alpha$, $\beta$, baseline conversion $p_A$ and minimum relative difference $d$. This is the formula used by [Evan Miller's sample size calculator](https://www.evanmiller.org/ab-testing/sample-size.html).
 
+## Imbalanced AB Test
+
+Another common scenario is the case where we do not split 50-50, i.e. $N_A \neq N_B$. In this case, suppose we have $N_A = p \times N_B = p \times n$, where $p > 1$. For example, if we have a 90-10 split, then `p=9`. Then instead of equation (3) above, we get:
+
+$$
+\begin{align*}
+    \delta &\geq z(1-\beta) \sqrt{
+        \frac{\sigma_A^2 + p \cdot \sigma_B^2}{np}
+    }
+    +
+    z(\alpha') \sqrt{\frac{2 \sigma_A^2}{np}} \\
+    n &\geq \frac{
+        \left(
+            z(1-\beta)\sqrt{\sigma_A^2 + p \cdot \sigma_B^2} + z(\alpha') \sigma_A \sqrt{2}
+        \right)^2
+    }{
+        p \cdot \delta^2
+    } \\ 
+
+    n(p + 1) &\geq 
+        \frac{p + 1}{p} \cdot
+        \frac{
+            \left(
+                z(1-\beta)\sqrt{\sigma_A^2 + p \cdot \sigma_B^2} + z(\alpha') \sigma_A \sqrt{2}
+            \right)^2
+        }{
+            \delta^2
+        } \\ 
+\end{align*}
+$$
+
+Where $n(p + 1)$ is the total sample size (both groups combined) required. Note that the formula is largely similar to (3), with some minor differences where the `p` term appears. We can easily verify that if we set `p=1`, we can recover equation (3): the inner $p \cdot \sigma^2_B$ resolves to $\sigma^2_B$, and the outer multiplier $\frac{p+1}{p} = 2$. Dividing by $2$ on both sides gives us equation (3).
+

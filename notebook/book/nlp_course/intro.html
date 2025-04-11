@@ -510,6 +510,27 @@ the cat sprinted off - 0.2
 <li>It does not require modifying the original model structure - we simply modify the <code>state_dict</code> of the original model by adding the <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord">Δ</span><span class="mord mathnormal" style="margin-right:0.13889em;">W</span></span></span></span></li>
 <li>Adapters incur additional inference latency due to the additional layers. LoRA has no additional latency at all</li>
 </ol>
+<h1 id="lecture-8-reinforcement-learning-and-human-feedback"><a class="header" href="#lecture-8-reinforcement-learning-and-human-feedback">Lecture 8: Reinforcement Learning and Human Feedback</a></h1>
+<p><a href="https://www.youtube.com/watch?v=hCnKbwPntrE&amp;list=PL8PYTP1V4I8D4BeyjwWczukWq9d8PNyZp&amp;index=8">Fall 2024 - Reinforcement Learning and Human Feedback</a></p>
+<p>So far we optimize model using maximum likelihood of next token. This paradigm has some problems:</p>
+<ul>
+<li>Problem #1: Some mistakes are worse than others, and we want to penalize more egregious mistakes more</li>
+<li>Problem #2: The target labels in MLE can be bad (e.g. toxic internet stuff, disinformation)</li>
+<li>Problem #3: Exposure bias. At training time, the prefix sequence is guaranteed to be good / normal. At generation, the prefix sequence can potentially become strange.
+<ul>
+<li>One example is repeating words. In normal language, when a word is repeated twice, it is more likely that the word repeats again. Hence language models learn this behaviour.</li>
+</ul>
+</li>
+</ul>
+<p>So how do we measure how "good" an output is?</p>
+<ul>
+<li>Objective assessment. Have an annotated correct answer and match against it. This approach is good for math problems or problems with objective answers.
+<ul>
+<li>GSM8K (Cobbe 2021) is a famous math problem dataset</li>
+</ul>
+</li>
+<li>Human evaluation.</li>
+</ul>
 
                     </main>
 

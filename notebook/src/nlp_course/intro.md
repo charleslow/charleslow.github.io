@@ -479,3 +479,18 @@ $$
 The reason LoRA has caught on is two-fold:
 1. It does not require modifying the original model structure - we simply modify the `state_dict` of the original model by adding the $\Delta W$
 2. Adapters incur additional inference latency due to the additional layers. LoRA has no additional latency at all
+
+# Lecture 8: Reinforcement Learning and Human Feedback
+
+[Fall 2024 - Reinforcement Learning and Human Feedback](https://www.youtube.com/watch?v=hCnKbwPntrE&list=PL8PYTP1V4I8D4BeyjwWczukWq9d8PNyZp&index=8)
+
+So far we optimize model using maximum likelihood of next token. This paradigm has some problems:
+- Problem #1: Some mistakes are worse than others, and we want to penalize more egregious mistakes more
+- Problem #2: The target labels in MLE can be bad (e.g. toxic internet stuff, disinformation)
+- Problem #3: Exposure bias. At training time, the prefix sequence is guaranteed to be good / normal. At generation, the prefix sequence can potentially become strange.
+    - One example is repeating words. In normal language, when a word is repeated twice, it is more likely that the word repeats again. Hence language models learn this behaviour.
+
+So how do we measure how "good" an output is?
+- Objective assessment. Have an annotated correct answer and match against it. This approach is good for math problems or problems with objective answers.
+    - GSM8K (Cobbe 2021) is a famous math problem dataset
+- Human evaluation. 

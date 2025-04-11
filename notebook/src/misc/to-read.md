@@ -54,3 +54,7 @@
 - [Rethink Training of BERT Rerankers in Multi-Stage Retrieval Pipeline](https://arxiv.org/abs/2101.08751)
 - [Tevatron: An Efficient and Flexible Toolkit for Dense Retrieval](https://arxiv.org/abs/2203.05765)
 - [SimLM: Pre-training with Representation Bottleneck for Dense Passage Retrieval](https://arxiv.org/abs/2207.02578)
+- [Bootstrap your own latent: A new approach to self-supervised Learning](https://arxiv.org/abs/2006.07733)
+- [Gradient Boosting Neural Networks: GrowNet](https://arxiv.org/abs/2002.07971)
+- [GISTEmbed: Guided In-sample Selection of Training Negatives for Text Embedding Fine-tuning](https://arxiv.org/abs/2402.16829)
+- [Scaling Deep Contrastive Learning Batch Size under Memory Limited Setup](https://arxiv.org/abs/2101.06983)
