@@ -49,6 +49,8 @@ From these simple statements, the paper makes two important observations:
 1. The partial derivative $\frac{\partial f(s_i)}{\partial \Theta}$ only depends on $\Theta$ and $s_i$. It does not depend on any other anchor or passage. Thus, if we have access to the numerical value of $\frac{\partial \L}{\partial f(s_i)}$, we can run backpropagation for $\frac{\partial \L}{\partial \Theta}$ independently from all other samples in an arbitrarily small batch.
 2.  The partial derivative $\frac{\partial \L}{\partial f(s_i)}$ requires only the numerical values of the encoded representations $f(s_i)$ for all $s_i \in S$ and $g(t_j)$ for all $t_j \in T$. To compute these values, we don't actually need the computation graph states of the encoder $f$, we just need the numerical values of all the embeddings.
 
+Note that we can 
+
 The above statements are focused on $f$, $s_i$ and $\Theta$, but similar statements hold for $g$, $t_j$ and $\Lambda$. The first statement above allows us to <<run the expensive gradient updates on a small batch of anchors or passages at a time>>, which avoids the memory bottleneck of running gradient updates on a large batch size for the large encoders. We can do this so long as we have access to the partial derivatives $\frac{\partial \L}{\partial f(s_i)}$. The second statement shows us that computing these partial derivatives is not difficult, because <<we just need the encoded representations of each anchor and passage>>. Hence we can batch encode all the anchors and passages in the mini-batch (without gradients), and then use these values to compute this derivative.
 
 ## Method
@@ -101,14 +103,33 @@ The author Luyu Gao has an implementation of GradCache in pytorch. The source co
 - [RandContext](https://github.com/luyug/GradCache/blob/main/src/grad_cache/context_managers.py)
 
 The main method is in `cache_step` which computes the loss for a mini batch. We follow the logic below:
-- Firstly, `forward_no_grad` is called on the `model_inputs` to get the encoded representations (or embeddings) of all the input texts:
+- <<Step 1>>: `forward_no_grad` is called on the `model_inputs` to get the encoded representations (or embeddings) of all the input texts:
     - `torch.no_grad` is used as context manager to avoid gradients
     - In a for loop over the sub-batches:
         - The model `forward` method is called on the sub-batch input tensors
         - `RandContext` context manager for this forward pass is initialized and stored in a list of `rnd_states`
             - We need to store the random state of both CPUs and GPUs for this forward pass, because we need to exactly replicate the random number state at this point in time later. These random states can affect the behaviour of certain nn layers, especially DropOut. 
+            - The `RandContext` object will be used as context manager later on
     - The sub-batch representation tensors are concatenated together  
     - The `model_reps` and `rnd_states` are returned
         - `model_reps` is appended to a list `all_model_reps`
         - `rnd_states` is appended to a list `all_rnd_states`
+- <<Step 2>>: `build_cache` is called to build the cache of gradients. These are the gradients from the loss $\L$ to the embeddings $f(s_i), g(t_j)$.
+    - `compute_loss` is called to forward pass from the embeddings to the loss
+    - `backward` is called to compute the gradients from the loss to the embeddings
+    - For each embedding `r`, `r.grad` is accessed to get the gradients
+    - The cache is thus `[r.grad for r in reps]`
+- <<Step 3>>: `forward_backward` is called to accumulate gradients 
+    - Firstly, `with state` is called to restore the random context that we stored earlier. This ensures that the forward pass of the model to get the embedding (this time with gradients) exactly matches the earlier forward pass with no gradients.
+    - We obtain the embeddings `y` with gradients enabled. This corresponds to $f(s_i)$ in the analysis above. 
+    - We retrieve the gradients associated with each embedding that we stored earlier in step 2 (call it `reps`). This corresponds to $u_i$ in the analysis above.
+    - Now we dot product `reps` and `y` to form `surrogate`. `backward` is then called on `surrogate` to get the correct gradients.
+        - This step is a bit tricky, let's look at it in a bit more detail. 
+        - Recall that our objective is to obtain $\frac{\partial L}{\partial f(s_i)} \frac{\partial f(s_i)}{\Theta}$
+        - Recall that $u_i$ is the precomputed numerical value of $\frac{\partial L}{\partial f(s_i)}$
+        - Since $u_i$ is a constant, it will become a constant multiplier to the gradient on the backward pass
+        - Hence by calling backward on `surrogate`, we will get gradients of the form $u_i \cdot \frac{\partial f(s_i)}{\partial \Theta}$, which is what we want
+    - After the `forward_backward` function, the gradients will be accumulated in `model.parameters().grad`, and the optimizer step can then be taken
+
+
 
