@@ -46,6 +46,7 @@
     - [Lee 2020 - Large Scale Video Representation Learning](./papers/lee_2020.md)
     - [He 2020 - LightGCN](./papers/he_2020.md)
     - [Lewis 2020 - Retrieval Augmented Generation](./papers/lewis_2020.md)
+    - [Gao 2021 - GradCache](./papers/gao_2021_gradcache.md)
     - [Gao 2021 - SimCSE](./papers/gao_2021.md)
     - [Weng 2021 - Contrastive Representation Learning](./papers/weng_2021.md)
     - [Dao 2022 - Flash Attention](./papers/dao_2022.md)
