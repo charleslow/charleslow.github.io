@@ -385,3 +385,51 @@ Another way to look at it. We start with having chosen a particular action. Havi
 $$
     q_{\pi}(s, a) = \mathcal{R}_s + \gamma \sum_{s' \in S} P_{ss'}^a v_{\pi}(s') 
 $$
+
+Now we can stitch these two perspectives together. Starting from a particular state, we can write $v_{\pi}(s)$ in terms of $q_{\pi}$, then write $q_{\pi}$ in terms of $v_{\pi}$ again. This will allow us to get a recursive relationship of $v_{\pi(s)}$ in terms of $v_{\pi}(s')$ and allow us to solve the equation.
+
+The <<bellman expectation equation>> for $v_{\pi}(s)$ is thus:
+
+$$
+    v_{\pi}(s) = \sum_{a \in \mathcal{A}} \pi(a|s) \left( 
+        \mathcal{R}_s^a + \gamma \sum_{s' \in \S} \mathcal{P}_{ss'}^a v_{\pi}(s')
+    \right)
+$$
+
+The math is expressing a simple idea: that the value at a particular state $s$ is the weighted sum of values from all possible actions we take under the current policy $\pi$. The value of each action is in turn affected by the reward function and the transition probability that determines the state we end up in after taking a particular action.
+
+Similarly, we can do the same by starting at an action instead of a state. The bellman expectation equation for $q_{\pi}$ is thus:
+
+$$
+    q_{\pi}(s, a) = \mathcal{R}_s^a + \gamma \sum_{s' \in \mathcal{S}} \mathcal{P}_{ss'}^a \sum_{a' \in \mathcal{A}} \pi(a' | s')q_{\pi}(s', a')
+$$
+
+### Optimal Value Function
+
+So far we have been defining the dynamic process of the MDP, but have not tried solving the optimization problem. We will turn to this now.
+
+> **Definition.** The <<optimal state-value function>> $v_*(s)$ is the maximum value function over all policies:
+> $$v_*(s) = \max_{\pi} v_{\pi}(s)$$
+> The <<optimal action-value function>> $q_*(s, a)$ is the maximum action-value function over all policies:
+> $$q_*(s, a) = \max_{\pi} q_{\pi}(s, a)$$
+
+The MDP problem is solved once we find $q_*$. We thus need some algorithms to systematically find $q_*$.
+
+Define a partial ordering over policies:
+$$
+    \pi \geq \pi' \text{ if } v_{\pi}(s) \geq v_{\pi'}(s) \forall s
+$$
+
+> **Theorem.** For any MArkov Decision Process:
+> - There exists an optimal policy $\pi_*$ that is better than or equal to all other policies, i.e. $\pi_* \geq \pi, \forall \pi$
+> - All optimal policies achieve the optimal value function, i.e. $v_{\pi_*}(s) = v_*(s), \forall s$
+> - All optimal policies achieve the optimal action-value function, i.e. $q_{\pi_*}(s, a) = q_*(s, a), \forall s, a$
+
+How do we find the optimal policy? An optimal policy can be found by maximizing over $q_*(s, a)$, if we knew it.
+$$
+\pi_*(a \mid s) =
+\begin{cases} 
+1 & \text{if } a = \arg\max\limits_{a' \in A} \, q_*(s, a') \\
+0 & \text{otherwise}
+\end{cases}
+$$
