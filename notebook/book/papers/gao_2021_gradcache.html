@@ -260,6 +260,28 @@
 </ul>
 </li>
 </ul>
+<p><code>RandContext</code> itself is an interesting context manager to store and load pytorch's internal rng state.</p>
+<ul>
+<li>On <code>init</code>, the current cpu and gpu rng states are <span style="color:orange">captured</span>:
+<ul>
+<li><code>torch.get_rng_state()</code> gets a byte tensor representing the cpu rng state</li>
+<li><code>torch.utils.checkpoint.get_device_states(*tensors)</code> looks up the gpu device where the tensors are held, and returns both the <code>gpu_devices</code> and <code>gpu_rng_states</code> across all gpu devices</li>
+</ul>
+</li>
+<li><code>__enter__</code> is triggered when this class is used as context manager, to <span style="color:orange">restore</span> the earlier captured rng state.
+<ul>
+<li><code>self._fork = torch.random.fork_rng</code> is called to create a fork of the current torch rng state. This creates an isolated rng environment where we can restore the earlier rng environment without messing up the original rng environment that we entered from.</li>
+<li><code>self._fork.__enter__()</code> is called to actually enter the forked state</li>
+<li><code>torch.set_rng_state</code> now sets the cpu rng state to the earlier captured state</li>
+<li><code>torch.utils.checkpoint.set_device_states</code> similarly sets the gpu rng state to the earlier captured state</li>
+</ul>
+</li>
+<li><code>__exit__</code> is triggered when the context manager is closed.
+<ul>
+<li><code>self._fork.__exit__</code> is called to close the isolated rng environment</li>
+</ul>
+</li>
+</ul>
 
                     </main>
 

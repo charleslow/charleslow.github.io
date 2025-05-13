@@ -187,6 +187,17 @@
 <li>How to design a search system that matches BM25 performance at cold start and gradually improves with more data, without dropping below BM25 performance?</li>
 </ul>
 </li>
+<li>
+<p>Precise Retrieval</p>
+<ul>
+<li>The common two tower approach to embedding retrieval leaves much to be desired
+<ul>
+<li>There is no natural score threshold at which items are deemed irrelevant. Traditionally, classifiers have a <code>0.5</code> score cut-off.</li>
+<li>Embedding retrieval tends to retrieve unrelated items. This is a well documented problem. For example, <code>Nike shoes</code> retrieves <code>Adidas Shoes</code>.</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
                     </main>

@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Lecture 3 - Chux&#x27;s Notebook</title>
+        <title>Sanjabi 2025 - 360Brew - Chux&#x27;s Notebook</title>
 
 
         <!-- Custom HTML head -->
@@ -154,105 +154,26 @@
                 <div id="content" class="content">
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<h1 id="lecture-3-database-storage-1"><a class="header" href="#lecture-3-database-storage-1">Lecture 3: Database Storage 1</a></h1>
-<p>Class will shift gears towards how to implement a DBMS. Focus is on a single node machine first, then move to concurrency. Today's focus is on the <Disk Manager>.</p>
-<p>Focus on <disk-based architecture>, i.e. the DBMS assumes that the primary storage location of the database is on non-volatile disk. The DBMS's components manage the movement of data between volatile (e.g. RAM) and non-volatile storage.</p>
-<p>Storage hierarchy. Higher rank is faster, smaller, expensive.</p>
-<ol>
-<li>CPU Registers</li>
-<li>CPU Caches</li>
-<li>DRAM (i.e. memory)</li>
-<li>SSD</li>
-<li>HDD</li>
-<li>Network Storage</li>
-</ol>
-<p>Items 1-3 are volatile, i.e. random access, byte-addressable (we can fetch specific bytes). Items 4-6 are non-volatile, i.e. sequential access, block-addressable. For non-volatile storage, we need to fetch data one block at a time, and accessing data in one contiguous block sequentially is much faster than trying to access blocks scattered around. CPU refers to items 1 and 2, Memory refers to item 3, Disk refers to items 4-6.</p>
-<p>Some new storage category: Fast network storage is in between HDD and SSD. Persistent Memory is between SSD and DRAM.</p>
-<p>DBMSs need to exploit the sequential access on non-volatile memory to maximize speed of retrieval. Hence how we store data contiguously matters in the design of the DBMS.</p>
-<p>Access times:</p>
-<pre><code>- 1 ns          L1 Cache Ref        1 sec
-- 4 ns          L2 Cache Ref        4 sec
-- 100 ns        DRAM                100 sec
-- 16,000 ns     SSD                 4.4 hours
-- 2,000,000 ns  HDD                 3.3 weeks
-- 50,000,000 ns Network Storage     1.5 years
-</code></pre>
-<h2 id="system-design-goals"><a class="header" href="#system-design-goals">System Design Goals</a></h2>
-<p>The overall goal is to make it appear like we have more memory than we do:</p>
-<ol>
-<li>We want to allow the DBMS to manage databases that exceed the amount of memory available.</li>
-<li>Reading/ writing to disk is expensive, so it must be managed carefully to avoid large stalls.</li>
-<li>Random access on disk is much slower, so DBMS wants to maximize sequential access.</li>
-</ol>
-<h2 id="disk-oriented-dbms"><a class="header" href="#disk-oriented-dbms">Disk oriented DBMS</a></h2>
-<p>On disk, we have database files stored in pages. Each page is a block of data. When an execution engine makes a query, it loads a page into buffer pool in memory. The buffer pool returns a 64-bit pointer to the memory location where the page is located. The execution engine interprets the layout of the page, updates it. The new page is then written back into the database file on disk.</p>
-<h2 id="why-not-use-the-os"><a class="header" href="#why-not-use-the-os">Why not use the OS?</a></h2>
-<p>The DBMS could potentially use memory mapping <code>mmap</code> to store the contents of a file (or page) in the address space of a program. The benefit is that we can tap on the OS to decide which pages to load into physical memory and when to swap pages out. The downside is that the lack of control over memory management can lead to stalling and bad performance.</p>
-<p>How the OS works:</p>
-<ol>
-<li>Suppose we have Page 1, ..., Page 4 on disk. There's only enough space in physical memory to load 2 pages.</li>
-<li>The OS represents this to the program as virtual memory, where Page 1, ..., Page 4 are available</li>
-<li>When the program touches Page 2, the OS will load Page 2 into physical memory and return a pointer to the program</li>
-<li>Suppose the program now touches Page 3 and Page 4</li>
-<li>The OS needs to decide which page to evict from physical memory</li>
-</ol>
-<p>So the problems with using <code>mmap</code> to handle I/O for the DBMS:</p>
-<ol>
-<li>Transaction safety. The OS can flush dirty pages to disk at any time, even mid-write. We can get corrupted data on disk.</li>
-<li>I/O stalls. The DBMS does not know which pages are in memory, so the OS could stall due to page faults (fetching a page not in memory).</li>
-<li>Error handling. Difficult to validate pages. Any access can cause a <code>SIGBUS</code> that the DBMS needs to handle.</li>
-<li>Performance issues. The OS has its own scheduling and data structures, and can contend with the DBMS's priorities.</li>
-</ol>
-<p>There are some companies that use <code>mmap</code>:</p>
+<h1 id="sanjabi-2025---360brew"><a class="header" href="#sanjabi-2025---360brew">Sanjabi 2025 - 360Brew</a></h1>
+<p><a href="https://arxiv.org/pdf/2501.16450">360Brew: A Decoder-only Foundation Model for Personalized Ranking and Recommendation</a></p>
+<p>360Brew is a 150B foundational LLM model used to centralize many LinkedIn models into one model.</p>
+<p>For V1.0, 360Brew focused on replacing ranking tasks since they are less bounded by computational constraints in practice compared to retrieval.</p>
+<h2 id="current-paradigm"><a class="header" href="#current-paradigm">Current Paradigm</a></h2>
+<p>The current paradigm relies on bloom embedding of ID based features for both members and items. These large embedding tables are supplemented with other engineered features such as item attributes. Some challenges with the current paradigm are:</p>
 <ul>
-<li>RavenDB</li>
-<li>ElasticSearch</li>
-<li>QuestDB</li>
-<li>MongoDB (moved away from <code>mmap</code>)</li>
+<li>Cold start: ID based features cannot handle cold start, and thus a lot of work is done to learn good content-based representations</li>
+<li>Feature interactions: Previously,</li>
 </ul>
-<p>So DBMS almost always wants to control things itself:</p>
-<ul>
-<li>Flushing dity pages to disk in the correct order</li>
-<li>Specialized pre-fetching</li>
-<li>Buffer replacement policy</li>
-<li>Thread / process scheduling</li>
-</ul>
-<p>Paper on this: <a href="https://db.cs.cmu.edu/papers/2022/cidr2022-p13-crotty.pdf">Are you sure you want to Use MMAP in your DBMS?</a></p>
-<p>For database storage, we need to deal with two problems:</p>
-<ol>
-<li>How the DBMS represents the database in files on disk</li>
-<li>How the DBMS manages its memory and moves data back and forth from disk</li>
-</ol>
-<h2 id="file-storage"><a class="header" href="#file-storage">File Storage</a></h2>
-<p>The DBMS stores a database as one or more files on disk typically in a proprietary format. The OS doesn't know anything about the contents of these files. There are portable file formats (e.g. parquet etc.). Early systems in 1980s further used custom <em>filesystems</em> on raw block storage. Most newer DBMSs do not do this.</p>
-<p>The <storage manager> is responsible for maintaining a database's files. It organizes the files as a collection of pages, and tracks the data read / written to pages, and tracks the available space in each page. A DBMS does not typically maintain multiple copies of a page on disk. This happens above or below the storage manager.</p>
-<p>A <page> is a fixed-size block of data. It can contain tuples, meta-data, indexes, logs etc. Most systems do not mix page types. Some systems require a page to be self-contained, i.e. all the information needed to understand the data in the page is contained within the page itself (e.g. Oracle). Each page is given a unique identifier. The DBMS uses an indirection layer to map page IDs to physical locations (e.g. in memory or in S3 or whatever).</p>
-<p>There are 3 different notions of what a page is:</p>
-<ol>
-<li>Hardware page (typically <code>4KB</code>). A hardware page is the largest block of data that the storage device can guarantee failsafe writes (i.e. if it says it wrote <code>4KB</code>, it actually happened).</li>
-<li>OS Page (usually <code>4KB</code>, but can be much larger)</li>
-<li>Database Page (<code>512B</code> to <code>32KB</code>)</li>
-</ol>
-<p>Why might a larger page size be a good idea? Sequential data access. If we request a page of <code>16KB</code>, it is one call to the OS and data is stored sequentially. If we request 4 pages of <code>4KB</code> each, it is potentially random access. But the downside is that writing to a larger page is slower than writing to a small one.</p>
-<h2 id="page-storage-architecture"><a class="header" href="#page-storage-architecture">Page Storage Architecture</a></h2>
-<p>How do DBMSs map page IDs to physical location? Different approaches:</p>
-<ul>
-<li>Heap file organization &lt;- most common</li>
-<li>Tree file organization</li>
-<li>Sequential / Sorted File Organization (ISAM)</li>
-<li>Hashing file organization</li>
-</ul>
-<p>A <span style="color:orange">heap file</span> is an unordered collection of pages with tuples that are stored in random order.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../database_course/lecture02.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../papers/wang_2024.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../rl_course/main.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../nlp_course/intro.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -262,11 +183,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../database_course/lecture02.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../papers/wang_2024.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../rl_course/main.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../nlp_course/intro.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

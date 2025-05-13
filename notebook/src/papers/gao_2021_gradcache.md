@@ -131,5 +131,15 @@ The main method is in `cache_step` which computes the loss for a mini batch. We 
         - Hence by calling backward on `surrogate`, we will get gradients of the form $u_i \cdot \frac{\partial f(s_i)}{\partial \Theta}$, which is what we want
     - After the `forward_backward` function, the gradients will be accumulated in `model.parameters().grad`, and the optimizer step can then be taken
 
-
+`RandContext` itself is an interesting context manager to store and load pytorch's internal rng state.
+- On `init`, the current cpu and gpu rng states are <<captured>>:
+    - `torch.get_rng_state()` gets a byte tensor representing the cpu rng state
+    - `torch.utils.checkpoint.get_device_states(*tensors)` looks up the gpu device where the tensors are held, and returns both the `gpu_devices` and `gpu_rng_states` across all gpu devices
+- `__enter__` is triggered when this class is used as context manager, to <<restore>> the earlier captured rng state.
+    - `self._fork = torch.random.fork_rng` is called to create a fork of the current torch rng state. This creates an isolated rng environment where we can restore the earlier rng environment without messing up the original rng environment that we entered from.
+    - `self._fork.__enter__()` is called to actually enter the forked state
+    - `torch.set_rng_state` now sets the cpu rng state to the earlier captured state
+    - `torch.utils.checkpoint.set_device_states` similarly sets the gpu rng state to the earlier captured state
+- `__exit__` is triggered when the context manager is closed.
+    - `self._fork.__exit__` is called to close the isolated rng environment
 
