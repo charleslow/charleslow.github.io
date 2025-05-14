@@ -176,6 +176,8 @@ Examples:
 
 ## Lecture 2: Markov Decision Processes
 
+[Lecture 2: Markov Decision Processes](https://www.youtube.com/watch?v=lfHX2hHRMVQ&list=PLqYmG7hTraZDM-OYHWgPebj2MfCFzFObQ&index=2)
+
 Markov Decision Processes formally describe an environment for Reinforcement Learning. 
 - The environment is fully observable, i.e. the current state fully characterizes the process
 - Almost all RL problems can be characterized as an MDP
@@ -425,7 +427,7 @@ $$
 > - All optimal policies achieve the optimal value function, i.e. $v_{\pi_*}(s) = v_*(s), \forall s$
 > - All optimal policies achieve the optimal action-value function, i.e. $q_{\pi_*}(s, a) = q_*(s, a), \forall s, a$
 
-How do we find the optimal policy? An optimal policy can be found by maximizing over $q_*(s, a)$, if we knew it.
+How do we find the optimal policy? An optimal policy can be found trivially by maximizing over $q_*(s, a)$, if we knew it. That is, we always pick the action $a$ with the highest $q(s, a)$ value. Hence if we have $q_*$, we have $\pi_*$.
 $$
 \pi_*(a \mid s) =
 \begin{cases} 
@@ -433,3 +435,32 @@ $$
 0 & \text{otherwise}
 \end{cases}
 $$
+
+Intuitively, we find the optimal policy by starting at the end (resting), and iteratively look backward. This is the same kind of intuition for the <<Bellman optimality equations>>.
+
+The optimal value of being in a state $s$ is the highest value action we can take in that state. Note that we use $q_*$ instead of a generic $q$ because we are choosing from the optimal action-value function.
+$$
+    v_*(s) = \max_{a} q_*(s, a)
+$$
+
+The optimal value of an action $a$ is the weighted sum of values of states that we can end up in after taking the action. Note that in this step, we do not get to choose an action - the transition probabilities will determine what state we end up in after taking actions $a$:
+$$
+    q_*(s, a) = \mathcal{R}^a_s + \sum_{s' \in \S} \mathcal{P}^a_{ss'} v_*(s')
+$$
+
+Finally, stitching these two equations together, we get the bellman optimality equation for $v_*$:
+$$
+    v_*(s) = \max_a \left[
+        \mathcal{R}^a_s + \sum_{s' \in \S} \mathcal{P}^a_{ss'} v_*(s')
+    \right]
+$$
+
+How do we solve the bellman optimality equations? It is now non-linear due to the `max` function, so we cannot solve it with matrix inversion as before. There is no closed form solution in general, but there are many iterative solution methods:
+- Value iteration
+- Policy iteration
+- Q-learning
+- Sarsa
+
+> **Intuition.** The core idea behind the bellman equations is to break down a complex sequential decision problem into a series of simpler, recursive steps. Imagine we are at a particular point in time and in a particular state. The bellman equations tell us that if we can assume that we will act optimally for all future steps after this action, then the problem of finding the best current action becomes trivial - we simply choose the action that yields the highest expected value (based on assuming future optimality).
+> 
+> To actually start unravelling the equations and solving them, we start from the termination point of a process (where the assumption of future optimality trivially holds) and work backwards.
