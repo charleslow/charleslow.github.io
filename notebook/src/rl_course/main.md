@@ -464,3 +464,123 @@ How do we solve the bellman optimality equations? It is now non-linear due to th
 > **Intuition.** The core idea behind the bellman equations is to break down a complex sequential decision problem into a series of simpler, recursive steps. Imagine we are at a particular point in time and in a particular state. The bellman equations tell us that if we can assume that we will act optimally for all future steps after this action, then the problem of finding the best current action becomes trivial - we simply choose the action that yields the highest expected value (based on assuming future optimality).
 > 
 > To actually start unravelling the equations and solving them, we start from the termination point of a process (where the assumption of future optimality trivially holds) and work backwards.
+
+# Lecture 3: Planning by Dynamic Programming
+
+[Lecture 3: Planning by Dynamic Programming](https://www.youtube.com/watch?v=Nd1-UUMVfz4&list=PLqYmG7hTraZDM-OYHWgPebj2MfCFzFObQ&index=3)
+
+What is dynamic programming?
+- Dynamic: sequential or temporal component to the problem
+- Programming: optimising a mathematical "program", i.e. a policy
+
+It is a method for solving complex problems, by breaking them into subproblems that are simpler to solve. 
+
+Dynamic Programming is a very general solution method for problems which have two properties:
+- <<Optimal substructure>>: the pricniple of optimality applies. The optimal solution can be decomposed into subproblems.
+    - e.g. to find the shortest path from A to B, we can find the shortest path from A to midpoint, and then find the shortest path from midpoint to B, and then combine the paths together.
+- <<Overlapping subproblems>>. The subproblems need to recur many times and solutions can be re-used.
+    - e.g. if we have the shortest path from midpoint to B, we can reuse that to find the shortest path from C to B if it traverses the midpoint as well.
+
+Note that Markov Decision Processes satisfy both properties:
+- The bellman equations decompose the large problem into recursive steps
+- The value functions for a particular state cache the sub-solutions and are re-used
+
+Planning by dynamic programming. Planning is a different problem from RL. Someone tells us the dynamics of the MDP, and we try to solve it.
+- Assume full knowledge of the MDP
+- Used for planning in an MDP
+- We can use this for <<prediction>>:
+    - e.g. input: an MDP $<\mathcal{S}, \mathcal{A}, \mathcal{P}, \mathcal{R}, \gamma >$ and policy $\pi$
+    - The output of this planning step is to output the value function $v_{\pi}$
+- We can also use this for <<control>>:
+    - Input: MDP $<\mathcal{S}, \mathcal{A}, \mathcal{P}, \mathcal{R}, \gamma >$
+    - Output: optimal value function $v_*$, i.e. we want to find the best policy $\pi_*$
+
+## Policy Evaluation
+
+Problem: we want to evaluate a given policy $\pi$ to see how good it is. The solution is to iteratively apply the bellman expectation.
+- Let $v_1$ be a vector representing the value at all states
+- We use the bellman equation to update $v_1 \rightarrow v_2 \rightarrow ... \rightarrow v_{\pi}$, i.e. it will converge to the true value function for this policy
+- Do this using synchronous backups:
+    - At each iteration step $k+1$
+    - For all states $s \in \S$
+    - Update $v_{k+1}(s)$ using $v_k(s')$, i.e. we use the estimate of the value function in the previous iteration to form the new estimate of the value function
+    - $s'$ is a successor state of $s$, i.e. the next states we can reach using an action from $s$
+- It can be proven that this algorithm will converge to $v_{\pi}$
+
+How exactly do we update $v_{k+1}(s)$? We use the <<bellman expectation equation>> from before. Intuitively, it is a one-step look ahead from the current state $s$ to compute the value for $s$.
+$$
+    v_{k+1}(s) = \sum_{a \in \mathcal{A}} \pi(a | s) \left(
+        \mathcal{R}_s^a + \gamma \sum_{s' \in \S} \mathcal{P}_{ss'}^a v_k (s')
+    \right)
+$$
+
+Or in vector form:
+$$
+    \mathbf{v}^{k+1} = \mathcal{R^{\pi}} + \gamma \mathcal{P}^{\pi}\mathbf{v}^k
+$$
+
+**Small Gridworld example**. Suppose we have a 4x4 grid, in which the top-left and bottom-right grids are terminal states. The reward for any state is $-1$, and we can walk NSEW from any spot. If we walk off the grid, the action just does nothing. 
+
+Now suppose we take a random walk ($0.25$ probability of walking any direction) and set $\gamma = 1$. How would the value update algorithm look like?
+- We initialize all grids with value $0$
+- Recall that the update algorithm essentially adds the immediate reward and a discounted sum of the value function from the previous iteration
+- At $k=1$, every spot will be updated to $-1$ because the reward is $-1$, and $v_0(s) = 0 \ \forall s$. Except the two terminal states which remain at value $0$ by definition
+
+If we continue to update like that, it will converge to the true value function for $\pi$. Also note that with this value function $v_{\pi}$, if we take a greedy approach to devise a new policy, we can obtain the optimal policy. 
+
+
+> **Idea:** A lousy policy can be used to devise a better policy after computing the value function.
+
+## Policy Iteration
+
+We did policy evaluation in the previous section, i.e. finding the true value function $v_\pi$ for a given policy. Now in this section we want to optimize and find the best policy.
+
+Two step process:
+- <<Policy Evaluation>>. Given a policy $\pi$, we first evaluate the policy $\pi$, finding $v_\pi(s) = \E [R_{t+1} + \gamma R_{t+2} + ... | S_t = s]$
+- <<Policy improvement>>. We take a greedy approach and choose the best action at each state: $\pi' = \text{greedy}(v_\pi)$
+
+Typically, we need many rounds of iteration of this process to converge. But the process of policy iteration always converges to $\pi_*$. Specifically:
+- $v$ converges to $v_*$
+- $\pi$ converges to $\pi_*$
+
+Somewhat realistic toy example from Sutton and Barto:
+- Suppose we have two locations, maximum of 20 cars at each location
+- Each day, we get to move up to `5` cars between locations overnight
+- Reward: `$10` for each car rented (can only rent if we have enough cars)
+- Transitions: every day, a random number of cars are requested and returned at each location (governed by a poisson distribution)
+    - Location A: $\text{request} \sim Poisson(3)$, $\text{return} \sim Poisson(3)$
+    - Location B: $\text{request} \sim Poisson(4)$, $\text{return} \sim Poisson(2)$
+
+Naturally we expect the optimal policy to involve moving cars from location A to location B. Using the policy iteration process, we get convergence to the optimal policy in 4 steps. Note that since this is a planning problem, we do know the underlying probability mechanisms, which allows us to compute the value function.
+
+Now we can show that this <<policy iteration process converges to the optimal policy>>. 
+
+First, consider a deterministic policy $a = \pi(s)$. Now, we consider what happens if we change the policy by acting greedily wrt the value function of this policy, i.e.:
+$$
+    \pi '(s) = \argmax_{a \in \mathcal{A}} q_{\pi}(s, a)
+$$
+
+We see that taking the greedy action can only improve the policy, as expressed:
+$$
+    q_\pi(s, \pi'(s)) = \max_{a \in \mathcal{A}} q_\pi(s, a) \geq q_\pi(s, \pi(s)) = v_\pi(s)
+$$
+
+Notes on the above statement:
+- Recall that $q_\pi(s, a)$ is the value at state $s$ if we took action $a$ at $s$ and then followed policy $\pi$ thereafter
+- So it follows that $q_\pi(s, \pi(s)) = v_\pi(s)$, since we are just following policy $\pi$ in the current step + future steps
+- Hence we can observe that taking $\pi'(s)$ can only improve the policy, as expressed below. This simply says that choosing the highest value action will yield at least as much value as following the current policy:
+
+Now we can use a telescoping argument to show that this therefore improves the value function, or $v_{\pi'}(s) \geq v_{\pi}(s)$:
+$$
+\begin{align*}
+    v_\pi(s) 
+    &\leq q_\pi(s, \pi'(s)) \\
+    &= \E_{\pi'}[R_{t+1} + \gamma v_\pi(S_{t+1}) | S_t = s] \\
+    &= \E_{\pi'}[R_{t+1} + \gamma q_{\pi}(S_{t+1}, \pi'(S_{t+1}))| S_t = s] \\
+
+\end{align*}
+$$
+
+
+
+
