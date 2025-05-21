@@ -555,31 +555,105 @@ Naturally we expect the optimal policy to involve moving cars from location A to
 
 Now we can show that this <<policy iteration process converges to the optimal policy>>. 
 
-First, consider a deterministic policy $a = \pi(s)$. Now, we consider what happens if we change the policy by acting greedily wrt the value function of this policy, i.e.:
+> **Theorem.** Policy iteration process converges to the optimal policy.  
+> 
+> **Proof.**
+> First, consider a deterministic policy $a = \pi(s)$. Now, we consider what happens if we change the policy by acting greedily wrt the value function of this policy, i.e.:
 $$
     \pi '(s) = \argmax_{a \in \mathcal{A}} q_{\pi}(s, a)
 $$
-
-We see that taking the greedy action can only improve the policy, as expressed:
+> We see that taking the greedy action can only improve the policy, as expressed:
 $$
-    q_\pi(s, \pi'(s)) = \max_{a \in \mathcal{A}} q_\pi(s, a) \geq q_\pi(s, \pi(s)) = v_\pi(s)
+\begin{align*}
+    q_\pi(s, \pi'(s)) &= \max_{a \in \mathcal{A}} q_\pi(s, a) \\
+    &\geq q_\pi(s, \pi(s)) = v_\pi(s)
+\end{align*}
 $$
-
-Notes on the above statement:
-- Recall that $q_\pi(s, a)$ is the value at state $s$ if we took action $a$ at $s$ and then followed policy $\pi$ thereafter
-- So it follows that $q_\pi(s, \pi(s)) = v_\pi(s)$, since we are just following policy $\pi$ in the current step + future steps
-- Hence we can observe that taking $\pi'(s)$ can only improve the policy, as expressed below. This simply says that choosing the highest value action will yield at least as much value as following the current policy:
-
-Now we can use a telescoping argument to show that this therefore improves the value function, or $v_{\pi'}(s) \geq v_{\pi}(s)$:
+> Notes on the above statement:
+> - On the 2nd line equality: Recall that $q_\pi(s, a)$ is the value at state $s$ if we took action $a$ at $s$ and then followed policy $\pi$ thereafter. So it follows that $q_\pi(s, \pi(s)) = v_\pi(s)$, since we are just following policy $\pi$ in the current step + future steps
+> - The statement is quite simply saying that $\pi'(s) \geq \pi(s)$, which leads to an improvement in $q_\pi$. Hence choosing the highest value action will improve the action value function (quite trivial).
+> 
+> Now we want to go from this somewhat trivial statement to show that the value function itself must improve with every step of policy iteration (not trivial at all!).
+> 
+> The idea is to use a telescoping argument to show that this improves the value function, or $v_{\pi'}(s) \geq v_{\pi}(s)$:
 $$
 \begin{align*}
     v_\pi(s) 
     &\leq q_\pi(s, \pi'(s)) \\
     &= \E_{\pi'}[R_{t+1} + \gamma v_\pi(S_{t+1}) | S_t = s] \\
-    &= \E_{\pi'}[R_{t+1} + \gamma q_{\pi}(S_{t+1}, \pi'(S_{t+1}))| S_t = s] \\
-
+    &\leq \E_{\pi'}[R_{t+1} + \gamma q_{\pi}(S_{t+1}, \pi'(S_{t+1}))| S_t = s] \\
+    &\leq \E_{\pi'}[R_{t+1} + \gamma R_{t+2} + \gamma^2 q_{\pi}(S_{t+2}, \pi'(S_{t+2}))| S_t = s] \\
+    &\leq \E_{\pi'}[R_{t+1} + \gamma R_{t+2} + ...| S_t = s] \\
+    &= v_{\pi'}(s)
 \end{align*}
 $$
+> 
+> Some notes on the above:
+> - We start with the trivial inequality expressed above
+> - The expression $\E_{\pi'}$ means taking expectation over possible trajectories under the policy where we take $\pi'(s)$ in the current step, then follow policy $\pi$ for the rest of the trajectory
+> - In line 2, we unpack $q_\pi$ according to the Bellman equation, which simply splits up the $q$ value into (i) the immediate reward and (ii) the expected value of our new state (expressed as a random variable $S$):
+>    - Note that $R_{t+1}, R_{t+2}, ...$ are rewards from taking the greedy action $\pi'(s)$ at each step
+>    - Note that $v_{\pi}(S_t+n)$ is the random variable expressing the value we have at the next time step, but evaluated under the previous policy $\pi$. It is the previous $\pi$ intead of $\pi'$ because we have access to the cached $v_\pi$ up to this point. 
+> - In line 3, we apply the trivial inequality again to show that taking the greedy step at the next state will again improve the value
+> - In line 4, we again use the Bellman equation to unpck $q_\pi$
+> - We keep repeating the two steps until termination. What we have at the end is simply the value function of our new policy $\pi'$
+> 
+> We have shown that policy iteration must improve the value function with each iteration. Now what happens when improvements stop? We now have:
+$$
+    q_\pi(s, \pi'(s)) = v_\pi(s)
+$$
+> 
+> Since $q_\pi(s, \pi'(s)) = \max_{a \in \mathcal{A}} q_\pi(s, a)$, we have:
+$$
+    v_\pi(s) = \max_{a \in \mathcal{A}} q_\pi(s, a)
+$$
+> 
+> This is simply the Bellman optimality equation. Satisfying the Bellman optimality equation means that we are in the optimal state (will show later). Hence we have shown that we get $v_\pi(s) = v_*(s)$.
+
+Now, an observation is that policy iteration is quite wasteful. This is because we need to get the value function to converge fully to $v_\pi$ before we take the greedy step to improve the policy. In most cases, this is unnecessary because the greedy policy would already improve even with an imperfect value function. 
+
+Some ways to early stop policy evaluation to speed up this process:
+- Introduce a stopping condition once the value function does not change by much ($\epsilon$-convergence of value function)
+- Stop policy evaluation after $k$ iterations
+    - In the extreme case, if we stop policy evaluation after $k=1$ iterations, it is called <<value iteration>>
+
+## Value Iteration
+
+Moving into value iteration, but recall the fundamentals of dynamic programming. Observe that any optimal policy can be subdivided into two components:
+- An optimal first action $A_*$
+- Followed by an optimal policy from successor state $S'$
+
+> **Theorem**. Principle of optimality.
+> 
+> A policy $\pi(a|s)$ achieves the optimal value from state s, i.e. $v_\pi(s) = v_*(s)$, if and only if for any state $s'$ reachable from $s$, $\pi$ achives the optimal value from state $s'$, i.e. $v_\pi(s') = v_*(s')$
+
+This theorem seems a bit of a truism, but it will be used to build the idea of value iteration.
+
+Let us think of the value function as "caching" the solutions to subproblems. Now suppose we start "at the end" and assume we know the solution to all the subproblems $v_*(s')$ where $s'$ is all the states reachable from our current state $s$. 
+
+Then we can solve immediately for $v_*(s)$ by doing a one-step lookahead to all these states $s'$:
+$$
+    v_*(s) \leftarrow \max_{a \in \mathcal{A}} \mathcal{R}^a_s + \gamma \sum_{s' \in \S} \mathcal{P}^a_{ss'} v_*(s')
+$$
+
+The statement above shows us how we can propagate the optimal value function from some states $s'$ to a new state $s$. So we can propagate the optimal value function across to all states as we continue to iterate.
+
+The way to think about it (using the small gridworld as example) is that the termination point (trivially) starts off with the optimal value function. After one step of update, the states next to the termination point will now have the optimal value function, and then the states next to these, and so on until we propagate through all states.
+
+Note that in contrast to policy iteration, where in the policy evaluation step we update the value function across all states based on the <<bellman *expectation* equation>>, in value iteration, we are updating the value in each state by choosing the optimal action. This is a key difference in how the two algorithms differ. The value iteration algorithm may be thought of as combining the (i) policy evaluation step and the (ii) greedy policy step from value itaration into one single step.
+
+So we have seen that value iteration iteratively applies the bellman optimality equation to update $v_1 \rightarrow v_2 \rightarrow ... \rightarrow v_*$. Convergence to $v_*$ will be proved later. The update equation is:
+$$
+\begin{align*}
+    v_{k+1}(s) = \max_{a \in \mathcal{A}} \left(
+        \mathcal{R}_s^a + \gamma \sum_{s' \in S} \mathcal{P}_{ss'}^a v_k(s')
+    \right)
+\end{align*}
+$$
+
+Note that another difference between value iteration and policy iteration is that there is no explicit policy in value iteration. Since we are only doing one step of policy evaluation and then immediately taking the greedy step, the value function we have may not correspond to any real policy. But this does not stop the algorithm from converging.
+
+
 
 
 
