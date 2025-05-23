@@ -68,3 +68,7 @@
     - [Lecture 2](./database_course/lecture02.md)
     - [Lecture 3](./database_course/lecture03.md)
 - [RL Course](./rl_course/main.md)
+    - [Introduction](./rl_course/lecture01.md)
+    - [MDPs](./rl_course/lecture02.md)
+    - [Dynamic Programming](./rl_course/lecture03.md)
+    - [Model Free Prediction](./rl_course/lecture04.md)
