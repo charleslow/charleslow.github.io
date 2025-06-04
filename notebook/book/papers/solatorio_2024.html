@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Wang 2024 - LLM for Pinterest Search - Chux&#x27;s Notebook</title>
+        <title>Solatorio 2024 - GISTEmbed - Chux&#x27;s Notebook</title>
 
 
         <!-- Custom HTML head -->
@@ -154,72 +154,84 @@
                 <div id="content" class="content">
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<h1 id="wang-2024---llm-for-pinterest-search"><a class="header" href="#wang-2024---llm-for-pinterest-search">Wang 2024 - LLM for Pinterest Search</a></h1>
-<p>This paper explains Pinterest use of pre-trained LLMs to improve their search ranking model. They first fine-tune a Llama-8B model on human-labelled search relevance data, then used the model to label large amounts of unlabelled data. The unlabelled data was used to train a smaller MLP, which led to significant improvement in search performance.</p>
-<h2 id="background"><a class="header" href="#background">Background</a></h2>
-<p>Pinterest curates human-labelled dataset for search relevance. For each query, a pin is classified into five ordered relevance levels:</p>
+<h1 id="solatorio-2024---gistembed"><a class="header" href="#solatorio-2024---gistembed">Solatorio 2024 - GISTEmbed</a></h1>
+<p><a href="https://arxiv.org/abs/2402.16829">GISTEmbed: Guided In-sample Selection of Training Negatives for Text Embedding Fine-tuning</a></p>
+<p>This paper proposes a way to learn embeddings using contrastive learning. The main idea is to use a guide model to filter out false negatives from training for better data quality and performance. GISTEmbed models are currently topping the MTEB benchmark.</p>
+<h2 id="implementation"><a class="header" href="#implementation">Implementation</a></h2>
+<p>The method has an <a href="https://github.com/UKPLab/sentence-transformers/blob/master/sentence_transformers/losses/GISTEmbedLoss.py">implementation</a> in the SentenceTransformer package. We will walk through the implementation here.</p>
+<p>Firstly, the loss is initialized with both a <code>model</code> to train and a <code>guide</code> model, both of which are <code>SentenceTransformers</code>.</p>
+<p>In the <code>forward</code> step:</p>
 <ul>
-<li>L5: Excellent / Highly Relevant</li>
-<li>L4: Good / Relevant</li>
-<li>L3: Complementary / Marginally Relevant</li>
-<li>L2: Poor / Irrelevant</li>
-<li>L1: Highly Irrelevant</li>
-</ul>
-<h2 id="teacher-model"><a class="header" href="#teacher-model">Teacher Model</a></h2>
-<p>The <span style="color:orange">teacher model</span> takes the form of a standard cross encoder setup. The teacher model is either a BERT-based LLM or a decoder-style LLM. The text inputted to the LLM is of the following format:</p>
-<pre><code>[CLS] Query [SEP] Pin Text
-</code></pre>
-<p>The embedding of the <code>[CLS]</code> token is taken for BERT-based models, whilst the embedding of the final non-padding token is taken for decoder-based models (such as Llama). The embedding is passed through several fully-connected layers, and the final output dimension corresponds to the <code>5</code> relevance levels. The LLMs are fine-tuned during training by minimizing the pointwise multi-class cross entropy loss.</p>
-<p>To enhance the representation of the pin text for the teacher model, several features are concatenated together:</p>
+<li><code>sentence_features</code> is the input which is a list of <code>dict[str, Tensor]</code>
 <ul>
-<li>Pin <span style="color:orange">titles</span> and <span style="color:orange">descriptions</span> are used as-is</li>
-<li><span style="color:orange">Synthetic image captions</span> are generated using an off-the-shelf model called BLIP</li>
-<li>High-engagement <span style="color:orange">query tokens</span>. Queries resulting in high engagement with a pin are aggregated over the past 2 years, and the top tokens are selected.</li>
-<li>User-curated <span style="color:orange">Board Titles</span>. Users curate their pins onto boards. The board titles are aggregated across users and top tokens are selected.</li>
-<li><span style="color:orange">Link Titles and Descriptions</span>. A long click is defined as when a user clicks into a link to the webpage of a pin and stays <code>10 seconds</code> there. The incoming link url and description contains useful text which is mined.</li>
+<li>The list is length <code>2</code> if we have anchor, positive</li>
+<li>The list is length <code>3</code> if we have anchor, positive, negative</li>
 </ul>
-<p>A few off-the-shelf LLMs are tested as teacher models and the results reported below.</p>
-<h2 id="student-model"><a class="header" href="#student-model">Student Model</a></h2>
-<p>The teacher model is used to label large amounts of unlabelled search impressions data. Specifically, for each row of data, the teacher model generates a softmax probability distribution over the 5-point relevance labels. The student model is then taught to mimic the predicted probability distribution using cross-entropy loss.</p>
-<blockquote>
-<p>Note: The exact loss function for knowledge distillation is not covered in the paper. But the classical way is to perform knowledge distillation using KL-divergence loss. An implementation of the loss can be found <a href="https://nn.labml.ai/distillation/index.html">here</a>. The basic idea is to minimize KL-divergence between the teacher predicted probability distribution over labels and the student predicted probability distribution.</p>
-</blockquote>
-<p>The student model is a simple feed forward network on a diverse set of features. It seems like some feature engineering is performed to optimize performance. Features include:</p>
+</li>
+<li>The <code>sentence_features</code> is passed into both the <code>model</code> and the <code>guide</code> to get the respective embeddings
 <ul>
-<li>Query-side embeddings. Pinterest has classifiers to categorize the query into a query interest type, shopping interest type etc. These categorical features are embedded using an embedding table. The SearchSage embedding for the query is also included.</li>
-<li>Pin-side embeddings. The PinSage pin embedding, SearchSage pin embedding etc. are included</li>
-<li>Query-pin interaction features. Standard query-pin match scores like BM25 score, % of query terms matched are also included as features</li>
+<li>For <code>guide</code>, we may need to re-tokenize it if the tokenizer of the <code>guide</code> differs from <code>model</code></li>
+<li>This is done by using <code>batch_decode</code> and then <code>tokenize</code> again</li>
 </ul>
-<p>All features are presumably concatenated together, and passed into the MLP network. As mentioned above, this student network is trained using knowledge distillation from the teacher predictions above.</p>
-<h2 id="results"><a class="header" href="#results">Results</a></h2>
-<p>The teacher and student model are evaluated using human-annotated search relevance dataset. The train set for the teacher model is around 280k rows of human-annotated data, and the remaining 30k rows are used for evaluation. The teacher model is then used to run inference on 30 million rows of unlabelled data, and then used to train the student model.</p>
-<p>For the teacher model, scaling up the base model consistently produces better test performance (accuracy):</p>
+</li>
+<li>Now we have <code>anchor</code>, <code>positive</code> and <code>negative</code> embeddings, each of shape <code>(batch_size, embed_dim)</code></li>
+<li>The <code>sim_matrix</code> is used to compute pairwise cosine similarities:
 <ul>
-<li>BERT-base: 53.5%</li>
-<li>T5-base: 56.9%</li>
-<li>DeBERTaV3-base: 58.0%</li>
-<li>Llama3-8b: 60.2%</li>
+<li>The code is simply <code>torch.nn.CosineSimilarity(dim=-1)(embed1.unsqueeze(1), embed2.unsqueeze(0))</code></li>
+<li><code>embed1</code> becomes shape <code>(batch_size, 1, embed_dim)</code> and embed2 becomes shape <code>(1, batch_size, embed_dim)</code></li>
+<li>The similarity is compared at dimension <code>-1</code></li>
+<li>Broadcasting ensures that the comparison is done pairwise, such that the result is of shape <code>(batch_size, batch_size)</code></li>
+<li>This is a common way to do pairwise similarity</li>
 </ul>
-<p>Note that the Llama3-8b model was trained using qLora.</p>
-<p>The experiments also showed that:</p>
+</li>
+<li>Now we obtain the pairwise similarity matrices:
 <ul>
-<li>Scaling up the amount of teacher-inferred data was crucial for improving student model performance</li>
-<li>The teacher LLM was able to successfully transfer learning from a purely English human-annotated dataset to multiple other languages, thus allowing the student model to learn multi-lingual behaviour.</li>
-<li>The inclusion of additional text features for the teacher model above helped to improve performance significantly.</li>
+<li><code>ap_sim</code>, <code>aa_sim</code>, <code>pp_sim</code>, <code>an_sim</code></li>
+<li><code>guided_ap_sim</code>, <code>guided_aa_sim</code>, <code>guided_pp_sim</code>, <code>guided_an_sim</code></li>
 </ul>
-<h2 id="takeaways"><a class="header" href="#takeaways">Takeaways</a></h2>
-<p>This is a simple paper that shows the power of using LLM models to bootstrap learning from a smaller product-specific dataset to distill an effective student model. This is a useful paradigm because in search systems, we often have vast amounts of unlabelled impressions data that we can use a teacher model to run inference on.</p>
-<p>The paper also shows that scaling up the LLM is able to produce non-trivial increases in search relevance performance on the human-annotated dataset.</p>
+</li>
+<li>The anchor positive similarity threshold is used to filter away potential false negatives
+<ul>
+<li>This is simply the <code>guided_ap_sim.diagonal()</code> which corresponds to the similarity between the anchor and positive in each row</li>
+<li>Note that they use the guide model for determining the threshold</li>
+<li>This threshold is called <code>guided_sim</code></li>
+</ul>
+</li>
+<li><code>mask_false_negatives</code> is used to suppress false negatives
+<ul>
+<li>Using the <code>absolute</code> strategy, cases where the <code>guided_sim_mat &gt; guided_sim - self.margin</code> will be suppressed (set to <code>torch.inf</code>)</li>
+<li>The idea is that negatives should not have a higher similarity than the threshold, otherwise there is a higher probability they are false negatives</li>
+<li>This function is applied to <code>ap_sim</code>, <code>aa_sim</code>, <code>pp_sim</code> and <code>an_sim</code> to mask false negatives</li>
+</ul>
+</li>
+<li>Finally, we have <code>scores</code>
+<ul>
+<li><code>scores = torch.cat([ap_sim, aa_sim, pp_sim, an_sim], dim=1) / self.temperature</code></li>
+<li>This is of shape <code>(batch_size, 4*batch_size)</code></li>
+</ul>
+</li>
+<li>We create <code>labels</code> which is <code>torch.arange(batch_size)</code>
+<ul>
+<li>This is because the correct label is in the diagonal of <code>scores</code> matrix</li>
+</ul>
+</li>
+<li>Finally the loss is computed via <code>torch.nn.CrossEntropyLoss()(scores, labels)</code>
+<ul>
+<li>Each row is considered as a classification task where the label corresponds to the column position where the correct class is found</li>
+<li>The log softmax loss is then computed per row and averaged across rows</li>
+</ul>
+</li>
+</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../papers/borisyuk_2024.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../papers/wang_2024.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../papers/solatorio_2024.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../papers/sanjabi_2025.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -229,11 +241,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../papers/borisyuk_2024.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../papers/wang_2024.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../papers/solatorio_2024.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../papers/sanjabi_2025.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

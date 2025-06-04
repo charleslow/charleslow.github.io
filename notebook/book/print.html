@@ -1855,6 +1855,8 @@ Where <span class="katex"><span class="katex-html" aria-hidden="true"><span clas
 <li>Using multi-head attention did not improve over single head attention</li>
 <li>The absolute position embeddings generally improved performance relative to no position embeddings</li>
 </ul>
+<h2 id="implementation-2"><a class="header" href="#implementation-2">Implementation</a></h2>
+<p>The authors endorsed a pytorch implementation <a href="https://github.com/pmixer/SASRec.pytorch/blob/main/python/model.py">here</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="reimers-2019---sentence-bert"><a class="header" href="#reimers-2019---sentence-bert">Reimers 2019 - Sentence-BERT</a></h1>
 <p><a href="https://ar5iv.labs.arxiv.org/html/1908.10084">Link to paper</a>.</p>
@@ -2228,7 +2230,7 @@ Where <span class="katex"><span class="katex-html" aria-hidden="true"><span clas
 <p>These results demonstrate the importance of a large batch size and the effectiveness of the method to do so on a small GPU.</p>
 <h2 id="takeaways-2"><a class="header" href="#takeaways-2">Takeaways</a></h2>
 <p>This paper uses a simple property of the chain rule to separate the computation of the InfoNCE loss gradients into two parts, thereby removing the memory bottleneck. This method is implemented as the <code>CachedMultipleNegativesRankingLoss</code> in <code>SentenceTransformer</code>, and is really useful for those of us without access to large memory GPUs. We can train a model <em>exactly</em> to the performance of an arbitrarily large batch size, at the cost of longer computation time.</p>
-<h2 id="implementation-2"><a class="header" href="#implementation-2">Implementation</a></h2>
+<h2 id="implementation-3"><a class="header" href="#implementation-3">Implementation</a></h2>
 <p>The author Luyu Gao has an implementation of GradCache in pytorch. The source code of the main classes are here:</p>
 <ul>
 <li><a href="https://github.com/luyug/GradCache/blob/main/src/grad_cache/pytorch_lightning/pl_gradcache.py">PLGradCache</a></li>
@@ -2955,6 +2957,75 @@ Where <span class="katex"><span class="katex-html" aria-hidden="true"><span clas
 <h2 id="takeaways-6"><a class="header" href="#takeaways-6">Takeaways</a></h2>
 <p>This is a simple paper that shows the power of using LLM models to bootstrap learning from a smaller product-specific dataset to distill an effective student model. This is a useful paradigm because in search systems, we often have vast amounts of unlabelled impressions data that we can use a teacher model to run inference on.</p>
 <p>The paper also shows that scaling up the LLM is able to produce non-trivial increases in search relevance performance on the human-annotated dataset.</p>
+<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="solatorio-2024---gistembed"><a class="header" href="#solatorio-2024---gistembed">Solatorio 2024 - GISTEmbed</a></h1>
+<p><a href="https://arxiv.org/abs/2402.16829">GISTEmbed: Guided In-sample Selection of Training Negatives for Text Embedding Fine-tuning</a></p>
+<p>This paper proposes a way to learn embeddings using contrastive learning. The main idea is to use a guide model to filter out false negatives from training for better data quality and performance. GISTEmbed models are currently topping the MTEB benchmark.</p>
+<h2 id="implementation-4"><a class="header" href="#implementation-4">Implementation</a></h2>
+<p>The method has an <a href="https://github.com/UKPLab/sentence-transformers/blob/master/sentence_transformers/losses/GISTEmbedLoss.py">implementation</a> in the SentenceTransformer package. We will walk through the implementation here.</p>
+<p>Firstly, the loss is initialized with both a <code>model</code> to train and a <code>guide</code> model, both of which are <code>SentenceTransformers</code>.</p>
+<p>In the <code>forward</code> step:</p>
+<ul>
+<li><code>sentence_features</code> is the input which is a list of <code>dict[str, Tensor]</code>
+<ul>
+<li>The list is length <code>2</code> if we have anchor, positive</li>
+<li>The list is length <code>3</code> if we have anchor, positive, negative</li>
+</ul>
+</li>
+<li>The <code>sentence_features</code> is passed into both the <code>model</code> and the <code>guide</code> to get the respective embeddings
+<ul>
+<li>For <code>guide</code>, we may need to re-tokenize it if the tokenizer of the <code>guide</code> differs from <code>model</code></li>
+<li>This is done by using <code>batch_decode</code> and then <code>tokenize</code> again</li>
+</ul>
+</li>
+<li>Now we have <code>anchor</code>, <code>positive</code> and <code>negative</code> embeddings, each of shape <code>(batch_size, embed_dim)</code></li>
+<li>The <code>sim_matrix</code> is used to compute pairwise cosine similarities:
+<ul>
+<li>The code is simply <code>torch.nn.CosineSimilarity(dim=-1)(embed1.unsqueeze(1), embed2.unsqueeze(0))</code></li>
+<li><code>embed1</code> becomes shape <code>(batch_size, 1, embed_dim)</code> and embed2 becomes shape <code>(1, batch_size, embed_dim)</code></li>
+<li>The similarity is compared at dimension <code>-1</code></li>
+<li>Broadcasting ensures that the comparison is done pairwise, such that the result is of shape <code>(batch_size, batch_size)</code></li>
+<li>This is a common way to do pairwise similarity</li>
+</ul>
+</li>
+<li>Now we obtain the pairwise similarity matrices:
+<ul>
+<li><code>ap_sim</code>, <code>aa_sim</code>, <code>pp_sim</code>, <code>an_sim</code></li>
+<li><code>guided_ap_sim</code>, <code>guided_aa_sim</code>, <code>guided_pp_sim</code>, <code>guided_an_sim</code></li>
+</ul>
+</li>
+<li>The anchor positive similarity threshold is used to filter away potential false negatives
+<ul>
+<li>This is simply the <code>guided_ap_sim.diagonal()</code> which corresponds to the similarity between the anchor and positive in each row</li>
+<li>Note that they use the guide model for determining the threshold</li>
+<li>This threshold is called <code>guided_sim</code></li>
+</ul>
+</li>
+<li><code>mask_false_negatives</code> is used to suppress false negatives
+<ul>
+<li>Using the <code>absolute</code> strategy, cases where the <code>guided_sim_mat &gt; guided_sim - self.margin</code> will be suppressed (set to <code>torch.inf</code>)</li>
+<li>The idea is that negatives should not have a higher similarity than the threshold, otherwise there is a higher probability they are false negatives</li>
+<li>This function is applied to <code>ap_sim</code>, <code>aa_sim</code>, <code>pp_sim</code> and <code>an_sim</code> to mask false negatives</li>
+</ul>
+</li>
+<li>Finally, we have <code>scores</code>
+<ul>
+<li><code>scores = torch.cat([ap_sim, aa_sim, pp_sim, an_sim], dim=1) / self.temperature</code></li>
+<li>This is of shape <code>(batch_size, 4*batch_size)</code></li>
+</ul>
+</li>
+<li>We create <code>labels</code> which is <code>torch.arange(batch_size)</code>
+<ul>
+<li>This is because the correct label is in the diagonal of <code>scores</code> matrix</li>
+</ul>
+</li>
+<li>Finally the loss is computed via <code>torch.nn.CrossEntropyLoss()(scores, labels)</code>
+<ul>
+<li>Each row is considered as a classification task where the label corresponds to the column position where the correct class is found</li>
+<li>The log softmax loss is then computed per row and averaged across rows</li>
+</ul>
+</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="sanjabi-2025---360brew"><a class="header" href="#sanjabi-2025---360brew">Sanjabi 2025 - 360Brew</a></h1>
 <p><a href="https://arxiv.org/pdf/2501.16450">360Brew: A Decoder-only Foundation Model for Personalized Ranking and Recommendation</a></p>

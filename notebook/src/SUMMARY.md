@@ -61,6 +61,7 @@
     - [Singh 2023 - Semantic IDs for Recs](./papers/singh_2023.md)
     - [Borisyuk 2024 - GNN at LinkedIn](./papers/borisyuk_2024.md)
     - [Wang 2024 - LLM for Pinterest Search](./papers/wang_2024.md)
+    - [Solatorio 2024 - GISTEmbed](./papers/solatorio_2024.md)
     - [Sanjabi 2025 - 360Brew](./papers/sanjabi_2025.md)
 - [NLP Course](./nlp_course/intro.md)
 - [Database Course](./database_course/intro.md)
