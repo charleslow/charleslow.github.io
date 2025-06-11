@@ -63,6 +63,7 @@
     - [Wang 2024 - LLM for Pinterest Search](./papers/wang_2024.md)
     - [Solatorio 2024 - GISTEmbed](./papers/solatorio_2024.md)
     - [Sanjabi 2025 - 360Brew](./papers/sanjabi_2025.md)
+    - [Zhang 2025 - Qwen3 Embedding](./papers/zhang_2025.md)
 - [NLP Course](./nlp_course/intro.md)
 - [Database Course](./database_course/intro.md)
     - [Lecture 1](./database_course/lecture01.md)
