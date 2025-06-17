@@ -188,7 +188,104 @@ In more precise terms:
             g_t^k - V(s_t^k)
         \right]^2
     $$
+    - In the AB example above, this sets $V(A) = 0$
 - TD converges to the solution of the maximum likelihood Markov model
     - i.e. it converges to the MDP that best fits the data
+    - In the AB example, $V(A) = 4/6$
+
+In summary:
+- TD exploits the markov property, so it is usually more efficient in markov environments, where we can rely on states to encode information
+- MC does not exploit the markov property, so it is usually more efficient in non-markov environments, e.g. partial observability etc.
+
+So far we have looked at 3 types of backup:
+- <<Monte Carlo Backup>>: we sample one entire trajectory / episode from the agent's interactions with the environment till termination
+$$
+    V(S_t) \leftarrow V(S_t) + \alpha (G_T - V(S_t))
+$$
+- <<Temporal Difference Backup>>: we sample one step lookahead and then update parameters
+$$
+    V(S_t) \leftarrow V(S_t) + \alpha ( R_{t+1} + \gamma V(S_{t+1}) - V(S_t))
+$$
+- <<Dynamic Programming Backup>>: we look ahead one step, but because we have access to the environment, we can compute the expectation over all possible next steps.
+$$
+    V(S_t) \leftarrow \E_{\pi} [ R_{t+1} + \gamma V(S_{t+1})]
+$$
+
+This gives us two dimensions to categorize our algorithms:
+- <<Bootstrapping>>: the update involves an estimate (e.g. our value function)
+    - MC does not bootstrap
+    - DP bootstraps
+    - TD bootstraps
+- <<Sampling>>: we use sampling instead of a full-width expectation / search
+    - MC samples
+    - DP does not sample
+    - TD samples
+
+## TD Lambda
+
+TD Lambda is a generalization of the above trade-off. We let TD target look $n$ steps into the future before updating. If we look forward $\infty$ number of steps, it becomes monte carlo learning.
+
+Specifically, for $n=1,2,\infty$, our returns are:
+- $n=1$:  $G_t^{(1)} = R_{t+1} + \gamma V(S_{t+1})$
+- $n=2$:  $G_t^{(2)} = R_{t+1} + \gamma R_{t+2} + \gamma^2 V(S_{t+2})$
+- $n=\infty$:  $G_t^{(\infty)} = R_{t+1} + \gamma R_{t+2} + ... + \gamma^{T-1} R_T$. We can see this corresponds to MC update, without use of value function $V$ at all
+
+So the n-step return is:
+$$
+    G_t^{(n)} = R_{t+1} + \gamma R_{t+2} + ... + \gamma^{n-1} R_{t+n} + \gamma^n V(S_{t+n})
+$$
+
+And the n-step TD learning update is:
+$$
+    V(S_t) \leftarrow V(S_t) + \alpha \left( G_t^{(n)} - V(S_t) \right)
+$$
+
+What is the best $n$? It is a highly sensitive parameters that depends on the problem, $\alpha$ etc. Hence a proposal is made to average the returns from each time step, up to step $n$. For example, we could average $\frac{1}{2} G_t^{(2)} + \frac{1}{2} G_t^{(4)}$. This averaging would make the algorithm much more robust to step size $n$.
+
+The common way to perform a weighted average of returns is to use exponential $\lambda$ decay, such that returns with a longer look-ahead window are weighted less. This algorithm is called TD-$\lambda$. Specifically:
+$$
+    G_t^\lambda = (1-\lambda) \sum_{n=1}^\infty \lambda^{n-1} G_t^{(n)}
+$$
+
+Note that the weight given to the final return $G_t^{(n)}$ is the sum to $\infty$ of weights from step $n$ onwards, i.e. it is a geometric series. It makes sense to put more weight on the final, actual return.
+
+This leads directly to <<forward-view TD($\lambda$)>>, where we sample trajectories of $n$ steps and update the value function according to:
+$$
+    V(S_t) \leftarrow V(S_t) + \alpha \left( 
+        G_t^\lambda - V(S_t)
+    \right)
+$$
+
+Now, the forward view has a shortcoming, which is that we need to wait until we have sampled $n$ steps into the future, before we can update the value function. Thus it suffers similar downside to MC update, where we cannot update the value function immediately after each step.
+
+## Backward View TD Lambda
+
+One key idea is <<eligibility traces>>. In deciding to assign credit to past events for a current reward, there are generally two intuitive heuristics to use:
+- <<Frequency heuristic>>: assign credit to most frequent recent states
+- <<Recency heuristic>>: assign credit to most recent states
+
+The eligiblity trace combines both heuristics in a simple formula:
+- $E_0(s) = 0$
+- $E_t(s) = \gamma \lambda E_{t-1}(s) + \mathbf{1}(S_t=s)$
+
+The eligibility trace gives us a weight at a given time step for each state $s$. This weight tells us how much credit we should assign to $s$ for a reward at the current time step.
+
+The <<Backward View TD Lambda>> uses this idea:
+- Keep an eligibility trace for every state $s$
+- Update value V(s) for *every* state $s$ in proportion to the TD-error $\delta_t$ and eligibility trace $E_t(s)$:
+$$
+\begin{align*}
+    \delta_t &= R_{t+1} + \gamma V(S_{t+1}) - V(S_t)\\
+    V(s) &\leftarrow V(s) + \alpha \delta_t E_t(s)
+\end{align*}
+$$
+
+Observe that $\delta_t$ is just our update for <<TD(0)>> with a single step look ahead, i.e. $G_t^{(1)} - V(S_t)$. Thus we can see that when $\lambda=0$, only the current state is updated, since $E_t(s) = \mathbf{1}(S_t = s)$. This results in the TD(0) update: $V(S_t) \leftarrow V(S_t) + \alpha \delta_t$.
+
+On the other extreme, when $\lambda=1$, all credit is deferred until the end of the episode (not sure I see this from the formula). Thus it is equivalent to MC update.
+
+In fact, there is a theorem that the sum of offline updates is identical for both forward view and backward view TD-lambda. This is nice because the backward view with eligibility traces makes it easy to implement, as we never need to look forward into the future. We just need to keep track of eligibility traces at each time step, and then apply the update to all states at each step.
+
+
 
 
