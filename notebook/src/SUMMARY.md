@@ -74,3 +74,4 @@
     - [MDPs](./rl_course/lecture02.md)
     - [Dynamic Programming](./rl_course/lecture03.md)
     - [Model Free Prediction](./rl_course/lecture04.md)
+    - [Model Free Control](./rl_course/lecture05.md)
