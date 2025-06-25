@@ -66,3 +66,7 @@
 - [DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning](https://arxiv.org/abs/2501.12948)
 - [DeepSeek-V3 Technical Report](https://arxiv.org/abs/2412.19437)
 - [The Llama 3 Herd of Models](https://arxiv.org/abs/2407.21783)
+- [Adalflow](https://arxiv.org/abs/2501.16673)
+- [LLMs by dropping the text](https://arxiv.org/abs/2506.15833)
+- [Layer by layer](https://arxiv.org/abs/2502.02013)
+- [How much do LLMs memorize](https://arxiv.org/abs/2505.24832)

@@ -249,3 +249,106 @@ $$
 >   - Until $S$ is terminal
 
 Note that for a given step we have a single value of $\delta$ which is our TD error, but we propagate that to all $s,a$ pairs based on the eligibility trace, as potentially every $s,a$ pair could have contributed to it.
+
+## Off Policy Learning
+
+So far we have been looking at on-policy learning. However it is often useful to do off policy learning, i.e. evaluate a target policy $\pi(a|s)$ to compute $v_\pi(s)$ or $q_\pi(s,a)$, while we follow the behaviour policy $\mu(a|s): \{ S_1, A_1, R_2, ..., S_T \sim \mu \}$. Of course in this case, $\mu \neq \pi$.
+
+Why is off policy learning useful?
+- We can learn from observing humans or other agents
+- We can re-use experience that was previously generated from old policies $\pi_1, \pi_2, ... \pi_{t-1}$, possibly in a batched manner
+- We can learn about the optimal policy while following the exploratory policy
+- We can learn about multiple policies while following one policy
+
+First mechanism is <<importance sampling>>. The main idea is to estimate the expectation of a different distribution by re-weighting the distributions:
+$$
+\begin{align*}
+    \E_{X \sim P} [f(X)] &= \sum P(X) f(X)\\
+    &= \sum Q(X) \frac{P(X)}{Q(X)} f(X) \\
+    &= \E_{X \sim Q} \left[ \frac{P(X)}{Q(X)} f(X) \right]
+\end{align*}
+$$
+
+We can apply importance sampling to Monte Carlo for <<Off policy monte carlo learning>>:
+- We use returns generated from behaviour policy $\mu$ to evaluate $\pi$
+- Then we weight the return $G_t$ according to the ratio of probabilities between the two policies
+- We need to apply the correction at every time step along the whole episode, because the change in policy affects every time step
+$$
+    G_t^{\pi / \mu} = \frac{\pi(A_t|S_t)}{\mu(A_t|S_t)}
+    \frac{\pi(A_{t+1}|S_{t+1})}{\mu(A_{t+1}|S_{t+1})}
+    ...
+    \frac{\pi(A_T | S_T)}{\mu(A_T | S_T)} G_t
+$$
+- And then update the value towards the corrected return
+$$
+    V(S_t) \leftarrow V(S_t) + \alpha \left( G_t^{\pi / \mu} - V(S_t) \right)
+$$
+
+While off policy MC learning is theoretically sound, there are some major problems which make it practically useless in practice:
+- Importance sampling dramatically increases variance, as we are adjusting over every time step, and the cumulative effect over the whole episode makes our estimate of $G_t^{\pi / \mu}$ vary wildly
+- We also cannot use this adjustment if $\mu$ is zero when $\pi$ is non-zero
+
+So we have to use bootstrapping for importance sampling. This allows us to only adjust the probability for one time step. So we have <<importance sampling for off policy TD>>:
+- We use TD targets generated from $\mu$ to evaluate $\pi$
+- For TD(0), We weight the TD target $R + \gamma V(S')$ by importance sampling
+- This means we only need a single importance sampling correction:
+$$
+    V(S_t) \leftarrow V(S_t) + \alpha \left(
+        \frac{\pi(A_t | S_t)}{\mu(A_t | S_t)}
+        (R_{t+1} + \gamma V(S_{t+1}) ) - V(S_t)
+    \right)
+$$
+- This has much lower variance that MC importance sampling, and could work if $\mu$ and $\pi$ do not differ by too much over a single step
+
+As we have seen, importance sampling leads to large variances. The best solution is known as <<Q-learning>>, which is specific to TD(0) or Sarsa(0).
+- Does not require any importance sampling
+- Allows off policy learning of action values $Q(s, a)$
+
+Recall that $\mu$ is the behaviour policy that our agent is actually following, and $\pi$ is a target policy that we want to learn from. The main idea is that in our Sarsa(0) update step, we update the Q-value towards the *target policy $\pi$*, but allow our agent to continue following the *behaviour policy $\mu$*.
+
+This allows the agent to explore the environment using $\mu$, but learn from the action-value function of $\pi$. Specifically:
+- We choose each next action for the agent using behaviour policy $A_{t+1} \sim \mu(. | S_t)$
+- But use alternative successor action $A' \sim \pi(. | S_t)$ in our Q-value update
+- So we update $Q(S_t, A_t)$ using $A'$:
+$$
+    Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha(R_{t+1} + \gamma Q(S_{t+1}, A') - Q(S_t, A_t))
+$$
+
+Note importantly that we are using $A' \sim \pi$ in the Q value above, instead of $A_{t+1}$. This allows us to learn off policy.
+
+### Q-Learning (or SARSA-MAX)
+
+A special case of Q-learning is the case where the target policy is greedy wrt $Q(s, a)$. This is usually what people refer to as <<Q-learning>>.
+
+We allow both behaviour and target policies to improve:
+- The target policy $\pi$ is greedy wrt $Q(s,a)$, i.e.
+$$
+    \pi(S_{t+1}) = \argmax_{a'} Q(S_{t+1}, a')
+$$
+- The behaviour policy $\mu$ is $\epsilon$-greedy wrt $Q(s,a)$ again
+- The learning target inside the Q-update then simplifies as follows:
+$$
+\begin{align*}
+    &R_{t+1} + \gamma Q(S_{t+1}, A')\\
+    &= R_{t+1} + \gamma Q(S_{t+1}, \argmax_{a'} Q(S_{t+1}, a')) \\
+    &= R_{t+1} + \max_{a'} \gamma Q(S_{t+1}, a')
+\end{align*}
+$$
+
+Note that since we are following a greedy target policy, the action chosen will be the Q-maximizing one (line 2). Since we are choosing the Q-maximizing action, we get the maximum Q-value over all possible actions (line 3). This simplifies the equation quite abit, and now it resembles the Bellman optimality equation.
+
+This leads us to the well known Q-learning algorithm, which David calls Sarsa-max. The Q-update is:
+$$
+    Q(S, A) \leftarrow Q(S, A) + \alpha \left(
+        R + \gamma \max_{a'} Q(S', a') - Q(S, A)
+    \right)
+$$
+
+There is a theorem that tells us that the Q-learning control algorithm converges to the optimal action-value function, i.e. $Q(s, a) \rightarrow q_*(s, a)$
+
+To wrap up, here is a classification of some algorithms we have so far:
+|        | Full Backup (Dynamic Programming) | Sample Backup (Temporal Difference) |
+|:--------:|:---------:|:----------:|
+|Bellman Expectation Equation for $v_\pi(s)$ | Iterative Policy Evaluation | TD Learning |
+| Bellman Expectation Equation for $q_\pi(s, a)$ | Q-policy iteration | Sarsa |
+| Bellman Optimality Equation for $q_*(s, a)$ | Q-value iteration | Q-learning |
