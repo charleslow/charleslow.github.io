@@ -4,6 +4,7 @@
 
 - [Current Focus](./current.md)
 - [Recommender Systems]()
+    - [Recent Trends](./recsys/recent_trends.md)
     - [Gradient Boosting](./recsys/gradient_boosting.md)
     - [TF-IDF](./recsys/tfidf.md)
     - [Cross Encoders](./recsys/cross_encoders.md)
@@ -14,6 +15,7 @@
     - [Examples](./ab_test/examples.md)
     - [Power Analysis](./ab_test/power_analysis.md)
 - [LLMs](./llm/llm.md)
+    - [Auto Prompt Optimization](./llm/prompt_optimization.md)
     - [Fine-tuning](./llm/fine_tuning.md)
     - [Useful Models](./llm/useful_models.md)
     - [Encoder vs Decoder](./llm/encoder_vs_decoder.md)
@@ -75,3 +77,4 @@
     - [Dynamic Programming](./rl_course/lecture03.md)
     - [Model Free Prediction](./rl_course/lecture04.md)
     - [Model Free Control](./rl_course/lecture05.md)
+    - [Value Function Approximation](./rl_course/lecture06.md)

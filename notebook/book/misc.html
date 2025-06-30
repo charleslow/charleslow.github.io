@@ -344,6 +344,35 @@ for sublist in list_of_lists:
     for item in sublist:
         flattened.append(item)
 </code></pre>
+<h2 id="configure-vscode-snippets"><a class="header" href="#configure-vscode-snippets">Configure VsCode Snippets</a></h2>
+<p>When typing stuff in VsCode, we sometimes write the same boilerplate and want to have a shortcut to type it for us. For example, when writing latex, we often have to create an <code>align</code> environment like so:</p>
+<pre><code class="language-bash">$$
+\begin{align*}
+    Equations go here..
+\end{align*}
+$$
+</code></pre>
+<p>VsCode has a snippets function to help us with that.</p>
+<ol>
+<li>Press <code>Ctrl + Shift + P</code> and type <code>Configure User Snippets</code></li>
+<li>Create a local or global snippets file and name it (e.g. <code>charles.code-snippets</code>)</li>
+<li>Add the snippet definition like the below</li>
+</ol>
+<pre><code class="language-bash">{
+	"LaTeX Align Environment": {
+	  "prefix": "align",
+	  "body": [
+	    "$$",
+	    "\\begin{align*}",
+	    "\t$1",
+	    "\\end{align*}",
+	    "$$$0"
+	  ],
+	  "description": "Inserts a LaTeX align* environment."
+	}
+}
+</code></pre>
+<p>Note that the prefix is the keyword to trigger the template. To use the template, we simply enter <code>insert</code> mode in vim as per normal (e.g. using <code>a</code> or <code>i</code> or <code>o</code>), then type <code>align</code>. At this point, we would see the text as per normal. We can then press <code>ctrl+space</code> to show the snippets auto-completion, if there are any. Finally, we just press <code>enter</code> to get the template generated. The cursor will now come to rest at position <code>$1</code> as indicated in the snippet.</p>
 
                     </main>
 

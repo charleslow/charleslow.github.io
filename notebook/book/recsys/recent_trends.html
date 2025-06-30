@@ -1,0 +1,462 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Recent Trends - Chux&#x27;s Notebook</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../katex.min.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Chux&#x27;s Notebook</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="recent-trends-in-search--recommendations"><a class="header" href="#recent-trends-in-search--recommendations">Recent Trends in Search &amp; Recommendations</a></h1>
+<p>This document summarizes some important ideas in both recommender systems and search systems that have emerged in the past few years. It aims to be a helpful read for someone trying to get acquainted with modern practices in these fields.</p>
+<p>What we will cover:</p>
+<ul>
+<li><a href="#embedding-learning">Embedding learning</a>. Embedding learning for items and users is an upstream task that are used for downstream retrieval and ranking.</li>
+<li>Recommendations</li>
+<li>Search retrieval and ranking</li>
+</ul>
+<h2 id="embedding-learning"><a class="header" href="#embedding-learning">Embedding Learning</a></h2>
+<p>Embedding learning is a foundational tool that powers all recommendation and search systems. Typically, users and items are represented by one or more embeddings that get fed into neural networks for prediction and recommendation tasks.</p>
+<p>Whilst many off-the-shelf LLM embedding models exist today, the best performing embeddings are often context-specific. For example, from the perspective of a job-seeker, we may want the embeddings for <code>Physical Education Teacher</code> and <code>Gym Trainer</code> to be similar, as the focus is on similar job functions / skills. However, from the perspective of a HR personnel trying to do manpower planning, we may want <code>Physical Education Teacher</code> to be more similar to <code>Executive at Singapore Sports School</code>, since the focus is more on eligible pathways for internal rotation (btw, I made this example up). Hence, there is a need to effectively learn embedding models in a specific product setting. Lee 2020 describes the task like so:</p>
+<blockquote>
+<p>(the goal is to) Learn embeddings that preserve the item-to-item similarities in a specific product context.</p>
+</blockquote>
+<p>It is common practice to have an upstream pipeline to learn item embeddings that get re-used for multiple downstream tasks (let's call this a "universal" embedding). For example, YouTube uses a common set of video embeddings used by all its models [Lee 2020]. To adapt the embeddings to a specific task, the task model itself can always add a simple translation MLP layer to translate the universal embedding so that the embeddings can be more performant in each task setting.</p>
+<p>Another way is to have each retrieval and ranker model learn its own embeddings for its specific task.</p>
+<ul>
+<li>However, this leads to redundancy to store and update each set of embeddings, often in some in-memory feature store, which is costly.</li>
+<li>This approach is also often not as performant as learning a universal set of embeddings and then adapting the embeddings to each task via a small learned MLP layer</li>
+<li>Training from a frozen set of universal embeddings is also much more <span style="color:orange">compute efficient</span>, as we do not need to forward/backward propagate into a potentially large language model that generates the embeddings from text or some other modality.</li>
+</ul>
+<p>We can think of upstream training of an embedding model as analogous to the common practice of pre-training large language models in a semi-supervised manner on a large text corpus. The LLM is then fine-tuned for specific applications.</p>
+<p>Although the performance of using multiple embeddings to represent an item has been proven to be more performant than using a single embedding (e.g. using ColBert), most companies seem to adopt a single embedding to reduce engineering complexity. For example, Pinterest briefly experimented with multiple embeddings per item but reverted to a single embedding to reduce costs.</p>
+<p>There are 3 primary ways of embedding representation in the literature:</p>
+<ul>
+<li><span style="color:orange">ID-Based</span>: This method maps an item's ID directly to an embedding.
+<ul>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.06em;vertical-align:-0.31em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord text"><span class="mord">item_id</span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord text"><span class="mord">embedding</span></span></span></span></span></li>
+<li>This is often used in a task-specific model, but not usually used for a universal embedding model shared by downstream tasks, as we cannot represent new items that have no user activity</li>
+</ul>
+</li>
+<li><span style="color:orange">Content-Based</span>: This is the most common approach, generating embeddings from an item's content, such as its text, images, or audio
+<ul>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.06em;vertical-align:-0.31em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord text"><span class="mord">item_text</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord text"><span class="mord">item_image</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">...</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord text"><span class="mord">embedding</span></span></span></span></span></li>
+<li>Textual content is usually passed into an LLM to generate embeddings</li>
+<li>For other modalities, task-agnostic preprocessing may be employed. For example, Lee 2020 sampling frames from a video and runs them through a ResNET model to create raw embeddings before they are fed into the main embedder model</li>
+</ul>
+</li>
+<li><span style="color:orange">Graph-Based</span>: This method can be seen as an extension of the content-based approach. It generates an embedding from the attributes of an item's neighbors in a network.
+<ul>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord text"><span class="mord">attributes of neighbours of item</span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord text"><span class="mord">embedding</span></span></span></span></span></li>
+<li>This is particularly effective in social network products where network interactions are crucial, such as on LinkedIn, Pinterest, or Facebook</li>
+<li>While powerful, this method is more computationally expensive at both training and inference times because it requires access to the graph to compute embeddings</li>
+</ul>
+</li>
+</ul>
+<p>Embeddings are typically trained in a <span style="color:orange">contrastive learning</span> manner, which simply means that we want to encourage related items (e.g. videos frequently co-watched) to have high similarity scores and unrelated items (e.g. randomly sampled vidoe pairs) to have low scores.</p>
+<p>Thus, we can think of contrastive learning as comprising 3 main components:</p>
+<ul>
+<li><span style="color:orange">Positive Sampling</span>. How we mine for related items from data is a non-trivial, but an oft-neglected topic. Usually some behavioural statistics are used, e.g. Lee 2020 uses <code>videos frequently co-watched by users</code> to determine positive pairs. The guiding principle is to err on the side of being stricter in the selection of positive samples to minimize the appearance of false positives in the data (which are more harmful than false negatives).
+<ul>
+<li>In JumpStart, we have explored using Pointwise Mutual Information score to discard item pairs with low PMI score. Recall that the PMI score is computed as:
+<span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">p</span><span class="mord mathnormal">mi</span><span class="mopen">(</span><span class="mord mathnormal">i</span><span class="mord mathnormal">t</span><span class="mord mathnormal">e</span><span class="mord"><span class="mord mathnormal">m</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">a</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">i</span><span class="mord mathnormal">t</span><span class="mord mathnormal">e</span><span class="mord"><span class="mord mathnormal">m</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">b</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.363em;vertical-align:-0.936em;"></span><span class="mop"><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.207em;"><span style="top:-2.4559em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2441em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="mopen">(</span><span class="mord mathnormal">i</span><span class="mord mathnormal">t</span><span class="mord mathnormal">e</span><span class="mord"><span class="mord mathnormal">m</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">a</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">p</span><span class="mopen">(</span><span class="mord mathnormal">i</span><span class="mord mathnormal">t</span><span class="mord mathnormal">e</span><span class="mord"><span class="mord mathnormal">m</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">b</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="mopen">(</span><span class="mord mathnormal">i</span><span class="mord mathnormal">t</span><span class="mord mathnormal">e</span><span class="mord"><span class="mord mathnormal">m</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">a</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord text"><span class="mord"> co-occuring with </span></span><span class="mord mathnormal">i</span><span class="mord mathnormal">t</span><span class="mord mathnormal">e</span><span class="mord"><span class="mord mathnormal">m</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">b</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></li>
+<li>Considering co-occurrence statistics focuses only on the numerator. Normalizing by the marginal probabilities of the items reduces the incidence of popular items being labelled as related when they are actually not</li>
+<li>In my experience, the bottom <code>10%</code> of co-interacted items by pmi score can be safely discarded</li>
+<li>Another subtle issue is that power users contribute disproportionately to positive pairs.
+<ul>
+<li>If a given user interacts with <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> items, then he/she generates <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2em;vertical-align:-0.35em;"></span><span class="mord"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size1">(</span></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7454em;"><span style="top:-2.355em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span><span style="top:-3.144em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size1">)</span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.355em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.01em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.485em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mopen mtight">(</span><span class="mord mathnormal mtight">n</span><span class="mbin mtight">−</span><span class="mord mtight">1</span><span class="mclose mtight">)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span> item co-occurrence pairs</li>
+<li>The quadratic scaling in <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> means that the item interactions from power users may dominate that of all other users, but these are also the least informative item pairs :'( as power users may have less specific item preferences</li>
+<li>Hence it is advisable to discard power users beyond a particular percentile to improve positive sampling</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><span style="color:orange">Negative Sampling</span>. Much of the research literature focuses on this issue. The reason is that as research data (e.g. <code>Movielens</code>) is fixed, the positive pairs are usually pre-determined in the data. But the negative samples are usually not pre-specified in the data, so methods are devised to sample:
+<ul>
+<li><strong>Random sampling</strong>. This is the simplest and most common approach: for a given anchor item, we sample negatives uniformly from the item catalogue, omitting the positive item(s) for the anchor</li>
+<li><strong>Impressed but not positive</strong>. This is also a simple approach if we have access to item impression data. The impressed items are often hard negatives because they were deemed to be relevant by the existing recommendation system and surfaced to the user.
+<ul>
+<li>The potential danger is that the model may only learn to distinguish negatives in a specific retrieval setting and is not robust to changes in the retrieval model</li>
+</ul>
+</li>
+<li><strong>Hard negative mining</strong>. Various other methods exist to mine for hard negatives, e.g. using BM25 score or embedding similarity. We discuss two ideas on this below in a bit more detail.</li>
+<li>Usually, it is best to mix negatives from all of the above so that the model learns to distinguish positives from a wide range of negatives</li>
+</ul>
+</li>
+<li><span style="color:orange">Loss</span>. Again, much ink has been spilt on this topic, but there are really only two main losses that we need to know:
+<ul>
+<li><strong>Triplet loss</strong>.</li>
+<li><strong>Cross entropy (or InfoNCE) loss</strong>.</li>
+</ul>
+</li>
+</ul>
+<p><span style="color:orange">WORK IN PROGRESS</span></p>
+<p>To improve training, two ideas are critical:</p>
+<ol>
+<li><strong>Semi-hard Negative Mining</strong>: Originating from FaceNET, this technique addresses the problem of "false negatives" (items that are incorrectly labeled as negative) which can confuse the model. It focuses on training examples that are in a "goldilocks zone"—not too easy and not too hard. Lee (2020) demonstrated that mining for the hardest semi-hard negatives within a mini-batch is a computationally cheap and critical step for model performance.</li>
+<li><strong>Smart Negative Sampling</strong>: Since random sampling often fails to find challenging negative examples, methods are devised to mine for them. This can involve using impression data, surrogate algorithms like BM25, or approximate-nearest-neighbor search. Lee (2020) also introduced using hierarchical clustering on a relational graph to find negatives from nearby clusters, which can be combined with semi-hard negative mining to prevent issues with false negatives.</li>
+</ol>
+<h3 id="from-matrix-factorization-to-sequential-recommendations"><a class="header" href="#from-matrix-factorization-to-sequential-recommendations">From Matrix Factorization to Sequential Recommendations</a></h3>
+<p>Traditional matrix factorization methods learn a single, static user representation to predict their entire interaction history. This is problematic for users with diverse or evolving interests, as the model learns a "diluted" representation. While time-decayed ratings can help by giving more weight to recent interactions, the model still fails to learn the sequential nature of those interactions fully.</p>
+<p>Sequential recommenders address this by mirroring the actual recommendation task: given a user's history up to time <em>t</em>, predict their next action at time <em>t+1</em>. The user's representation is therefore dynamic and based on their recent actions. There are three main approaches to this:</p>
+<ul>
+<li><strong>Markov Approach</strong>: A simple but often effective method that uses the last interacted item as the primary feature to predict the next one.</li>
+<li><strong>Pointwise Approach</strong>: This method involves "rolling back" features to what was available at the time of each action in the training data. While this explicitly computes every user-item interaction, it requires significant data-loading effort and careful feature engineering. Google chose this approach for its simplicity in distributed model training.</li>
+<li><strong>Sequential Modelling Approach</strong>: This is analogous to language modeling, where the model learns to predict the next item in a sequence, learning from many items simultaneously.</li>
+</ul>
+<h3 id="case-studies-in-sequential-recommendations"><a class="header" href="#case-studies-in-sequential-recommendations">Case Studies in Sequential Recommendations</a></h3>
+<h4 id="covington-2016---pointwise-approach-at-youtube"><a class="header" href="#covington-2016---pointwise-approach-at-youtube"><strong>Covington (2016) - Pointwise Approach at YouTube:</strong></a></h4>
+<p>YouTube's influential 2016 paper detailed a pointwise approach for both retrieval and ranking.</p>
+<ul>
+<li><strong>Retrieval</strong>: The model used features like the average embedding of the last 50 video watches and search queries, along with user features like gender. A small MLP was trained with a sampled softmax loss to predict the next video watch. A crucial finding was that predicting the <em>next</em> watch was far more effective in online A/B tests than predicting a randomly held-out watch from the user's history.</li>
+</ul>
+<p>[Diagram: Pointwise Approach for Retrieval - Covington 2016 architecture from slide 13]</p>
+<ul>
+<li><strong>"Example Age" Feature</strong>: To capture the time-sensitive nature of video popularity, an "Example Age" feature was introduced. This simple feature encodes when an action took place, allowing the model to learn the "popularity lifecycle" of items, where popularity often spikes shortly after upload and then fades.</li>
+</ul>
+<p>[Diagram: Chart showing Class Probability vs. Days Since Upload with and without the "Example Age" feature, from slide 15]</p>
+<ul>
+<li><strong>Ranking</strong>: The ranking model was similar to the retrieval model but incorporated many more features, particularly those related to user-item historical interactions (e.g., "how many videos from this channel has the user watched?"). The paper noted that even simple transformations of features, like square roots, improved performance, highlighting the reality of manual feature engineering.</li>
+</ul>
+<p>[Diagram: Pointwise Approach for Ranking - Covington 2016 architecture from slide 16]</p>
+<h4 id="sasrec-2018---the-transformer-based-approach"><a class="header" href="#sasrec-2018---the-transformer-based-approach"><strong>SASRec (2018) - The Transformer-Based Approach:</strong></a></h4>
+<p>SASRec (Self-Attentive Sequential Recommendation) applied the transformer architecture to recommendations, treating a user's interaction history as a sequence of items to be predicted, much like words in a sentence.</p>
+<ul>
+<li><strong>Architecture</strong>: Using causal masking, the transformer embedding at each time step encodes all previous interactions. The training loss is typically a binary cross-entropy loss comparing the dot product of the model's prediction with the target item embedding against a random negative sample. This approach significantly outperforms traditional matrix factorization methods.</li>
+<li><strong>Position Embeddings</strong>: Since transformers have no inherent notion of sequence, SASRec adds a learned position embedding to each item in the input sequence. This helps the model weigh recent items more heavily, as shown by visualizations of the attention matrix.</li>
+<li><strong>Efficiency and Power</strong>: This paradigm is more efficient than the pointwise approach because it learns from N time steps simultaneously for each user. It also reduces the need for manual feature engineering, as the model can implicitly learn user-item interaction features.</li>
+</ul>
+<p>[Diagram: Visualization of Average Attention Matrix from SASRec, with and without Positional Embeddings, from slide 21]</p>
+<p>A subsequent paper, <strong>BERT4Rec (2019)</strong>, proposed a "masked token prediction" task similar to BERT, allowing the model to use future items as input. While it initially appeared superior, Klenitskiy (2023) showed this was due to a difference in loss functions; when both use the same sampled softmax loss, <strong>SASRec consistently performs better and trains faster</strong>. The conclusion is that SASRec with sampled softmax loss is the current industry standard.</p>
+<h4 id="pinnerformer-2022---long-term-sequential-modeling-at-pinterest"><a class="header" href="#pinnerformer-2022---long-term-sequential-modeling-at-pinterest"><strong>PinnerFormer (2022) - Long-Term Sequential Modeling at Pinterest:</strong></a></h4>
+<p>PinnerFormer evolved from the need to switch from real-time user embedding computation to less costly daily batch jobs.</p>
+<ul>
+<li><strong>Long-Term Loss</strong>: The key idea is that at each time step, instead of only predicting the very next item (like SASRec), the model predicts a random item from the user's future interactions over a longer window (e.g., 28 days). This creates more stable embeddings and surprisingly, PinnerFormer beats SASRec even when retrained in real-time.</li>
+<li><strong>Advanced Features</strong>: PinnerFormer uses pre-computed PinSage (graph-based) embeddings as a base. It distinguishes between different action types (e.g., "Pin Save" vs. "Long Click") by concatenating a learned "action" embedding to the item embedding. It also heavily relies on time features, using Time2Vec to encode timestamps, noting a significant performance drop without them.</li>
+<li><strong>Training Details</strong>: The model uses a combination of in-batch and random negatives with Log-Q correction, and ensures each user in a mini-batch is weighted equally to avoid bias from users with very long histories.</li>
+</ul>
+<p>[Diagram: Illustration of PinnerFormer's "Long Term Loss" compared to SASRec from slide 25]</p>
+<h3 id="multi-task-learning-in-recommendations"><a class="header" href="#multi-task-learning-in-recommendations">Multi-Task Learning in Recommendations</a></h3>
+<p>Recommendation systems often need to optimize for multiple objectives (e.g., clicks, saves, purchases). Several architectures address this, primarily for the pointwise approach:</p>
+<ul>
+<li><strong>ESMM (2018)</strong>: This model explicitly encodes the relationship that a conversion can only happen after a click (<code>P(convert) = P(click) * P(convert|click)</code>). This allows the conversion model to benefit from the abundant click data while learning from the sparse conversion data.</li>
+</ul>
+<p>[Diagram: ESMM architecture from slide 29]</p>
+<ul>
+<li><strong>Shared-Bottom Architecture</strong>: A common approach where bottom layers of a neural network are shared across tasks, with separate "towers" or heads for each specific task prediction. The final recommendation is a manually tuned weighted average of the logits from each head.</li>
+</ul>
+<p>[Diagram: Shared-Bottom Model architecture from slide 30]</p>
+<ul>
+<li><strong>Mixture of Experts (MoE)</strong>: An improvement over the shared-bottom model, MoE uses specialized "expert" layers. For each task, a gating network learns a weighted average over the outputs of these experts, allowing the model to modularize and handle potentially conflicting tasks more effectively.</li>
+</ul>
+<p>[Diagram: Multi-gate Mixture-of-Expert (MoE) model architecture from slide 31]</p>
+<ul>
+<li><strong>PinnerFormer's Approach</strong>: For sequential models, PinnerFormer took a simpler route, finding that treating all positive actions (repins, clicks, etc.) as equal signals was the best all-around strategy for their use case.</li>
+</ul>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Training Objective</th><th style="text-align: left">10s Closeup</th><th style="text-align: left">10s Click</th><th style="text-align: left">Repin</th><th style="text-align: left">All</th></tr></thead><tbody>
+<tr><td style="text-align: left"><strong>10s Closeup</strong></td><td style="text-align: left">0.27</td><td style="text-align: left">0.02</td><td style="text-align: left">0.09</td><td style="text-align: left">0.17</td></tr>
+<tr><td style="text-align: left"><strong>10s Click</strong></td><td style="text-align: left">0.01</td><td style="text-align: left">0.49</td><td style="text-align: left">0.01</td><td style="text-align: left">0.12</td></tr>
+<tr><td style="text-align: left"><strong>Repin</strong></td><td style="text-align: left">0.15</td><td style="text-align: left">0.03</td><td style="text-align: left">0.17</td><td style="text-align: left">0.13</td></tr>
+<tr><td style="text-align: left"><strong>Multi-task</strong></td><td style="text-align: left">0.23</td><td style="text-align: left">0.28</td><td style="text-align: left">0.13</td><td style="text-align: left">0.23</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="ii-trends-in-search-systems"><a class="header" href="#ii-trends-in-search-systems">II. Trends in Search Systems</a></h2>
+<p>While related to recommendations, search systems have distinct challenges and characteristics in practice.</p>
+<h3 id="search-vs-recommendation"><a class="header" href="#search-vs-recommendation">Search vs. Recommendation</a></h3>
+<ul>
+<li><strong>Relevance is Stricter</strong>: In search, there are objectively correct and incorrect results. Irrelevant results must not be surfaced, as they erode user trust.</li>
+<li><strong>Latency is Critical</strong>: Users expect instant search results, making pre-computation of recommendations for a given query impossible.</li>
+<li><strong>LLMs Have a Larger Impact</strong>: Search benefits more directly from advances in LLMs due to its text-centric nature and the overlap with fields like Information Retrieval and Question-Answering.</li>
+</ul>
+<p>Search tasks exist on a spectrum from pure relevance (like academic Q&amp;A) to pure personalization (which is essentially recommendation). E-commerce search lies in the middle, where relevance is key, but personalization plays a major role in user satisfaction given the large number of potentially relevant items for a broad query.</p>
+<h3 id="academic-vs-industry-search"><a class="header" href="#academic-vs-industry-search">Academic vs. Industry Search</a></h3>
+<p>Academic research often focuses on Question-Answering (Q&amp;A) datasets like MSMarco or TriviaQA, where queries are well-formed questions with a single correct answer. In this setting, pre-trained LLMs perform exceptionally well, and it is easier to beat traditional baselines like BM25.</p>
+<h4 id="standard-academic-models"><a class="header" href="#standard-academic-models"><strong>Standard Academic Models:</strong></a></h4>
+<ul>
+<li><strong>Ranking (Cross-Encoders)</strong>: The standard is a cross-encoder architecture (often called MonoBERT), where a pre-trained language model like BERT takes a <code>[Query, Document]</code> pair as input and outputs a relevance score. Later papers showed that using a sampled softmax loss with many random negatives is more effective than the original binary cross-entropy loss. As models scale, so does performance, with <strong>RankLlama</strong> showing stronger results than older BERT or T5-based rankers. A 2023 paper by Sun even showed that zero-shot prompting with ChatGPT, using a "permutation generation" method and sliding windows, can achieve state-of-the-art performance on Q&amp;A tasks without any fine-tuning.</li>
+</ul>
+<p>[Diagram: Standard Cross Encoder / MonoBERT architecture from slide 39]</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Ranking Model</th><th style="text-align: left">MRR@10 for MSMarco</th></tr></thead><tbody>
+<tr><td style="text-align: left">monoBERT</td><td style="text-align: left">37.2</td></tr>
+<tr><td style="text-align: left">RankT5</td><td style="text-align: left">43.4</td></tr>
+<tr><td style="text-align: left">LLaMA2-8b</td><td style="text-align: left">44.9</td></tr>
+</tbody></table>
+</div>
+<ul>
+<li><strong>Retrieval (Two-Tower Models)</strong>: The standard is Dense Passage Retrieval (DPR), which uses two separate encoders—one for the query and one for the document (passage). The model is trained with a sampled softmax loss to make the cosine similarity between a query and its positive document high, relative to negative documents. These negatives often include "in-batch" negatives (other positive documents in the same training batch) and "hard" negatives mined using BM25. To improve these retrievers, a common technique is <strong>distillation</strong>, where a powerful but slow cross-encoder (the "teacher") is used to train a faster two-tower model (the "student").</li>
+</ul>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Retrieval Model</th><th style="text-align: left">MRR@10 for MSMarco</th></tr></thead><tbody>
+<tr><td style="text-align: left">BM25</td><td style="text-align: left">18.4</td></tr>
+<tr><td style="text-align: left">ANCE (BERT-based)</td><td style="text-align: left">33.0</td></tr>
+<tr><td style="text-align: left">LLaMA2-8b</td><td style="text-align: left">41.2</td></tr>
+</tbody></table>
+</div>
+<p>[Diagram: Illustration of a Mini Batch for Dense Passage Retrieval from slide 42]</p>
+<h3 id="complexities-of-industry-search-systems"><a class="header" href="#complexities-of-industry-search-systems">Complexities of Industry Search Systems</a></h3>
+<p>Industry search systems are significantly more complex, needing to balance relevance, latency, and personalization.</p>
+<h4 id="case-study-pinterest-search-2024"><a class="header" href="#case-study-pinterest-search-2024"><strong>Case Study: Pinterest Search (2024)</strong></a></h4>
+<ul>
+<li><strong>Teacher-Student Distillation</strong>: Pinterest fine-tunes a large teacher LLM (Llama-3-8B) on 300k human-labeled query-pin pairs. To improve the teacher's performance, the text representation for each pin is enriched with its title, description, AI-generated image captions, high-engagement historical queries, and common board titles it's saved to.</li>
+</ul>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Model</th><th style="text-align: left">Accuracy</th><th style="text-align: left">AUROC 3+/4+/5+</th></tr></thead><tbody>
+<tr><td style="text-align: left">SearchSAGE</td><td style="text-align: left">0.503</td><td style="text-align: left">0.878/0.845/0.826</td></tr>
+<tr><td style="text-align: left">mBERT_base</td><td style="text-align: left">0.535</td><td style="text-align: left">0.887/0.864/0.861</td></tr>
+<tr><td style="text-align: left">T5_base</td><td style="text-align: left">0.569</td><td style="text-align: left">0.909/0.884/0.886</td></tr>
+<tr><td style="text-align: left">mDeBERTaV3_base</td><td style="text-align: left">0.580</td><td style="text-align: left">0.917/0.892/0.895</td></tr>
+<tr><td style="text-align: left">XLM-ROBERTalarge</td><td style="text-align: left">0.588</td><td style="text-align: left">0.919/0.897/0.900</td></tr>
+<tr><td style="text-align: left">Llama-3-8B</td><td style="text-align: left">0.602</td><td style="text-align: left">0.930/0.904/0.908</td></tr>
+</tbody></table>
+</div>
+<ul>
+<li><strong>Scaling Up with Distilled Data</strong>: This powerful teacher model then generates labels for 30 million un-labeled data points. A small, fast student MLP model is then trained on this massive distilled dataset. This student model recovers up to 91% of the teacher's accuracy and, because the teacher was multilingual, the student model also learns to handle multiple languages effectively despite being trained only on English human-annotated data.</li>
+</ul>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Training Data</th><th style="text-align: left">Accuracy</th><th style="text-align: left">AUROC 3+/4+/5+</th></tr></thead><tbody>
+<tr><td style="text-align: left">0.3M human labels</td><td style="text-align: left">0.484</td><td style="text-align: left">0.850/0.817/0.794</td></tr>
+<tr><td style="text-align: left">6M distilled labels</td><td style="text-align: left">0.535</td><td style="text-align: left">0.897/0.850/0.841</td></tr>
+<tr><td style="text-align: left">12M distilled labels</td><td style="text-align: left">0.539</td><td style="text-align: left">0.903/0.856/0.847</td></tr>
+<tr><td style="text-align: left">30M distilled labels</td><td style="text-align: left">0.548</td><td style="text-align: left">0.908/0.860/0.850</td></tr>
+</tbody></table>
+</div>
+<p>[Diagram: Teacher-Student distillation process at Pinterest from slide 47]</p>
+<h4 id="case-study-baidu-search-2021-2023"><a class="header" href="#case-study-baidu-search-2021-2023"><strong>Case Study: Baidu Search (2021, 2023)</strong></a></h4>
+<ul>
+<li><strong>Bootstrapping Labels with Weak Signals</strong>: Instead of training a large teacher model, Baidu uses a simple decision tree model trained on "weak relevance signals" (e.g., click-through rates, long-click rates, skip rates) to predict a "calibrated relevance score" for unlabeled data. Training a cross-encoder on this calibrated score was shown to be far more effective than training on raw clicks alone.</li>
+</ul>
+<p>[Diagram: Baidu's decision tree model over weak relevance signals from slide 48]</p>
+<ul>
+<li><strong>Query-Sensitive Summary</strong>: To avoid the latency of processing full documents, Baidu developed an algorithm to extract the most relevant sentences from a document based on word-match scores with the query. This summary is then used as input for the ranker, significantly boosting offline performance.</li>
+<li><strong>Modular Attention for Speed</strong>: To accelerate their cross-encoder, Baidu uses a modular attention mechanism. Self-attention is first applied independently within the <code>[query-title]</code> segment and the <code>document summary</code> segment for several layers, before a few final layers of full cross-attention are applied. This structure reduces computation and increases inference speed by 30%.</li>
+</ul>
+<p>[Diagram: Baidu's Modular Attention architecture from slide 50]</p>
+<ul>
+<li><strong>From Relevance to Satisfaction</strong>: A 2023 paper from Baidu argued that relevance alone is insufficient and that models must optimize for user satisfaction. They engineered features for quality (e.g., number of ads), authority (e.g., PageRank), and recency, and even built a query analyzer to determine if a query was authority or recency-sensitive. These features, along with relevance, were used to train a model that boosted performance by 2.5% over a pure relevance model. Notably, numeric satisfaction features were simply normalized and appended directly into the text input for the LLM to process.</li>
+</ul>
+<h4 id="case-study-google-dcnv2-2020"><a class="header" href="#case-study-google-dcnv2-2020"><strong>Case Study: Google DCNv2 (2020)</strong></a></h4>
+<p>Google's Deep &amp; Cross Network V2 (DCNv2) addresses a weakness in standard MLP rankers: they are not ideal for explicitly modeling feature interactions (e.g., <code>user_is_interested_in_topic_X</code> AND <code>item_is_about_topic_X</code>). DCNv2 introduces explicit "cross layers" that are designed to generate these feature crosses efficiently before feeding them into a standard deep network. This architecture provides performance gains over a standard MLP with the same number of parameters.</p>
+<p>[Diagram: Google DCNv2 architecture with Cross Layers from slide 53]</p>
+<h4 id="case-studies-embedding-based-retrieval-ebr-at-facebook-and-taobao"><a class="header" href="#case-studies-embedding-based-retrieval-ebr-at-facebook-and-taobao"><strong>Case Studies: Embedding-Based Retrieval (EBR) at Facebook and Taobao</strong></a></h4>
+<p>EBR systems are used for semantic search but can struggle with relevance compared to traditional keyword-based lexical matching.</p>
+<ul>
+<li><strong>Facebook's Hybrid Approach</strong>: Facebook integrates nearest-neighbor search directly into its in-house lexical search engine. A query can contain both standard lexical terms (e.g., <code>location:seattle</code>) and an <code>nn</code> operator that finds items within a certain embedding-distance radius. This ensures documents fulfill both lexical and semantic requirements. Facebook's query and document encoder towers use a mix of term-based (char-3-grams) and LLM-based representations.</li>
+<li><strong>Taobao's Relevance Filters</strong>: Taobao found their EBR system sometimes returned irrelevant but semantically close items (e.g., a search for "Nike shoes" returning "Adidas shoes"). Their solution was to apply explicit lexical boolean filters on top of the ANN search (e.g., <code>ANN search + Brand:Nike + Product:Shoes</code>). While this sacrifices some of the "fuzzy" semantic search capability, it guarantees relevance. Taobao also found that optimizing for engagement (clicks) does not guarantee relevance, and ultimately chose to accept slightly lower engagement to ensure a higher percentage of relevant results. Their query representation is enhanced by using cross-attention between the query and the user's historical interactions to personalize the query embedding.</li>
+</ul>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Experiment</th><th style="text-align: left">Engagement %</th><th style="text-align: left">Relevance %</th></tr></thead><tbody>
+<tr><td style="text-align: left">Baseline</td><td style="text-align: left">85.6%</td><td style="text-align: left">71.2%</td></tr>
+<tr><td style="text-align: left">Baseline + personalization</td><td style="text-align: left">86.4%</td><td style="text-align: left">71.4%</td></tr>
+<tr><td style="text-align: left">Baseline + Lower temperature</td><td style="text-align: left">85.5%</td><td style="text-align: left">79.0%</td></tr>
+<tr><td style="text-align: left">Baseline + all</td><td style="text-align: left">84.7%</td><td style="text-align: left">80.0%</td></tr>
+</tbody></table>
+</div>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../current.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../recsys/gradient_boosting.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../current.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../recsys/gradient_boosting.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
