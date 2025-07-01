@@ -54,6 +54,7 @@
     - [Dao 2022 - Flash Attention](./papers/dao_2022.md)
     - [Li 2021 - TaoBao Embedding-Based Retrieval](./papers/li_2021.md)
     - [Zou 2021 - PLM Based Ranking in Baidu Search](./papers/zou_2021.md)
+    - [Huang 2022 - LLMs can Self Improve](./papers/huang_2022.md)
     - [Tunstall 2022 - SetFit](./papers/tunstall_2022.md)
     - [Rafailov 2023 - Direct Preference Optimization](./papers/rafailov_2023.md)
     - [Blecher 2023 - Nougat](./papers/blecher_2023.md)

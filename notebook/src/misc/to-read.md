@@ -80,3 +80,4 @@
 - [Self Consistency Improves CoT](https://arxiv.org/abs/2203.11171)
 - [CoT Prompting Elicits Reasoning](https://arxiv.org/abs/2201.11903)
 - [LLMs are zero shot Reasoners](https://arxiv.org/abs/2205.11916)
+- [Instruction Induction](https://arxiv.org/abs/2205.10782)
