@@ -198,6 +198,12 @@ A: Roger started with 3 balls. 2 cans of 3 balls each is 6 balls.
 <li><span style="color:orange">CoT <em>after</em> answer</span>. Another argument is that including the CoT traces in the prompt improves in-context learning in and of themselves, meaning that the intermediate tokens are not actually necessary for improving the model's accuracy. The authors disprove this hypothesis by putting the CoT reasoning <em>after</em> the answer in the prompt, i.e. <code>&lt;Question, Answer, CoT reasoning&gt;</code>. This forces the LLM to generate the answer before it generates the CoT trace. This also proves to not be helpful.</li>
 </ul>
 <p>Thus the ablation studies help to clarify that it is the intermediate natural language reasoning steps that help the model offload computation and improve the accuracy of its answers.</p>
+<h2 id="results"><a class="header" href="#results">Results</a></h2>
+<p>The performance of CoT few-shot prompting compared to standard few-shot prompting is striking:</p>
+<ul>
+<li>Using <code>GPT-3 175B</code>, performance increases from <code>15.6</code> to <code>46.9</code></li>
+<li>Using <code>PaLM 540B</code>, performance increases from <code>17.9</code> to <code>56.9</code></li>
+</ul>
 
                     </main>
 

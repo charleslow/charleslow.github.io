@@ -57,6 +57,7 @@
     - [Zou 2021 - PLM Based Ranking in Baidu Search](./papers/zou_2021.md)
     - [Huang 2022 - LLMs can Self Improve](./papers/huang_2022.md)
     - [Tunstall 2022 - SetFit](./papers/tunstall_2022.md)
+    - [Wang 2022 - Self Consistency LLM](./papers/wang_2022.md)
     - [Rafailov 2023 - Direct Preference Optimization](./papers/rafailov_2023.md)
     - [Blecher 2023 - Nougat](./papers/blecher_2023.md)
     - [Dong 2023 - MINE Loss](./papers/dong_2023.md)
