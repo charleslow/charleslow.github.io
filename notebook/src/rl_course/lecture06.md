@@ -187,6 +187,10 @@ $$
 $$
 - There is a theorem showing that for linear TD(0), despite the bias, we will always converge (close) to the global optimum
 
+> <<Note:>> There is a little inconsistency in the above formula, once we start introducing bootstrapped approximations of the return. Recall that when we used the oracle $v_\pi$ to represent the target and took the derivative, only $\nabla_w \hat{v}(S, w)$ enters the derivative as we treat the oracle value as a constant.
+> 
+> However, once we introduce $\hat{v}$ itself to substitute the oracle function, we should technically include that term in the derivative as well. As it turns out, this is not a good idea and will not lead to convergence. There is some theoretical analysis for this to justify it.
+
 ### TD($\lambda$) with Value Function Approximation
 
 And again, we can do the same with TD-$\lambda$, since the $\lambda$-return $G_t^\lambda$ is also a biased sample of the true value $v_\pi(s)$:
@@ -213,6 +217,81 @@ $$
 
 For the backward view, notice that the eligibility trace is now updated using the gradient wrt the parameter vector, namely $\nabla_w \hat{v}(S_t, w)$, which is of the same dimensionality as $w$. More precisely, the eligibility trace is the decaying accumulation of past gradients. In the linear case, this is an accumulation of the feature vector $x(S_t)$. 
 
-It is a bit unintuitive to understand why we use the accumulated gradient as the eligibility trace, but I suppose it is proved in the equivalence theorem between the forward and backward view.
+It is a bit unintuitive to understand why we use the accumulated gradient as the eligibility trace, but I suppose it is proved in the equivalence theorem between the forward and backward view. Perhaps we can just think of it as "the features which we see the most often will have high eligibility trace".
+
+## Control with Value Function Approximation
+
+- Start with some random parameter vector $w$
+- Set policy based on some greedy function $\pi = \epsilon\text{-greedy}(q_w)$
+- Do policy evaluation $\hat{q}(., ., w) \approx q_\pi$
+
+First we need to do everything again wrt to action-value function instead of value function to perform this algorithm. The steps are:
+- Approximate the action-value function
+$$
+    \hat{q}(S, A, w) \approx q_\pi(S, A)
+$$
+- Minimize the mean squared error between approximate action value function and true oracle action value $q_\pi(S, A)$:
+$$
+    J(w) = \E_\pi \left[
+        (q_\pi(S, A) - \hat{q}(S, A, w)^2)
+    \right]
+$$
+- Use SGD to find a local minimum:
+$$
+\begin{align*}
+    -\frac{1}{2} \nabla_w J(w) &= (q_\pi(S, A) - \hat{q}(S, A, w)) \nabla_w \hat{q}(S, A, w)\\
+    \triangle w &= \alpha(q_\pi(S, A) - \hat{q}(S, A, w)) \nabla_w \hat{q}(S, A, w)
+\end{align*}
+$$
+- Again, we represent the state *and* action by a feature vector:
+$$
+\mathbf{x}(S, A) = 
+\begin{pmatrix}
+  \mathbf{x}_1(S, A) \\
+  \vdots        \\
+  \mathbf{x}_n(S, A)
+\end{pmatrix}
+$$
+- Represent action value function by a linear combination of features:
+$$
+    \hat{q}(S, A, w) = x(S, A)^T w = \sum_{j=1}^n x_j(S, A) w_j
+$$
+- Do an SGD update:
+$$
+\begin{align*}
+    \nabla_w \hat{q}(S, A, w) &= x(S, A)\\
+    \triangle w &= \alpha(q_\pi(S, A) - \hat{q}(S, A, w)) x(S, A)
+\end{align*}
+$$
+
+### Incremental Control Algorithms
+
+Like prediction, we need to substitute a target for the unknown oracle $q_\pi(S, A)$. We sub out all the $v_\pi$ for an approximate target:
+- For MC, target is the return $G_t$
+$$
+    \triangle w = \alpha (G_t - \hat{q}(S_t, A_t, w)) \nabla_w \hat{q}(S_t, A_t, w)
+$$
+- For TD(0), the target is the TD target $R_{t+1} + \gamma Q(S_{t+1}, A_{t+1}):$:
+$$
+    \triangle w = \alpha(R_{t+1} + \gamma \hat{q}(S_{t+1}, A_{t+1}, w)) - \hat{q}(S_t, A_t, w) \nabla_w \hat{q}(S_t, A_t, w)
+$$
+- For forward view TD($\lambda$), the target is the action value $\lambda$-return:
+$$
+    \triangle w = \alpha(q_t^\lambda - \hat{q}(S_t, A_t, w)) \nabla_w \hat{q}(S_t, A_t, w)
+$$
+- For backward view TD($\lambda$), the equivalent update is:
+$$
+\begin{align*}
+    \delta_t &= R_{t+1} + \gamma \hat{q}(S_{t+1}, A_{t+1}, w) - \hat{q}(S_t, A_t, w)\\
+    E_t &= \gamma \lambda E_{t-1} + \nabla_w \hat{q}(S_t, A_t, w)\\
+    \triangle w &= \alpha \delta_t E_t\\
+\end{align*}
+$$
+
+<<Should we bootstrap?>> Empirically across many examples, we almost always have the case that:
+- MC takes too many steps because variance is too high
+- TD(0) always has a large efficiency gain compared to MC
+- There's always some $\lambda$ value in between which is better than TD(0)
+
 
 

@@ -293,3 +293,15 @@ VsCode has a snippets function to help us with that.
 ```
 
 Note that the prefix is the keyword to trigger the template. To use the template, we simply enter `insert` mode in vim as per normal (e.g. using `a` or `i` or `o`), then type `align`. At this point, we would see the text as per normal. We can then press `ctrl+space` to show the snippets auto-completion, if there are any. Finally, we just press `enter` to get the template generated. The cursor will now come to rest at position `$1` as indicated in the snippet.
+
+## Github in Colab
+
+We may want to run `.ipynb` notebooks within a github project in colab. There are two steps to this.
+
+First, to get the `.ipynb` itself into colab, we can either use the UI to manually upload the notebook, or if we are loading from Github, we can simply start with the url to the notebook `https://github.com/charleslow/REPOSITORY/blob/master/NOTEBOOK.ipynb` and change `github` to `githubtocolab`. This will automatically open up the notebook in colab.
+
+However, this only gives us the standalone notebook, and we will not have access to the project directory and packages. Hence, in the notebook, we need to:
+- `!git clone <Insert REPOSITORY name>.git`
+- `%cd folder name`
+
+This will allow us to import packages and run the notebook as per normal.

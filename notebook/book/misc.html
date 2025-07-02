@@ -373,6 +373,15 @@ $$
 }
 </code></pre>
 <p>Note that the prefix is the keyword to trigger the template. To use the template, we simply enter <code>insert</code> mode in vim as per normal (e.g. using <code>a</code> or <code>i</code> or <code>o</code>), then type <code>align</code>. At this point, we would see the text as per normal. We can then press <code>ctrl+space</code> to show the snippets auto-completion, if there are any. Finally, we just press <code>enter</code> to get the template generated. The cursor will now come to rest at position <code>$1</code> as indicated in the snippet.</p>
+<h2 id="github-in-colab"><a class="header" href="#github-in-colab">Github in Colab</a></h2>
+<p>We may want to run <code>.ipynb</code> notebooks within a github project in colab. There are two steps to this.</p>
+<p>First, to get the <code>.ipynb</code> itself into colab, we can either use the UI to manually upload the notebook, or if we are loading from Github, we can simply start with the url to the notebook <code>https://github.com/charleslow/REPOSITORY/blob/master/NOTEBOOK.ipynb</code> and change <code>github</code> to <code>githubtocolab</code>. This will automatically open up the notebook in colab.</p>
+<p>However, this only gives us the standalone notebook, and we will not have access to the project directory and packages. Hence, in the notebook, we need to:</p>
+<ul>
+<li><code>!git clone &lt;Insert REPOSITORY name&gt;.git</code></li>
+<li><code>%cd folder name</code></li>
+</ul>
+<p>This will allow us to import packages and run the notebook as per normal.</p>
 
                     </main>
 
