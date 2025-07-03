@@ -65,6 +65,7 @@
     - [Liu 2023 - Meaning Representations from Trajectories](./papers/liu_2023.md)
     - [Klenitskiy 2023 - BERT4Rec vs SASRec](./papers/klenitskiy_2023.md)
     - [Singh 2023 - Semantic IDs for Recs](./papers/singh_2023.md)
+    - [Yang 2023 - OPRO](./papers/yang_2023.md)
     - [Borisyuk 2024 - GNN at LinkedIn](./papers/borisyuk_2024.md)
     - [Wang 2024 - LLM for Pinterest Search](./papers/wang_2024.md)
     - [Solatorio 2024 - GISTEmbed](./papers/solatorio_2024.md)
