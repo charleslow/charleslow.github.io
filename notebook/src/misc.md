@@ -310,10 +310,18 @@ This will allow us to import packages and run the notebook as per normal.
 
 We often use quartz cron expressions to schedule jobs. A cron expression is simply 6 or 7 values in a space-separated string, such as:
 ```
-0 0 0 1 * ?
+"0 0 0 1 * ?"
 ```
 
-Which means run on the `0th second` of the `0th minute` of the `0th hour` of the `1st day of every month`. The specifics of each field are in the table below, from [the cron trigger tutorial](https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html):
+Which means run on the:
+- `0th second` of the
+- `0th minute` of the
+- `0th hour` of the
+- `1st day the month` of
+- `every month`
+- and doesn't matter which `day of the week`
+
+The specifics of each field are in the table below, from [the cron trigger tutorial](https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html):
 
 | Field Name | Mandatory | Allowed Values | Allowed Special Characters |
 | :--- | :--- | :--- | :--- |
@@ -331,5 +339,6 @@ On the special characters:
 - `-` is used to specify a range. E.g. `10-12` in the hour field means run on the `10th`, `11th` and `12th` hour
 - `,` is used to specify a few values, e.g. `10,12` n the hour field means run on the `10th` and `12th` hour
 - `/` is used to specify increments. e.g. `0/15` in the minutes field means run on minutes `0, 15, 30, 45`
+- `#` is a special case for Day of the Week. Basically, `MON#1` means the 1st occurrence of a Monday of the given month
 
 That's about it! Or we can just use an LLM to generate the expression we need.

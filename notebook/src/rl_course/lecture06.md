@@ -293,5 +293,132 @@ $$
 - TD(0) always has a large efficiency gain compared to MC
 - There's always some $\lambda$ value in between which is better than TD(0)
 
+## Batch Methods
 
+Motivation:
+- Gradient descent is simple and appealing
+- But it is not sample efficient (we throw a sample away as soon as we use it once)
+- Batch methods seek to find the best fitting value function, given the agent's experience ("training data")
 
+### Least Squares Prediction
+
+The problem becomes the following:
+- Given our value function approximation $\hat{v}(s, w) \approx v_\pi(s)$
+- And experience $\mathcal{D}$ consisting of `<state, value>` pairs
+
+$$
+    \mathcal{D} = \{ 
+        <s_1, v_1^\pi>,
+        <s_2, v_2^\pi>,
+        ...,
+        <s_T, v_T^\pi>,
+    \}
+$$
+- Find the parameters $w$ that give the best fitting function $\hat{v}(s, w)$
+
+Least squares algorithms simply try to find $w$ that minimizes the sum of squares error between $\hat{v}(s_t, w)$ and target values $v_t^\pi$:
+$$
+\begin{align*}
+    \text{LS}(w) &= \sum_{t=1}^T \left[
+        v_t^\pi - \hat{v}(s_t, w)
+    \right]^2 \\
+    &= \E_\mathcal{D} \left[
+        v^\pi - \hat{v}(s, w)
+    \right]^2
+\end{align*}
+$$
+
+### SGD with Experience Replay
+
+It turns out there is a really easy way to find the least squares solution, using experience replay. The idea is to just keep using the data over and over again, instead of throwing away every sample after each update.
+
+Given experience comprising of:
+$$
+    \mathcal{D} = \{ 
+        \left< s_1, v_1^\pi, \right>
+        \left< s_2, v_2^\pi,\right>
+        ...,
+        \left< s_T, v_T^\pi,\right>
+    \}
+$$
+
+Repeat:
+1. Sample state, value from experience:
+$$
+    \left< s, v^\pi \right> \sim \mathcal{D}
+$$
+2. Apply SGD update:
+$$
+    \triangle w = \alpha(v^\pi - \hat{v}(s, w)) \nabla_w \hat{v}(s, w)
+$$
+
+It can be shown that this converges to the least squares solution:
+$$
+    w^\pi = \argmin_w \text{LS}(w)
+$$
+
+### Experience Replay in Deep Q-Networks (DQN)
+
+DQN (for atari games) uses experience replay and fixed Q-targets:
+- Take action $a_t$ according to $\epsilon$-greedy policy
+- Store transition $(s_t, a_t, r_{t+1}, s_{t+1})$ in replay memory $\mathcal{D}$
+- Sample random mini batch of transitions $(s, a, r, s')$
+    - Small batch size of `64` is sufficient
+- Maintain two neural networks that estimate Q-values:
+    - The old reference neural network is frozen periodically and used as the target
+    - Call its parameters $w^-$
+    - The actual neural network we are training has parameters $w$
+- Compute Q-learning targets wrt old, fixed parameters $w^-$
+- Optimize MSE between reference Q-network and Q-learning targets:
+$$
+    \L_i(w_i) = \E_{s, a, r, s' \sim \mathcal{D_i}} \left[
+        \left(
+            r + \gamma \max_{a'} Q(s', a'; w_i^-) - Q(s, a; w_i)
+        \right)^2
+    \right]
+$$
+- This is essentially Q-learning with a one-step look ahead, but using the reference network instead of the current active network under training
+- Success of this method depends on its stability in training:
+    1. Experience replay helps to stabilize training as it randomly samples from past experience instead of getting batches of highly correlated data
+    2. Fixed Q-targets - fixing the reference neural network helps to stabilize the targets and thus training
+- The neural network is just a large convolutional neural network
+    - Input state $s$ is a stack of raw pixels from last 4 frames
+    - Output is $Q(s, a)$ for `18` joystick / button positions
+    - Reward is the change in score for that step
+    - Applied to a large number of Atari games
+
+### Linear Least Squares Prediction
+
+Experience replay finds the least squares solution, but it takes many iterations. If we use a linear value function approximation, we can solve the least squares solution directly.
+
+At the minimum of $\text{LS}(w)$, the expected update must be zero:
+$$
+    \E_\mathcal{D} [ \triangle w] = 0
+$$
+
+So the expected update is zero:
+$$
+    \sum_{t=1}^T x(s_t)(v_t^\pi - x(s_t)^T w) = 0
+$$
+
+Solving for $w$:
+$$
+\begin{align*}
+    \sum_{t=1}^T x(s_t) v_t^\pi 
+    &= \sum_{t=1}^T x(s_t) x(s_t)^T w\\
+    w &= \left( 
+       \sum_{t=1}^T x(s_t) x(s_t)^T
+    \right)^{-1}
+    \sum_{t=1}^T x(s_t) v_t^\pi
+\end{align*}
+$$
+
+- Note that the matrix inverse is performed on a matrix of size $|w|^2$, where $|w|$ is the size of the feature / parameter vector. Hence if the number of parameters is small, this is acceptable to take the $O(N^3)$ complexity
+- Using Shermann-Morrison, the solution time is reduced to $O(N^2)$
+
+Linear least squares prediction algorithms actually have better convergence properties. 
+
+### Least Squares Policy Iteration
+
+- Policy evaluation is done using least squares Q-learning (linear or otherwise)
+- Policy improvement is done using greedy policy improvement as per normal

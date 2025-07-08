@@ -384,9 +384,18 @@ $$
 <p>This will allow us to import packages and run the notebook as per normal.</p>
 <h2 id="quartz-cron"><a class="header" href="#quartz-cron">Quartz Cron</a></h2>
 <p>We often use quartz cron expressions to schedule jobs. A cron expression is simply 6 or 7 values in a space-separated string, such as:</p>
-<pre><code>0 0 0 1 * ?
+<pre><code>"0 0 0 1 * ?"
 </code></pre>
-<p>Which means run on the <code>0th second</code> of the <code>0th minute</code> of the <code>0th hour</code> of the <code>1st day of every month</code>. The specifics of each field are in the table below, from <a href="https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html">the cron trigger tutorial</a>:</p>
+<p>Which means run on the:</p>
+<ul>
+<li><code>0th second</code> of the</li>
+<li><code>0th minute</code> of the</li>
+<li><code>0th hour</code> of the</li>
+<li><code>1st day the month</code> of</li>
+<li><code>every month</code></li>
+<li>and doesn't matter which <code>day of the week</code></li>
+</ul>
+<p>The specifics of each field are in the table below, from <a href="https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html">the cron trigger tutorial</a>:</p>
 <div class="table-wrapper"><table><thead><tr><th style="text-align: left">Field Name</th><th style="text-align: left">Mandatory</th><th style="text-align: left">Allowed Values</th><th style="text-align: left">Allowed Special Characters</th></tr></thead><tbody>
 <tr><td style="text-align: left">Seconds</td><td style="text-align: left">YES</td><td style="text-align: left">0-59</td><td style="text-align: left"><code>, - * /</code></td></tr>
 <tr><td style="text-align: left">Minutes</td><td style="text-align: left">YES</td><td style="text-align: left">0-59</td><td style="text-align: left"><code>, - * /</code></td></tr>
@@ -404,6 +413,7 @@ $$
 <li><code>-</code> is used to specify a range. E.g. <code>10-12</code> in the hour field means run on the <code>10th</code>, <code>11th</code> and <code>12th</code> hour</li>
 <li><code>,</code> is used to specify a few values, e.g. <code>10,12</code> n the hour field means run on the <code>10th</code> and <code>12th</code> hour</li>
 <li><code>/</code> is used to specify increments. e.g. <code>0/15</code> in the minutes field means run on minutes <code>0, 15, 30, 45</code></li>
+<li><code>#</code> is a special case for Day of the Week. Basically, <code>MON#1</code> means the 1st occurrence of a Monday of the given month</li>
 </ul>
 <p>That's about it! Or we can just use an LLM to generate the expression we need.</p>
 
