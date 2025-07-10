@@ -20,6 +20,8 @@
     - [Useful Models](./llm/useful_models.md)
     - [Encoder vs Decoder](./llm/encoder_vs_decoder.md)
     - [Contextualized Recommendations](./llm/contextualized_recs.md)
+- [Statistics](./stats/main.md)
+    - [Conformal Predictions](./stats/conformal.md)
 - [Miscellaneous](./misc.md)
     - [Bradley-Terry Model](./misc/bradley-terry.md)
     - [Setting up WSL](./misc/wsl-setup.md)
@@ -83,3 +85,4 @@
     - [Model Free Prediction](./rl_course/lecture04.md)
     - [Model Free Control](./rl_course/lecture05.md)
     - [Value Function Approximation](./rl_course/lecture06.md)
+    - [Policy Gradient](./rl_course/lecture07.md)

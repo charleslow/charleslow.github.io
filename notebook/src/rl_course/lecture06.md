@@ -422,3 +422,4 @@ Linear least squares prediction algorithms actually have better convergence prop
 
 - Policy evaluation is done using least squares Q-learning (linear or otherwise)
 - Policy improvement is done using greedy policy improvement as per normal
+

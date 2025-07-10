@@ -9,6 +9,7 @@ title = "Chux's Notebook"
 copy-fonts = true
 default_theme = "navy"
 additional-css = ["katex.min.css"]
+additional-js = ["mermaid.min.js", "mermaid-init.js"]
 
 [output.html.playground]
 runnable = false
@@ -19,3 +20,6 @@ macros = "src/macros.txt"
 
 [preprocessor.format]
 command = "python3 format.py"
+
+[preprocessor.mermaid]
+command = "mdbook-mermaid"
