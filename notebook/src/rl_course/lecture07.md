@@ -117,7 +117,7 @@ The simplest way to compute the policy gradient is to use finite differences:
 We now want to compute the policy gradient analytically, assuming:
 - The policy $\pi_\theta$ is differentiable whenever it is non-zero; and
 - We know the gradient $\nabla_\theta \pi_\theta (s, a)$
-- Likelihood ratio methods exploit the following identity:
+- Likelihood ratio methods exploit the following identity (call it the <<log trick>>):
 $$
 \begin{align*}
     \nabla_\theta \pi_\theta(s, a) &= 
@@ -144,4 +144,108 @@ $$
 $$
 - Note that we are omitting the derivation of the second term of the score function which is a bit more involved, as it involves differentiating the normalization factor (not shown above)
 
-## 
+## Gaussian Policy
+
+In continuous action spaces, a Gaussian policy is natural
+- Let the mean of the gaussian be a linear combination of state features
+$$
+    \mu(s) = \phi(s)^\intercal \theta
+$$
+- The variance may be fixed $\sigma^2$ or parametrized
+- The policy is gaussian (recall that we are in a continuous action space, so $a$ is a vector of floats):
+$$
+    a \sim \mathcal{N} \left( \mu(s), \sigma^2 \right)
+$$
+- The score function is then:
+$$
+    \nabla_\theta \log \pi_\theta(s, a) = \frac{
+        (a - \mu(s)) \phi(s)
+    }{
+        \sigma^2
+    }
+$$
+- We can probably derive this score function by writing down the PDF of the gaussian distribution for $\pi_\theta(s, a)$ and then taking the derivative
+
+## Policy Gradient Theorem: One-Step MDPs
+
+Consider a simple class of one-step MDPs to simplify the math
+- Start in a state $s \sim d(s)$
+- Terminate after one step with reward $r = \mathcal{R}_{s,a}$
+- This is a sort of contextual bandit
+
+Use likelihood ratios to compute the policy gradient
+- First we pick our objective function, which is just the expected reward (averaged over our start state and action that we choose)
+$$
+\begin{align*}
+    J(\theta) &= \E_{\pi_\theta} [r] \\
+    &= \sum_{s \in \S} d(s) \sum_{a \in \A} \pi_\theta(s, a) \mathcal{R}_{s,a}
+\end{align*}
+$$
+- Then we take the derivative to do gradient ascent:
+$$
+\begin{align*}
+    \nabla_\theta J(\theta) 
+    &=
+    \sum_{s \in \S} d(s) \sum_{a \in \A} \nabla_\theta \pi_\theta(s, a) \mathcal{R}_{s,a}\\
+    &=
+    \sum_{s \in \S} d(s) \sum_{a \in \A} \pi_\theta(s, a) \nabla_\theta \log \pi_\theta(s, a) \mathcal{R}_{s,a}\\
+    &=
+    \E_{\pi_\theta} \left[
+        \nabla_\theta \log \pi_\theta(s, a) r
+    \right]
+\end{align*}
+$$
+- Note that when taking the gradient of $\pi_\theta$, we use the log trick to rewrite it in line 2, and it becomes a new expectation again because we recover $\pi_\theta(s, a)$ outside of the gradient. This shows the power of the log trick.
+
+## Policy Gradient Theorem
+
+But we don't just want to do one-step MDPs, we want to generalize to multi-step MDPs
+- It turns out that we just need to replace the instantaneous reward $r$ with long term value $Q^\pi(s, a)$ (I suppose this means we need to model $Q$ as well)
+- Regardless of whether we use the (i) start state objective, (ii) average value objective or (iii) average reward objective, the policy gradient theorem hold
+
+> **Theorem**. Policy Gradient Theorem.
+> 
+> For any differentiable policy $\pi_\theta(s, a)$, and for any of the policy objective functions $J_1$, $J_\text{average value}$ or $J_\text{average reward}$, the policy gradient is:
+$$
+    \nabla_\theta J(\theta) = \E_{\pi_\theta} [
+        \nabla_\theta \log \pi_\theta(s, a) Q^{\pi_\theta}(s, a)
+    ]
+$$
+
+## Monte Carlo Policy Gradient (REINFORCE)
+
+The policy gradient theorem basically gives rise to a simple monte carlo policy gradient algorithm to find the optimal policy:
+
+> **REINFORCE Algorithm**.
+> 
+> - Initialize $\theta$ randomly
+> - **For** each episode $\{ s_1, a_1, r_2, ..., s_{T-1}, a_{T_1}, r_T \} \sim \pi_\theta$ do:
+>   - **For** $t=1$ to $T-1$ do:
+>       - $\theta \leftarrow \theta + \alpha \nabla_\theta \log \pi_\theta(s_t, a_t) G_t$
+> - Return $\theta$
+
+Note that: 
+- We are doing monte carlo, i.e. we wait until the end of the episode before we go back to update the parameters for each time step.
+- We are doing SGD, so there is no expectation term
+- We use the return $G_t$ as an unbiased sample of $Q^{\pi_\theta}(s_t, a_t)$. Recall that $G_t$ is the total discounted reward from time step $t$ until termination.
+- This is the simplest and oldest policy gradient algorithm.
+
+Empirically, policy gradient methods have a nice learning curve without the jittery behaviour of value based methods. But, monte carlo methods take very very long (millions of steps) to converge due to high variance.
+
+## Actor Critic Policy Gradient
+
+The main problem with monte carlo policy gradient is the high variance of the return $G_t$. Sometimes we get no reward, sometimes we get high reward.
+
+The idea is thus to use a <<critic>> to estimate the action-value function $Q$:
+$$
+    Q_w(s, a) \approx Q^{\pi_\theta}(s, a)
+$$
+
+The name <<critic>> refers to the value function, which simply "watches" and evaluates the value of an action, whilst the <<actor>> is the policy itself which decides how we should act.
+
+We maintain two sets of parameters:
+- **Critic** updates the action value function parameters $w$
+- **Actor** updates the policy parameters $\theta$, in the direction suggested by the critic
+
+
+
