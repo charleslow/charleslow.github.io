@@ -1,0 +1,341 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Yan 2025 - LLM for Recsys - Chux&#x27;s Notebook</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../katex.min.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Chux&#x27;s Notebook</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="yan-2025---llm-for-recsys"><a class="header" href="#yan-2025---llm-for-recsys">Yan 2025 - LLM for Recsys</a></h1>
+<p><a href="https://www.youtube.com/watch?v=2vlCqD6igVA">Recsys Keynote: Improving Recommendation Systems &amp; Search in the Age of LLMs - Eugene Yan, Amazon</a></p>
+<p>This talk covers future of recsys and how LLMs can be incorporated. 3 challenges:</p>
+<ul>
+<li>Cold start challenge of hash based item IDs</li>
+<li>Lack of metadata</li>
+<li>Task specific models duplicate engineering, increase maintenance cost and don't benefit from transfer learning
+<ul>
+<li>Benefits: simplifies systems, reduces maintenance and transfer learning</li>
+<li>But there may be alignment tax</li>
+</ul>
+</li>
+</ul>
+<h2 id="kuaishou-example-for-semantic-ids"><a class="header" href="#kuaishou-example-for-semantic-ids">Kuaishou Example for semantic IDs</a></h2>
+<ul>
+<li>Challenge: hash based item IDs don't encode item content and struggle with cold start and sparsity problem.</li>
+<li>Solution: Semantic IDs based on multimodal content</li>
+</ul>
+<p>Kuaishou is a short video platform. The main problem they wanted to tackle is to help users discover new items faster.</p>
+<p>Idea:</p>
+<ul>
+<li>Train standard ID-based embeddings for user and items</li>
+<li>Create cluster ID from concatenated content embeddings
+<ul>
+<li>Text: BERT</li>
+<li>Video: ResNet</li>
+<li>Audio: VGGish</li>
+</ul>
+</li>
+<li>Run k-means on <code>100 million</code> items into around <code>1k</code> clusters
+<ul>
+<li>Each cluster gets an ID and also an embedding</li>
+<li>Incorporate cluster embedding in final embedding</li>
+</ul>
+</li>
+</ul>
+<p>Result:</p>
+<ul>
+<li>
+<p><code>+3.4% clicks</code></p>
+</li>
+<li>
+<p><code>+3.0% likes</code></p>
+</li>
+<li>
+<p><code>+3.6% cold start coverage</code> (% of item impressions which are new items)</p>
+</li>
+<li>
+<p><code>+1.2% cold start velocity</code> (% of new items that were able to hit some threshold of views)</p>
+</li>
+<li>
+<p>Example:</p>
+<ul>
+<li>trainable, multimodal, semantic IDs @ Kuaishou</li>
+<li>Short videos platform</li>
+<li>Problem: help users discover new items faster</li>
+</ul>
+</li>
+</ul>
+<h2 id="filtering-bad-job-recommendations-at-indeed"><a class="header" href="#filtering-bad-job-recommendations-at-indeed">Filtering Bad job recommendations at Indeed</a></h2>
+<p>Problem: poor user experience of email job recommendations and lost trust due to low quality job recommendations
+Solution: Lightweight classifier trained from GPT-4o annotated data to filter bad recs</p>
+<p>Process:</p>
+<ul>
+<li>Start with evals - 250 labelled examples with confidence labels</li>
+<li>Started with open LLMs like Llama2, but performance was very bad</li>
+<li>Used GPT-4, which was very accurate but too slow and costly (22 secs)</li>
+<li>Used GPT-3.5, but had poor precision (0.63) on job recommendations</li>
+<li>Finetuned GPT-3.5 and got 0.9 precision at 1/4th of of GPT-4 cost and latency</li>
+<li>Distilled lightweight classifier on finetuned GPT-3.5 labels</li>
+</ul>
+<p>Lightweight classifier was <code>0.86 auc-roc</code>, with latency <code>&lt;200ms</code>. Result was:</p>
+<ul>
+<li><code>-18% bad recommendations</code>
+<ul>
+<li>Expected lower application rates because recommending fewer items</li>
+</ul>
+</li>
+<li><code>unsubscribed rate -5%</code></li>
+<li><code>application rate +5%</code></li>
+</ul>
+<h2 id="enriching-exploratory-search-queries--spotify"><a class="header" href="#enriching-exploratory-search-queries--spotify">Enriching exploratory search queries @ Spotify</a></h2>
+<p>Problem: Help users search for new items (podcasts, audiobooks) in a catalogue of known items (e.g. songs, artists)</p>
+<ul>
+<li>How to solve cold start issue for new categories?</li>
+<li>Exploratory search was essential to expand beyond music</li>
+</ul>
+<p>Solution: Query recommendation system</p>
+<p>Start creating queries from new items (e.g. podcast title, author etc.) and ask LLM to rewrite as natural language query</p>
+<h2 id="unified-ranker-for-search--recsys--netflix"><a class="header" href="#unified-ranker-for-search--recsys--netflix">Unified Ranker for Search &amp; Recsys @ Netflix</a></h2>
+<p><a href="https://www.arxiv.org/abs/2408.10394">Joint Modeling of Search and Recommendations Via an Unified Contextual Recommender (UniCoRn)</a></p>
+<p>Example of Stripe building a transformer based foundation model from sequence of transactions to identify fraud.</p>
+<p>Problem: teams deal with complexity from bespoke models for search, similar item recs, pre-query recs</p>
+<ul>
+<li>High operational cost and missed transfer learning opportunities</li>
+</ul>
+<p>Unified Contextual Ranker (UniCoRn) takes in a unified input schema and returns a prediction. Unified inputs:</p>
+<ul>
+<li>User ID</li>
+<li>item ID</li>
+<li>Search Query</li>
+<li>Task</li>
+</ul>
+<p>Some clever tricks to reframe item to item recommendations as search, by using last item title as query.</p>
+<p>Unified model used for search, pre-query filtering, video to video recs and more. Able to match or exceed previous task based models. Can iterate much faster with a unified model.</p>
+<h2 id="unified-embeddings--etsy"><a class="header" href="#unified-embeddings--etsy">Unified Embeddings @ Etsy</a></h2>
+<p>Problem: How to help users get better results with highly specific or broad queries, on ever-changing inventory.</p>
+<ul>
+<li>Query <code>mother's day gift</code> does not match product vocabulary</li>
+<li>Lexical retrieval does not account for user preferences</li>
+</ul>
+<p>Solution: Unified embedding and retrieval model</p>
+<ul>
+<li>Two tower architecture for user and product side</li>
+<li>Add a quality vector on the product side (rating, freshness, conversion rate) concatenated to the product vector</li>
+<li>Add a constant vector on the user side just to make dimensions match</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../papers/zhang_2025.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../nlp_course/intro.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../papers/zhang_2025.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../nlp_course/intro.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>
