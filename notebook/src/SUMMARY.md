@@ -75,6 +75,7 @@
     - [Zhang 2025 - Qwen3 Embedding](./papers/zhang_2025.md)
 - [Talks]()
     - [Yan 2025 - LLM for Recsys](./talks/yan_2025_ai_engineer.md)
+    - [Tandon 2025 - Gemini for YouTube](./talks/tandon_2025_gemini_youtube.md)
 - [NLP Course](./nlp_course/intro.md)
 - [Database Course](./database_course/intro.md)
     - [Lecture 1](./database_course/lecture01.md)

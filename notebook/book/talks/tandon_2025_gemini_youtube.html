@@ -1,0 +1,318 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Tandon 2025 - Gemini for YouTube - Chux&#x27;s Notebook</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../katex.min.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Chux&#x27;s Notebook</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="tandon-2025---gemini-for-youtube"><a class="header" href="#tandon-2025---gemini-for-youtube">Tandon 2025 - Gemini for YouTube</a></h1>
+<p><a href="https://www.youtube.com/watch?v=LxQsQ3vZDqo">Teaching Gemini to Speak YouTube: Adapting LLMs for Video Recommendations to 2B+DAU - Devansh Tandon</a></p>
+<p>In general, recommendations is going to have higher reach than search for most consumer apps.</p>
+<p>The personalized recommendation problem is to learn <code>f(user, context) = recs</code>.</p>
+<p>How to rethink the whole recommendation process in terms of gemini?</p>
+<ul>
+<li>Large Recommender Model (LRM): adapting gemini for recommendation tasks</li>
+<li>Start with a base gemini checkpoint, adapted for youtube recommendations</li>
+<li>Align LRM to different tasks using adapters
+<ul>
+<li>Video retrieval (home, watch next, shorts, search, music)</li>
+<li>Video ranking</li>
+</ul>
+</li>
+</ul>
+<p>To train LRM, need to develop video tokens</p>
+<ul>
+<li>Each video is one token, so we can represent watch history</li>
+<li>And then output some sequence of video recs</li>
+</ul>
+<p>SemanticID: tokenize videos to create a language for Youtube</p>
+<ul>
+<li>Creating the atomic language for youtube videos, move away from hash based tokenizing</li>
+<li><code>Youtube video -&gt; extract features like title, description, transcript, audio, vidoe frames -&gt; embedding -&gt; RQ-VAE to quantize embedding into semantic ID</code></li>
+<li>E.g. a semantic ID would look like <code>A228 B204 C196 D413 E589 ...</code></li>
+</ul>
+<p>Continued pre-training: get LRM to understand both English and the semantic ID "language":</p>
+<ul>
+<li>Synthetic data relationships:
+<ul>
+<li>Link text and SID, e.g. <code>Prompt: Video [A228 ...] has title</code> and the response is <code>Carlos Alcaraz vs Novak Djokovic</code></li>
+<li>Create lots of synthetic data doing this</li>
+</ul>
+</li>
+<li>User behaviours: SID sequences of video watches
+<ul>
+<li><code>Prompt: A user has previously watched the following vidoes: [A110, ...], [F707, ...], [C94, ...], \n &lt;mask1&gt;</code></li>
+<li><code>Output: &lt;mask1&gt;: [B230, ...]</code></li>
+</ul>
+</li>
+</ul>
+<p>After doing this kind of training, we get an LRM that can reason across both English and Youtube Video language.</p>
+<ul>
+<li>e.g. <code>Prompt: Video [A185, ...] is interesting to tennis fans since it is about wimbledon. Video [J110 ...] is interesting to</code></li>
+<li>Model can respond <code>Output: scientists since it is about AI</code></li>
+</ul>
+<p>We can now perform generative retrieval with this new language. For example, we can just load context and history into the prompt, and get it to recommend new videos.</p>
+<pre><code>Prompt:
+------
+User: region US | 24 years female | device ANDROID | origin watch next|
+
+Context video: channel Olympics | title WHAT a COMEBACK! Men's 400m | SemanticID_1 |
+
+Watch history:
+SID 1 Taylor Swift 100% 260.00s
+SID 2 Kris Hui 40% 260.00s
+</code></pre>
+<p>Interestingly, compared to traditional recommenders which returns mostly men's sports videos (due to the last video being <code>Men's 400m</code>), the generative system was able to recommend <code>women's sprint events</code>.</p>
+<p>In general:</p>
+<ul>
+<li>The LRM is able to learn very quickly, very data efficient</li>
+<li>Handles the toughest recs when user information is very limited</li>
+<li>But servicing costs are very large for YouTube scale, so alot of effort focused on reducing TPU serving cost</li>
+</ul>
+<p>A simple trick to reduce serving cost is to do batch recommendations</p>
+<ul>
+<li>Build a simple video to recs table where given a seed video, get the LRM to output generic recommendations</li>
+<li>Prompt is something like <code>language {seed_lang} | duration {video_length} | age {video_age} | title {title} | channel {uploader} | {seed_sid}</code></li>
+<li>Everyday, take <code>top 20M</code> of videos by views in <code>last 7days</code>, and do batch inference</li>
+<li>Use these batch recommendations to serve some users</li>
+</ul>
+<p>Base Gemini is too large at YouTube scale, have to use smaller more efficient models to adapt for recsys.</p>
+<blockquote>
+<p><strong>LLM x RecSys Recipe</strong></p>
+<ol>
+<li><span style="color:orange">Tokenize content</span></li>
+</ol>
+<ul>
+<li>Capture the content essence into an atomic, semantic token</li>
+</ul>
+<ol start="2">
+<li><span style="color:orange">Adapt LLM: english &lt;&gt; domain language</span></li>
+</ol>
+<ul>
+<li>Adapt foundation model to reason across english &amp; new tokens (bilingual)</li>
+</ul>
+<ol start="3">
+<li><span style="color:orange">Prompt with user information</span></li>
+</ol>
+<ul>
+<li>Construct prompts with user information, activity, actions</li>
+<li>Train surface/task-specific models</li>
+</ul>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../talks/yan_2025_ai_engineer.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../nlp_course/intro.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../talks/yan_2025_ai_engineer.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../nlp_course/intro.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>
