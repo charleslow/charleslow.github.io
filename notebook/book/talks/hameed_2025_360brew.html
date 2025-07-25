@@ -1,0 +1,357 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Hameed 2025 - 360Brew - Chux&#x27;s Notebook</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../katex.min.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Chux&#x27;s Notebook</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="hameed-2025---360brew"><a class="header" href="#hameed-2025---360brew">Hameed 2025 - 360Brew</a></h1>
+<p><a href="https://www.youtube.com/watch?v=U0S6CfzAY5c">360Brew: LLM-based Personalized Ranking and Recommendation - Hamed and Maziar, LinkedIn AI</a></p>
+<p>Pain points on current LinkedIn ML:</p>
+<ul>
+<li>Operational: costly low agility development lifecycle</li>
+<li>Quality: disjoint optimization</li>
+<li>Developer experience: slow to roll out changes to models one by one</li>
+</ul>
+<p>Goal: build a foundational model capturing the lifetime member activity data that solves all LinkedIn matching problems</p>
+<ul>
+<li>Zero shot capability: works well out of the box for next prediction tasks
+<ul>
+<li>Measure how well the model does on new products</li>
+</ul>
+</li>
+<li>In-Context learning: Learning from few examples without needing to retrain
+<ul>
+<li>How well does the model do on new users / items? [cold start]</li>
+</ul>
+</li>
+<li>Follow instruction from developers / users
+<ul>
+<li>User control via prompts</li>
+</ul>
+</li>
+</ul>
+<h2 id="development"><a class="header" href="#development">Development</a></h2>
+<p>Building the LLM:</p>
+<ul>
+<li>Need to convert user history into a prompt by verbalizing user information and activities</li>
+<li>Provide instruction on what problem we are solving</li>
+<li>At time of training use different styles for verbalization</li>
+</ul>
+<p>Prompt looks something like:</p>
+<pre><code class="language-markdown" style="white-space: pre-wrap;">
+## Instruction
+You are provided a member's profile and a set of jobs, their description, and interactions that the member had with the jobs. For each past job, the member has taken one of the following actions: applied, viewed, dismissed, or did not interact. Your task is to analyze the job interaction data along with the member's profile to predict whether the member will apply, view, or dismiss a new job referred to as the "Question" job.
+
+Note: Focus on skills, location, and years of experience more than other criteria.
+
+## Member Profile
+Current position: software engineer, current company: LinkedIn, Location: Sunnyvale, California.
+
+## Past job interaction data
+Member has applied to the following jobs: [Age: 2 days, Title: Software Engineer, Location: New York, Country: USA, Company: Meta, Description: . . . ]
+Member has viewed the following jobs: [Age: 1 week, Title: Software Engineer, Location: Texas, Country: USA, Company: AMD, Description: . . . ]
+
+## Question 1
+Will the member apply to the following job: [Age: 1 day, Title: Software Engineer, Location: Seattle, Country: USA, Company: Apple, Description: . . . ]
+
+## Question 2
+Will the member apply to the following job: [Age: 5 days, Title: RF Engineer, Location: Bay Area, Country: USA, Company: Google, Description: . . . ]
+</code></pre>
+<p>So in contrast to YouTube's semantic IDs, LinkedIn encodes past interactions in textual form.</p>
+<p>Development pipeline:</p>
+<ul>
+<li>Start with OSS model</li>
+<li>Continued pre-training</li>
+<li>Supervised Finetuning</li>
+<li>Alignment</li>
+<li>Generate Brew-XL <code>150B</code> model</li>
+<li>Distill to <code>Brew-mini</code></li>
+<li>Prune and quantize to <code>Brew-mini-turbo</code> at <code>3B</code> parameters
+<ul>
+<li>Ablation studies show that it is critical to <code>first go BIG, then go small</code></li>
+</ul>
+</li>
+</ul>
+<p>To make development cycle smooth, build in a lot of automation into the pipelines. Especially evaluation loop.</p>
+<p>Three levers to improve model quality:</p>
+<ul>
+<li>More (and better data)
+<ul>
+<li>Prepare data to maximize accuracy, distribution of different type of data</li>
+</ul>
+</li>
+<li>Bigger model size</li>
+<li>Context length
+<ul>
+<li>Longer context length means deeper user activity</li>
+<li>Increasing context length initially improves performance to a certain point (around <code>20-30k tokens</code>)</li>
+<li>Beyond that models don't generalize that well and performance degrades</li>
+</ul>
+</li>
+</ul>
+<h2 id="tasting"><a class="header" href="#tasting">Tasting</a></h2>
+<p>Performance of model is best for cold start users. Measure relative gain over production model:</p>
+<ul>
+<li><code>5 maximum activities</code>: <code>+6%</code></li>
+<li><code>10 maximum activities</code>: <code>+4%</code></li>
+<li><code>100 maximum activities</code>: <code>+2%</code></li>
+</ul>
+<p>Generalization to new domain. 360Brew model can generalize to out of domain tasks and surfaces and beat production models in those tasks.</p>
+<ul>
+<li>Increases team agility to roll out new features without training new model</li>
+</ul>
+<h2 id="serving"><a class="header" href="#serving">Serving</a></h2>
+<p>Three levers to improve efficiency:</p>
+<ul>
+<li>Sparsification</li>
+<li>Smaller model
+<ul>
+<li>Distillation from big model to small model done using SFT + KD loss</li>
+<li>Gradual distillation is more effective than direct distillation, i.e. go 8B model to 6B model to 3B model etc.</li>
+<li>Pruning is done layerwise, gradual pruning</li>
+</ul>
+</li>
+<li>Quantization: Mix precision
+<ul>
+<li>FP8 for all weights</li>
+<li>FP32 for language model head and logit processor. Important for recommendations, otherwise predictions collapse.</li>
+</ul>
+</li>
+<li>Sparsification
+<ul>
+<li>Star attention (reduce attention quadratic cost)
+<ul>
+<li>Not every item needs to attend to every item</li>
+</ul>
+</li>
+<li>When scoring, we can score multiple items at the same time (sounds like <code>500</code>)
+<ul>
+<li>Need to make sure these items do not attend to each other</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Q&amp;A:</p>
+<ul>
+<li>They use 50-60 tasks out of domain to measure the effectiveness of the model in the eval loop.</li>
+<li>Designed custom vLLM kernels to allow multi-item scoring by modifying the attention mask</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../talks/tandon_2025_gemini_youtube.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../nlp_course/intro.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../talks/tandon_2025_gemini_youtube.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../nlp_course/intro.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

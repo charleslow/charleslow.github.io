@@ -247,5 +247,91 @@ We maintain two sets of parameters:
 - **Critic** updates the action value function parameters $w$
 - **Actor** updates the policy parameters $\theta$, in the direction suggested by the critic
 
+Actor-critic algorithms follow an approximate policy gradient:
+$$
+\begin{align*}
+    \nabla_\theta J(\theta) &\approx \E_{\pi_\theta}[
+        \nabla_\theta \log \pi_\theta(s, a) Q_w(s, a)
+    ]\\
+    \triangle \theta &= \alpha \nabla_\theta \log \pi_\theta(s, a) Q_w(s, a)
+\end{align*}
+$$
 
+Notice that we just replace $G_t$ with $Q_w(s,a)$, which is the value function of the critic model.
+
+## Estimating the Action-Value Function of the Critic
+
+The critic is solving a familiar problem: policy evaluation. What is the value for policy $\pi_\theta$ for current parameters $\theta$? We have explored this previously, i.e.:
+- Monte Carlo policy evaluation
+- TD-$\lambda$
+- or least squares policy evaluation
+
+This leads us to a simple actor-critic algorithm:
+- <<Critic>>: use linear value function approximation $Q_w(s, a) = \phi(s, a)^\intercal w$
+    - Update $w$ using linear TD(0)
+- <<Actor>>: update $\theta$ using policy gradient
+
+> **Q Actor Critic (QAC) Algorithm**.
+> 
+> - Initialize $s, \theta$
+> - Sample $a \sim \pi_\theta$
+> - for each step:
+>   - Sample reward $r = \mathcal{R}_s^a$; sample transitions $s' \sim \mathcal{P}^a_s$
+>   - Sample action $a' \sim \pi_\theta(s', a')$
+>   - $\delta = r + \gamma Q_w(s', a') - Q_w(s, a)$
+>   - $\theta = \theta + \alpha \nabla_\theta \log \pi_\theta(s, a) Q_w(s, a)$
+>   - $w \leftarrow w + \beta \delta \phi(s, a)$
+>   - $a \leftarrow a', s \leftarrow s'$
+
+Note that the $\delta$ line is simply the TD(0) update, and the $\theta$ line is simply the policy gradient step.
+
+## Bias in Actor Critic Algorithms
+
+The problem is that approximating the policy gradient introduces bias
+- A biased policy gradient may not find the right solution
+- Luckily, if we choose the value function approximation carefully, we can avoid introducing any bias
+- i.e. we can still follow the exact policy gradient (see Compatible Function Approximation theorem)
+
+## Reducing Variance using a Baseline
+
+Here we move on to tricks to improve the training algorithm. The baseline method is the best known trick.
+
+The main idea is to subtract a baseline function $B(s)$ from the policy gradient, such that we can *reduce variance without changing expectation*. 
+
+The reason is that since $B(s)$ does not depend on the action $a$, its expectation when plugged in will be $0$, like so:
+$$
+\begin{align*}
+    \E_{\pi_\theta} [\nabla_\theta \log \pi_\theta(s, a) B(s)]
+    &=  \sum_{s \in \S} d^{\pi_\theta(s)} \sum_{a \in \A} \nabla_\theta \pi_\theta(s, a) B(s)\\
+    &= \sum_{s \in \S} d^{\pi_\theta}B(s) \nabla_\theta \sum_{a \in \A} \pi_\theta(s, a)\\
+    &= 0
+\end{align*}
+$$
+
+Note that in line 2, since $\pi_\theta$ is a probability, the right-most term sums to $1$, which is a constant. Hence the gradient $\nabla_\theta$ will become $0$, and the expectation resolves to $0$.
+
+A good and popular choice of baseline is the *state* value function $B(s) = V^{\pi_\theta}(s)$.
+- So we can rewrite the policy gradient using the <<advantage function>> $A^{\pi_\theta}(s, a)$:
+$$
+\begin{align*}
+    A^{\pi_\theta}(s, a) &= Q^{\pi_\theta}(s, a) - V^{\pi_\theta}(s)\\
+    \nabla_\theta J(\theta) &= \E_{\pi_\theta}[
+        \nabla_\theta \log \pi_\theta(s, a) A^{\pi_\theta}(s, a)
+    ]
+\end{align*}
+$$
+- Intuitively, the advantage function tells us the additional benefit of an action over the baseline value of being in that state
+
+## Estimating the Advantage Function
+
+The advantage function can significantly reduce the variance of the policy gradient. The naive way is to estimate $V^{\pi_\theta}(s)$ and $Q^{\pi_\theta}(s, a)$ separately, i.e.:
+$$
+\begin{align*}
+    \hat{V}(s) &\approx V^{\pi_\theta}(s)\\
+    Q_w(s, a) &\approx Q^{\pi_\theta}(s, a)\\
+    A(s, a) = Q_w(s,a) - \hat{V}(s)
+\end{align*}
+$$
+
+Then, we use TD methods to update both value functions. However, this is not efficient in terms of parameters.
 
