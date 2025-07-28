@@ -20,6 +20,7 @@
     - [Useful Models](./llm/useful_models.md)
     - [Encoder vs Decoder](./llm/encoder_vs_decoder.md)
     - [Contextualized Recommendations](./llm/contextualized_recs.md)
+    - [MinGPT](./llm/mingpt.md)
 - [Statistics](./stats/main.md)
     - [Conformal Predictions](./stats/conformal.md)
 - [Miscellaneous](./misc.md)

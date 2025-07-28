@@ -329,9 +329,119 @@ $$
 \begin{align*}
     \hat{V}(s) &\approx V^{\pi_\theta}(s)\\
     Q_w(s, a) &\approx Q^{\pi_\theta}(s, a)\\
-    A(s, a) = Q_w(s,a) - \hat{V}(s)
+    A(s, a) &= Q_w(s,a) - \hat{V}(s)
 \end{align*}
 $$
 
 Then, we use TD methods to update both value functions. However, this is not efficient in terms of parameters.
 
+The better way is to observe that the TD error $\delta^{\pi_\theta}$ is an unbiased estimate of the advantage function. Therefore, we can plug in the TD error in our policy gradient update instead.
+- Recall that the TD error is 
+$$\delta^{\pi_\theta} = r + \gamma V^{\pi_\theta}(s') - V^{\pi_\theta}(s)$$
+- And this is an unbiased estimate of the advantage function
+$$
+\begin{align*}
+    \E_{\pi_\theta}[\delta^{\pi_\theta} | s, a] &=
+    \E_{\pi_\theta}[r + \gamma V^{\pi_\theta}(s') | s, a] - V^{\pi_\theta}(s)\\
+    &= Q^{\pi_\theta}(s, a) - V^{\pi_\theta}(s)\\
+    &= A^{\pi_\theta}(s, a)
+\end{align*}
+$$
+- Note that we have not taken any approximations above. We just showed that the expectation of the TD(0) error when following policy $\pi_\theta$ corresponds to the advantage function. Interestingly, computing the TD error does not require estimating the $Q$ function, only the $V$ function. This gives us a simpler update
+- We can thus use the TD error to compute the policy gradient
+$$
+    \nabla_\theta J(\theta) =
+    \E_{\pi_\theta}[\nabla_\theta \log \pi_\theta (s, a) \delta^{\pi_\theta}]
+$$
+- In practice, since we do not have the true value function $V^{\pi_\theta}$, we use an estimate $\hat{V}$:
+$$
+    \delta_w = r + \gamma \hat{V_w}(s') - \hat{V_w}(s)
+$$
+- This approach only requires one set of critic parameters $w$
+
+## Improving the Actor Updates
+
+Recall that we can estimate the value function $V_\theta(s)$ from targets at different time scales to trade-off bias and variance:
+- For MC, the target is the return $G_t$
+$$
+    \triangle \theta = \alpha (\textcolor{orange}{G_t} - V_\theta(s))\phi(s)
+$$
+- For TD(0), the target is the TD target
+$$
+    \triangle \theta = \alpha(\textcolor{orange}{r + \gamma V_\theta(s')} - V_\theta(s))\phi(s)
+$$
+- For forward view TD($\lambda$), the target is the lambda return
+$$
+    \triangle \theta = \alpha(\textcolor{orange}{v_t^\lambda} - V_\theta(s))\phi(s)
+$$
+- For backward view TD($\lambda$), we use eligibility traces
+$$
+\begin{align*}
+    \delta_t &= r_{t+1} + \gamma V(s_{t+1}) - V(s_t)\\
+    e_t &= \lambda e_{t-1} + \phi(s_t)\\
+    \triangle \theta &= \alpha \delta_t e_t
+\end{align*}
+$$
+
+Similarly, we can estimate the policy gradient for the actor at many time scales. The main target we want to estimate is
+$$
+    \nabla_\theta J(\theta) = \E_{\pi_\theta}[
+        \nabla_\theta \log \pi_\theta(s, a) A^{\pi_\theta}(s, a)
+    ]
+$$
+- MC policy gradient uses the error from the return
+$$
+    \triangle \theta = \alpha(\textcolor{orange}{G_t} - \hat{V}(s_t)) \nabla_\theta \log \pi_\theta(s_t, a_t)
+$$
+- Actor critic policy gradient uses the one-step TD error
+$$
+    \triangle \theta = \alpha(\textcolor{orange}{r + \gamma \hat{V}(s_{t+1})} - \hat{V}(s_t)) \nabla_\theta \log \pi_\theta(s_t, a_t)
+$$
+- Forward view TD($\lambda$) uses the $\lambda$ target
+$$
+    \triangle \theta = \alpha(\textcolor{orange}{v_t^\lambda} - \hat{V}(s_t)) \nabla_\theta \log \pi_\theta(s_t, a_t)
+$$
+- Backward view TD($\lambda$) uses eligibility traces. Note that the eligbility update now uses the score function instead of $\phi$ which was the feature function
+$$
+\begin{align*}
+    \delta_t &= r_{t+1} + \gamma\hat{V}(s_{t+1}) - \hat{V}(s_t)\\
+    e_{t+1} &= \lambda e_{t} + \nabla_\theta \log \pi_\theta(s, a)\\
+    \triangle \theta &= \alpha \delta_t e_t
+\end{align*}
+$$
+- The update can be performed online, unlike MC policy gradient
+
+## Natural Policy Gradient
+
+The natural policy gradient is a parametrization independent approach. It finds ascent direction that is closest to vanilla gradient, when changing the policy by a small, fixed amount
+$$
+    \nabla_\theta^{\text{nat}} \pi_\theta(s, a) = G_\theta^{-1} \nabla_\theta \pi_\theta (s, a)
+$$
+- Where $G_\theta$ is the fisher information matrix
+$$
+    G_\theta = \E_{\pi_\theta}\left[
+        \nabla_\theta \log \pi_\theta(s, a) \nabla_\theta \log \pi_\theta(s, a)^\intercal
+    \right]
+$$
+- Notice that this obviates the need for a critic, as $G_\theta$ is based on the actor itself
+
+## Summary
+The policy gradient has many equivalent forms
+$$
+\begin{align*}
+    \nabla_\theta J(\theta) 
+    &= 
+        \mathbb{E}_{\pi_\theta} [\nabla_\theta \log \pi_\theta(s, a) \textcolor{orange}{G_t}] && \text{REINFORCE} \\
+    &= 
+        \mathbb{E}_{\pi_\theta} [\nabla_\theta \log \pi_\theta(s, a) \textcolor{orange}{Q_w(s, a)}] && \text{Q Actor-Critic} \\
+    &= 
+        \mathbb{E}_{\pi_\theta} [\nabla_\theta \log \pi_\theta(s, a) \textcolor{orange}{A_w(s, a)}] && \text{Advantage Actor-Critic} \\
+    &= 
+        \mathbb{E}_{\pi_\theta} [\nabla_\theta \log \pi_\theta(s, a) \textcolor{orange}{\delta}] && \text{TD Actor-Critic} \\
+    &= 
+        \mathbb{E}_{\pi_\theta} [\nabla_\theta \log \pi_\theta(s, a) \textcolor{orange}{\delta e}] && \text{TD}(\lambda) \text{ Actor-Critic} \\[2ex]
+    G_\theta^{-1} \nabla_\theta J(\theta) &= w && \text{Natural Actor-Critic}
+\end{align*}
+$$
+
+Each formulation leads to a different SGD algorithm. We can learn the critic using policy evaluation (e.g. MC or TD learning) to estimate $Q_\pi, A_\pi$ or $V_\pi$.
