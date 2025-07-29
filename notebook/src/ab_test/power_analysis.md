@@ -41,11 +41,11 @@ Let us define some notation first.
 | :--: |
 | Illustration for Power Analysis Derivation |
 
-For objective 1, assuming the null hypothesis and using equation (1) above, we have $\bar{X}_D | H_0 \sim N(0, \frac{2\ \sigma_A^2}{N_A})$. Since $\alpha$ is a two-tailed probability and we want the critical region on the right-side, let $\alpha' = 1 - \alpha / 2$. E.g. $\alpha=0.05$ implies $\alpha'=0.975$. Then:
+For objective 1, assuming the null hypothesis and using equation (1) above, we have $\bar{X}_D | H_0 \sim N(0, \frac{\sigma_A^2}{N_A} + \frac{\sigma_B^2}{N_B})$. Since $\alpha$ is a two-tailed probability and we want the critical region on the right-side, let $\alpha' = 1 - \alpha / 2$. E.g. $\alpha=0.05$ implies $\alpha'=0.975$. Then:
 
 $$
 \begin{align}
-    z_{\bar{X}_D | H_0}(\alpha') = z(\alpha') \cdot \sqrt{\frac{2\ \sigma_A^2}{N_A}}
+    z_{\bar{X}_D | H_0}(\alpha') = z(\alpha') \cdot \sqrt{\frac{\sigma_A^2}{N_A} + \frac{\sigma_B^2}{N_B}}
 \end{align}
 $$
 
@@ -54,7 +54,7 @@ Note that equation (2) above tells us the critical value such that we will rejec
 $$
 \begin{align*}
     \delta - z_{\bar{X}_D | H_1}(1 - \beta) &\geq z_{\bar{X}_D | H_0}(\alpha')\\
-    \delta - z(1-\beta) \times \sqrt{\frac{\sigma_A^2}{N_A} + \frac{\sigma_B^2}{N_B}} &\geq z(\alpha') \times \sqrt{\frac{2\ \sigma_A^2}{N_A}}\\
+    \delta - z(1-\beta) \times \sqrt{\frac{\sigma_A^2}{N_A} + \frac{\sigma_B^2}{N_B}} &\geq z(\alpha') \times \sqrt{\frac{\sigma_A^2}{N_A} + \frac{\sigma_B^2}{N_B}}\\
 \end{align*}
 $$
 
@@ -62,7 +62,9 @@ For the purpose of getting a minimum $N$, we assume $N = N_A = N_B$. Then using 
 
 $$
 \begin{align}
-    N &\geq \frac{\left( z(1-\beta) \sqrt{\sigma_A^2 + \sigma_B^2} + z(\alpha') \sigma_A \sqrt{2} \right)^2}{\delta^2}\\
+    N &\geq \frac{
+        (\sigma_A^2 + \sigma_B^2)(z(1-\beta) + z(\alpha'))^2
+    }{\delta^2}\\
 \end{align}
 $$
 
@@ -84,34 +86,31 @@ So we can use $\sigma_A = \sqrt{p_A \cdot (1-p_A)}$ and $\sigma_B = \sqrt{(p_A +
 
 ## Imbalanced AB Test
 
-Another common scenario is the case where we do not split 50-50, i.e. $N_A \neq N_B$. In this case, suppose we have $N_A = p \times N_B = p \times n$, where $p > 1$. For example, if we have a 90-10 split, then `p=9`. Then instead of equation (3) above, we get:
+Another common scenario is the case where we do not split 50-50, i.e. $N_A \neq N_B$. In this case, suppose we have $N_A = p \times N_B = p \times n$, where $p > 1$. For example, if we have a 90-10 split, then `p=9`. Then we get:
 
 $$
 \begin{align*}
-    \delta &\geq z(1-\beta) \sqrt{
-        \frac{\sigma_A^2 + p \cdot \sigma_B^2}{np}
-    }
-    +
-    z(\alpha') \sqrt{\frac{2 \sigma_A^2}{np}} \\
-    n &\geq \frac{
-        \left(
-            z(1-\beta)\sqrt{\sigma_A^2 + p \cdot \sigma_B^2} + z(\alpha') \sigma_A \sqrt{2}
-        \right)^2
-    }{
-        p \cdot \delta^2
-    } \\ 
-
-    n(p + 1) &\geq 
-        \frac{p + 1}{p} \cdot
-        \frac{
-            \left(
-                z(1-\beta)\sqrt{\sigma_A^2 + p \cdot \sigma_B^2} + z(\alpha') \sigma_A \sqrt{2}
-            \right)^2
-        }{
-            \delta^2
-        } \\ 
+    \delta &\geq \left(
+        z(\alpha') + z(1-\beta)
+    \right)
+    \sqrt{
+        \frac{\sigma_A^2}{N_A} +\frac{\sigma_B^2}{N_B} 
+    }\\
+    \delta &\geq \left(
+        z(\alpha') + z(1-\beta)
+    \right)
+    \sqrt{
+        \frac{\sigma_A^2 + p \cdot \sigma_B^2}{pn}
+    }\\
+    n &\geq \frac{(
+        z(\alpha') + z(1-\beta)
+    )}{\delta^2}
+    \left(
+        \frac{\sigma_A^2}{p} + \sigma_B^2
+    \right)
 \end{align*}
 $$
 
-Where $n(p + 1)$ is the total sample size (both groups combined) required. Note that the formula is largely similar to (3), with some minor differences where the `p` term appears. We can easily verify that if we set `p=1`, we can recover equation (3): the inner $p \cdot \sigma^2_B$ resolves to $\sigma^2_B$, and the outer multiplier $\frac{p+1}{p} = 2$. Dividing by $2$ on both sides gives us equation (3).
+Note that $n$ gives the sample size required for $N_B$, and the total sample size required across both groups is $n(p+1)$.
+
 
