@@ -51,6 +51,7 @@
     - [Lee 2020 - Large Scale Video Representation Learning](./papers/lee_2020.md)
     - [He 2020 - LightGCN](./papers/he_2020.md)
     - [Lewis 2020 - Retrieval Augmented Generation](./papers/lewis_2020.md)
+    - [Wang 2020 - DCNv2](./papers/wang_2020.md)
     - [Gao 2021 - GradCache](./papers/gao_2021_gradcache.md)
     - [Gao 2021 - SimCSE](./papers/gao_2021.md)
     - [Weng 2021 - Contrastive Representation Learning](./papers/weng_2021.md)
@@ -92,3 +93,4 @@
     - [Model Free Control](./rl_course/lecture05.md)
     - [Value Function Approximation](./rl_course/lecture06.md)
     - [Policy Gradient](./rl_course/lecture07.md)
+    - [Learning & Planning](./rl_course/lecture08.md)
