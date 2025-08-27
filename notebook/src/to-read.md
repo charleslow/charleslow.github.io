@@ -88,4 +88,7 @@
 - [MedPrompt](https://arxiv.org/abs/2311.16452)
 - [DCNv1](https://arxiv.org/abs/1708.05123)
 - [DCNv2](https://arxiv.org/abs/2008.13535)
+- [RQ-VAE](https://arxiv.org/abs/2203.01941)
+- [Embedding Numeric Features](https://arxiv.org/abs/2203.05556)
+- [Top n-sigma](https://arxiv.org/abs/2411.07641)
 
