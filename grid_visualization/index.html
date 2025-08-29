@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>Grid Visualization (7×7 demo)</title>
+  <style>
+    :root {
+      --n: 7;
+      --gap: 0px; /* keep 0 so overlay math is simpler */
+      --border-color: #444;
+      --tile-fill: rgba(255,140,0,0.28);
+      --tile-border: #ff8c00;
+    }
+    body {
+      font-family: system-ui, Arial, sans-serif;
+      margin: 0;
+      padding: 1rem clamp(1rem,2vw,2rem) 2rem;
+      background:#fafafa;
+      color:#222;
+      line-height:1.3;
+    }
+    h1 { font-size: 1.25rem; margin: 0 0 .75rem; }
+    #grid-wrapper { width: min(96vw, 96vmin); max-width: 640px; position: relative; margin: 0 auto; }
+    #grid {
+      display: grid;
+      grid-template-columns: repeat(var(--n), 1fr);
+      width: 100%; aspect-ratio: 1 / 1; /* square */
+      border: 2px solid var(--border-color);
+      position: relative;
+      user-select: none;
+      background:white;
+      touch-action: none; /* prevent scroll during drag */
+    }
+    .cell {
+      border: 1px solid var(--border-color);
+      box-sizing: border-box;
+      position: relative;
+      background: white;
+      transition: background-color .15s;
+      cursor: pointer;
+    }
+    .cell.black { background:#000; }
+    /* Tiles (rectangles) */
+    .tile, .tile-preview {
+      position:absolute;
+      background: var(--tile-fill);
+      outline: 3px solid var(--tile-border);
+      box-shadow: 0 0 0 1px #fff inset, 0 0 4px 1px rgba(0,0,0,0.25);
+      box-sizing: border-box;
+      pointer-events: none; /* allow clicks to pass through to cells */
+    }
+    .tile.invalid { outline-color: #d60000; background: rgba(214,0,0,0.25); }
+  #controls { margin: .75rem 0 1rem; display:flex; flex-wrap:wrap; gap:.5rem; }
+  button { cursor:pointer; font: inherit; padding:.55rem .95rem; border:1px solid #444; background:#fff; border-radius:6px; line-height:1.1; }
+    button:hover { background:#f0f0f0; }
+  button:active { transform: translateY(1px); }
+    #status { font-size:.9rem; margin-top:.25rem; }
+    .note { font-size:.75rem; color:#555; margin-top:.5rem; }
+    details { margin-top:1rem; }
+    code { background:#eee; padding:2px 4px; border-radius:3px; }
+
+    /* Mobile tweaks */
+    @media (max-width: 640px) {
+      body { padding: .75rem .75rem 2rem; }
+      h1 { font-size: 1.05rem; }
+      #controls { gap:.4rem; }
+      button { flex:1 1 calc(50% - .4rem); font-size:.9rem; padding:.6rem .4rem; }
+      #status { font-size:.8rem; }
+    }
+    @media (pointer:coarse) {
+      .cell { border-width: 1px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>7×7 Grid Tile Visualizer</h1>
+  <p>Click a single cell to toggle it black (an uncovered square). Drag from one cell to another to add a rectangular tile (orange). Tiles cannot overlap black cells or existing tiles.</p>
+  <div id="controls">
+    <button id="clear-cells">Clear Blacks</button>
+    <button id="clear-tiles">Clear Tiles</button>
+    <button id="clear-all">Reset All</button>
+  <!-- JSON export removed per request -->
+    <button id="fullscreen" style="flex:1 1 100%;">Fullscreen</button>
+  </div>
+  <div id="grid-wrapper">
+    <div id="grid" aria-label="grid" role="grid"></div>
+    <!-- tiles get injected here as absolutely positioned divs -->
+  </div>
+  <div id="status" aria-live="polite"></div>
+  <p class="note">Demo uses 7×7 for convenience; the IMO problem is 2025×2025. This interface lets you reason about patterns on a smaller board.</p>
+  <!-- JSON export section removed -->
+  <script>
+    const N = 7; // grid size for demo
+  const gridEl = document.getElementById('grid');
+    const statusEl = document.getElementById('status');
+  // JSON export removed
+  const fullscreenBtn = document.getElementById('fullscreen');
+
+    // Build cells
+    const cells = [];
+    for (let r=0; r<N; r++) {
+      for (let c=0; c<N; c++) {
+        const d = document.createElement('div');
+        d.className = 'cell';
+        d.dataset.r = r;
+        d.dataset.c = c;
+        d.setAttribute('role','gridcell');
+        d.setAttribute('tabindex','0');
+        gridEl.appendChild(d);
+        cells.push(d);
+      }
+    }
+
+    function cellSize() {
+      const rect = gridEl.getBoundingClientRect();
+      return { w: rect.width / N, h: rect.height / N };
+    }
+
+    const tiles = []; // {r1,c1,r2,c2,el}
+    const blackSet = new Set(); // key = "r,c"
+
+    function key(r,c){ return r+','+c; }
+
+    function updateStatus() {
+      // For each row/col count uncovered (black) cells (these represent uncovered squares in the target big grid analogy)
+      const rowCounts = Array(N).fill(0), colCounts = Array(N).fill(0);
+      blackSet.forEach(k => {
+        const [r,c] = k.split(',').map(Number);
+        rowCounts[r]++; colCounts[c]++;
+      });
+      const rowOK = rowCounts.every(x=>x===1), colOK = colCounts.every(x=>x===1);
+      statusEl.textContent = `Blacks: ${blackSet.size} | Tiles: ${tiles.length} | Rows OK: ${rowOK} | Cols OK: ${colOK}`;
+    }
+
+    function toggleBlack(cell) {
+      const r = +cell.dataset.r, c = +cell.dataset.c;
+      const k = key(r,c);
+      if (blackSet.has(k)) { blackSet.delete(k); cell.classList.remove('black'); }
+      else {
+        // Can't make black if covered by a tile
+        if (isCoveredByTile(r,c)) return; // ignore
+        blackSet.add(k); cell.classList.add('black');
+      }
+      updateStatus();
+    }
+
+    function isCoveredByTile(r,c){
+      return tiles.some(t => r>=t.r1 && r<=t.r2 && c>=t.c1 && c<=t.c2);
+    }
+
+    function rectOverlapsBlack(r1,c1,r2,c2){
+      for(let r=r1;r<=r2;r++) for(let c=c1;c<=c2;c++) if(blackSet.has(key(r,c))) return true;
+      return false;
+    }
+    function rectOverlapsTile(r1,c1,r2,c2){
+      return tiles.some(t => !(r2 < t.r1 || r1 > t.r2 || c2 < t.c1 || c1 > t.c2));
+    }
+
+    // Drag logic
+    let dragStart = null; // {r,c}
+    let previewEl = null;
+    let moved = false;
+
+    function startPreview(r1,c1,r2,c2, invalid=false) {
+      if(!previewEl){
+        previewEl = document.createElement('div');
+        previewEl.className = 'tile-preview';
+        gridEl.appendChild(previewEl);
+      }
+      const {w,h} = cellSize();
+      const left = Math.min(c1,c2)*w; const top = Math.min(r1,r2)*h;
+      const width = (Math.abs(c2-c1)+1)*w; const height = (Math.abs(r2-r1)+1)*h;
+      previewEl.style.left = left+'px';
+      previewEl.style.top = top+'px';
+      previewEl.style.width = width+'px';
+      previewEl.style.height = height+'px';
+      previewEl.classList.toggle('invalid', invalid);
+    }
+
+    function clearPreview(){
+      if(previewEl){ previewEl.remove(); previewEl=null; }
+    }
+
+    gridEl.addEventListener('pointerdown', e => {
+      const cell = e.target.closest('.cell');
+      if(!cell) return;
+      dragStart = { r:+cell.dataset.r, c:+cell.dataset.c };
+      moved = false;
+      e.preventDefault();
+    });
+    gridEl.addEventListener('pointermove', e => {
+      if(!dragStart) return;
+      const cell = e.target.closest('.cell');
+      if(!cell) return;
+      const r2 = +cell.dataset.r, c2 = +cell.dataset.c;
+      const r1 = dragStart.r, c1 = dragStart.c;
+      moved = moved || r1!==r2 || c1!==c2;
+      const invalid = rectOverlapsBlack(Math.min(r1,r2),Math.min(c1,c2),Math.max(r1,r2),Math.max(c1,c2)) || rectOverlapsTile(Math.min(r1,r2),Math.min(c1,c2),Math.max(r1,r2),Math.max(c1,c2));
+      startPreview(r1,c1,r2,c2, invalid);
+    });
+    window.addEventListener('pointerup', e => {
+      if(!dragStart) return;
+      const endCell = document.elementFromPoint(e.clientX,e.clientY)?.closest('.cell');
+      if(!endCell){ clearPreview(); dragStart=null; return; }
+      const r2 = +endCell.dataset.r, c2 = +endCell.dataset.c;
+      const r1 = dragStart.r, c1 = dragStart.c;
+      if(!moved) {
+        // treat as click
+        toggleBlack(endCell);
+        clearPreview(); dragStart=null; return;
+      }
+      const rr1 = Math.min(r1,r2), cc1 = Math.min(c1,c2), rr2 = Math.max(r1,r2), cc2 = Math.max(c1,c2);
+      const invalid = rectOverlapsBlack(rr1,cc1,rr2,cc2) || rectOverlapsTile(rr1,cc1,rr2,cc2);
+      if(!invalid) {
+        addTile(rr1,cc1,rr2,cc2);
+      }
+      clearPreview();
+      dragStart=null; moved=false;
+      updateStatus();
+    });
+
+    function addTile(r1,c1,r2,c2){
+      const {w,h} = cellSize();
+      const el = document.createElement('div');
+      el.className='tile';
+      el.style.left = (c1*w)+'px';
+      el.style.top = (r1*h)+'px';
+      el.style.width = ((c2-c1+1)*w)+'px';
+      el.style.height = ((r2-r1+1)*h)+'px';
+      el.title = `Tile: (${r1},${c1})→(${r2},${c2}) – click to remove`;
+      el.style.pointerEvents = 'auto'; // allow removal
+      el.addEventListener('click', () => { removeTile(el); });
+      gridEl.appendChild(el);
+      tiles.push({r1,c1,r2,c2,el});
+    }
+    function removeTile(el){
+      const idx = tiles.findIndex(t=>t.el===el);
+      if(idx>=0){ tiles[idx].el.remove(); tiles.splice(idx,1); updateStatus(); }
+    }
+
+    // Buttons
+    document.getElementById('clear-cells').onclick = () => { blackSet.clear(); cells.forEach(c=>c.classList.remove('black')); updateStatus(); };
+    document.getElementById('clear-tiles').onclick = () => { tiles.splice(0).forEach(t=>t.el.remove()); updateStatus(); };
+    document.getElementById('clear-all').onclick = () => { blackSet.clear(); cells.forEach(c=>c.classList.remove('black')); tiles.splice(0).forEach(t=>t.el.remove()); updateStatus(); };
+  // Export button removed
+
+    // Fullscreen toggle (mobile helpful)
+    function syncFullscreenLabel(){
+      fullscreenBtn.textContent = document.fullscreenElement ? 'Exit Fullscreen' : 'Fullscreen';
+    }
+    fullscreenBtn.onclick = () => {
+      const wrap = document.getElementById('grid-wrapper');
+      if(!document.fullscreenElement) wrap.requestFullscreen?.(); else document.exitFullscreen?.();
+    };
+    document.addEventListener('fullscreenchange', syncFullscreenLabel);
+    syncFullscreenLabel();
+
+    // Keyboard toggle (accessibility)
+    gridEl.addEventListener('keydown', e => {
+      if(e.key===' '||e.key==='Enter') { const cell = e.target.closest('.cell'); if(cell){ toggleBlack(cell); e.preventDefault(); } }
+    });
+
+    // Resize handler to reposition tiles (in case layout changes)
+    const ro = new ResizeObserver(() => {
+      const {w,h} = cellSize();
+      tiles.forEach(t => {
+        t.el.style.left = (t.c1*w)+'px';
+        t.el.style.top = (t.r1*h)+'px';
+        t.el.style.width = ((t.c2-t.c1+1)*w)+'px';
+        t.el.style.height = ((t.r2-t.r1+1)*h)+'px';
+      });
+      if(previewEl) clearPreview(); // simplify
+    });
+    ro.observe(gridEl);
+
+    updateStatus();
+    // Hint for touch users (one-time)
+    if (matchMedia('(pointer:coarse)').matches) {
+      statusEl.insertAdjacentHTML('beforeend',' | Drag = tile, tap = black');
+    }
+  </script>
+</body>
+</html>
