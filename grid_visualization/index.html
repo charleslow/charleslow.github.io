@@ -20,6 +20,9 @@
       background:#fafafa;
       color:#222;
       line-height:1.3;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
     }
     h1 { font-size: 1.25rem; margin: 0 0 .75rem; }
     #grid-wrapper { width: min(96vw, 96vmin); max-width: 640px; position: relative; margin: 0 auto; }
@@ -162,7 +165,7 @@
     }
 
     // Drag logic
-    let dragStart = null; // {r,c}
+  let dragStart = null; // {r,c,x,y}
     let previewEl = null;
     let moved = false;
 
@@ -198,23 +201,26 @@
     gridEl.addEventListener('pointerdown', e => {
       const cell = e.target.closest('.cell') || cellFromPoint(e.clientX,e.clientY);
       if(!cell) return;
-      dragStart = { r:+cell.dataset.r, c:+cell.dataset.c };
+      dragStart = { r:+cell.dataset.r, c:+cell.dataset.c, x:e.clientX, y:e.clientY };
       moved = false;
-      try { cell.setPointerCapture(e.pointerId); } catch(_) {}
       e.preventDefault();
     });
-    gridEl.addEventListener('pointermove', e => {
+    function handleMove(e){
       if(!dragStart) return;
-      let cell = e.target.closest('.cell');
-      if(!cell) cell = cellFromPoint(e.clientX,e.clientY);
-      if(!cell) return; // pointer outside grid
+      let cell = document.elementFromPoint(e.clientX,e.clientY)?.closest('.cell') || cellFromPoint(e.clientX,e.clientY);
+      if(!cell) return; // outside grid
       const r2 = +cell.dataset.r, c2 = +cell.dataset.c;
       const r1 = dragStart.r, c1 = dragStart.c;
-      moved = moved || r1!==r2 || c1!==c2;
+      // movement threshold in pixels OR different cell
+      const dx = e.clientX - dragStart.x, dy = e.clientY - dragStart.y;
+      const dist2 = dx*dx + dy*dy;
+      if(r1!==r2 || c1!==c2 || dist2 > 16) moved = true; // >4px
       const invalid = rectOverlapsBlack(Math.min(r1,r2),Math.min(c1,c2),Math.max(r1,r2),Math.max(c1,c2)) || rectOverlapsTile(Math.min(r1,r2),Math.min(c1,c2),Math.max(r1,r2),Math.max(c1,c2));
       startPreview(r1,c1,r2,c2, invalid);
       e.preventDefault();
-    });
+    }
+    window.addEventListener('pointermove', handleMove, {passive:false});
+    window.addEventListener('pointercancel', () => { clearPreview(); dragStart=null; moved=false; });
     window.addEventListener('pointerup', e => {
       if(!dragStart) return;
       const endCell = document.elementFromPoint(e.clientX,e.clientY)?.closest('.cell') || cellFromPoint(e.clientX,e.clientY);
@@ -293,7 +299,7 @@
     updateStatus();
     // Hint for touch users (one-time)
     if (matchMedia('(pointer:coarse)').matches) {
-      statusEl.insertAdjacentHTML('beforeend',' | Drag = tile, tap = black');
+      statusEl.insertAdjacentHTML('beforeend',' | Tap+drag = tile, quick tap = black');
     }
   </script>
 </body>
