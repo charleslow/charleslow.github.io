@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
   <meta name="theme-color" content="#ffffff" />
-  <title>Grid Visualization (7×7 demo)</title>
+  <title>Grid Visualization</title>
   <style>
     :root {
       --n: 7;
@@ -79,9 +79,16 @@
   </style>
 </head>
 <body>
-  <h1>7×7 Grid Tile Visualizer</h1>
-  <p>Click a single cell to toggle it black (an uncovered square). Drag from one cell to another to add a rectangular tile (orange). Tiles cannot overlap black cells or existing tiles.</p>
+  <h1>8×8 Grid Tile Visualizer</h1>
+  <p>Click a single cell to toggle it black (an uncovered square). Drag from one cell to another to add a rectangular tile (orange). Tiles cannot overlap black cells or existing tiles. Use the size slider to rebuild the board (3–16).</p>
   <div id="controls">
+    <label style="display:flex;align-items:center;gap:.4rem;flex:1 1 100%;max-width:480px;">
+      <span style="font-size:.85rem;font-weight:600;">Size:</span>
+      <input id="size-range" type="range" min="3" max="16" value="8" style="flex:1;" aria-label="Grid size" />
+      <output id="size-output" for="size-range" style="min-width:2.5ch;text-align:right;">8</output>
+      <span style="font-size:.85rem;">×</span>
+      <output id="size-output-2" style="min-width:2.5ch;text-align:right;">8</output>
+    </label>
     <button id="clear-cells">Clear Blacks</button>
     <button id="clear-tiles">Clear Tiles</button>
     <button id="clear-all">Reset All</button>
@@ -93,30 +100,54 @@
     <!-- tiles get injected here as absolutely positioned divs -->
   </div>
   <div id="status" aria-live="polite"></div>
-  <p class="note">Demo uses 7×7 for convenience; the IMO problem is 2025×2025. This interface lets you reason about patterns on a smaller board.</p>
+  <p class="note">Adjust board between 3 and 16. The IMO problem is 2025×2025; explore patterns on manageable sizes here.</p>
   <!-- JSON export section removed -->
   <script>
-    const N = 7; // grid size for demo
-  const gridEl = document.getElementById('grid');
+    let N = 8; // default grid size
+    const gridEl = document.getElementById('grid');
     const statusEl = document.getElementById('status');
-  // JSON export removed
-  const fullscreenBtn = document.getElementById('fullscreen');
+    const fullscreenBtn = document.getElementById('fullscreen');
+    const sizeRange = document.getElementById('size-range');
+    const sizeOut1 = document.getElementById('size-output');
+    const sizeOut2 = document.getElementById('size-output-2');
+    let cells = [];
+    let cellMatrix = [];
+    let tiles = []; // {r1,c1,r2,c2,el}
+    const blackSet = new Set(); // key = "r,c"
+    let rowBlack = [];
+    let colBlack = [];
 
-    // Build cells
-    const cells = [];
-  const cellMatrix = Array.from({length:N}, ()=>Array(N));
-  for (let r=0; r<N; r++) {
-      for (let c=0; c<N; c++) {
-        const d = document.createElement('div');
-        d.className = 'cell';
-        d.dataset.r = r;
-        d.dataset.c = c;
-        d.setAttribute('role','gridcell');
-        d.setAttribute('tabindex','0');
-        gridEl.appendChild(d);
-        cells.push(d);
-    cellMatrix[r][c] = d;
+    function buildGrid(size){
+      N = size;
+      document.documentElement.style.setProperty('--n', N);
+      gridEl.innerHTML = '';
+      cells = [];
+      cellMatrix = Array.from({length:N}, ()=>Array(N));
+      for (let r=0; r<N; r++) {
+        for (let c=0; c<N; c++) {
+          const d = document.createElement('div');
+          d.className = 'cell';
+          d.dataset.r = r; d.dataset.c = c;
+          d.setAttribute('role','gridcell');
+          d.setAttribute('tabindex','0');
+          gridEl.appendChild(d);
+          cells.push(d);
+          cellMatrix[r][c] = d;
+        }
       }
+      // Reset data tracking
+      tiles.forEach(t=>t.el.remove());
+      tiles = [];
+      blackSet.clear();
+      rowBlack = Array(N).fill(0);
+      colBlack = Array(N).fill(0);
+      updateHeading();
+      updateStatus();
+    }
+
+    function updateHeading(){
+      const h1 = document.querySelector('h1');
+      h1.textContent = `${N}×${N} Grid Tile Visualizer`;
     }
 
     function cellSize() {
@@ -124,17 +155,15 @@
       return { w: rect.width / N, h: rect.height / N };
     }
 
-  const tiles = []; // {r1,c1,r2,c2,el}
-  const blackSet = new Set(); // key = "r,c"
-  const rowBlack = Array(N).fill(0); // count of black cells per row (should be 0 or 1)
-  const colBlack = Array(N).fill(0); // count of black cells per col (should be 0 or 1)
+    // initialize
+    buildGrid(N);
 
     function key(r,c){ return r+','+c; }
 
     function updateStatus() {
-      const rowOK = rowBlack.every(x=>x===1);
-      const colOK = colBlack.every(x=>x===1);
-      statusEl.textContent = `Blacks: ${blackSet.size} | Tiles: ${tiles.length} | Rows OK: ${rowOK} | Cols OK: ${colOK}`;
+  const rowOK = rowBlack.length && rowBlack.every(x=>x===1);
+  const colOK = colBlack.length && colBlack.every(x=>x===1);
+  statusEl.textContent = `Size: ${N}×${N} | Blacks: ${blackSet.size} | Tiles: ${tiles.length} | Rows OK: ${rowOK} | Cols OK: ${colOK}`;
     }
 
     function toggleBlack(cell) {
@@ -277,6 +306,8 @@
   document.getElementById('clear-cells').onclick = () => { blackSet.clear(); rowBlack.fill(0); colBlack.fill(0); cells.forEach(c=>c.classList.remove('black')); updateStatus(); };
   document.getElementById('clear-tiles').onclick = () => { tiles.splice(0).forEach(t=>t.el.remove()); updateStatus(); };
   document.getElementById('clear-all').onclick = () => { blackSet.clear(); rowBlack.fill(0); colBlack.fill(0); cells.forEach(c=>c.classList.remove('black')); tiles.splice(0).forEach(t=>t.el.remove()); updateStatus(); };
+  sizeRange.addEventListener('input', e => { sizeOut1.textContent = e.target.value; sizeOut2.textContent = e.target.value; });
+  sizeRange.addEventListener('change', e => { buildGrid(+e.target.value); });
   // Export button removed
 
     // Fullscreen toggle (mobile helpful)
@@ -308,7 +339,7 @@
     });
     ro.observe(gridEl);
 
-    updateStatus();
+  updateStatus();
     // Hint for touch users (one-time)
     if (matchMedia('(pointer:coarse)').matches) {
       statusEl.insertAdjacentHTML('beforeend',' | Tap+drag = tile, quick tap = black');

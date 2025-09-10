@@ -95,5 +95,20 @@ Notice how the RHS now resembles an auto-encoder:
 - $Q$ "encodes" $X$ into a latent $z$
 - $P$ "decodes" $z$ back to reconstruct $X$
 
+### Optimizing the Objective
+
+Now we need to perform SGD on the RHS. First we need to specify $Q(z|X)$. The usual choice is:
+$$
+    Q(z | X) = \mathcal{N}(z | \mu(X; \theta), \Sigma(X; \theta))
+$$
+
+Where $\mu$ and $\Sigma$ are both neural networks with parameters $\theta$ that map a given $X$ deterministically into a mean and variance vector respectively. We only need a vector for the variance because $\Sigma$ is typically constrained to be a diagonal matrix.
+
+Because we chose both $Q(z|X), P(z)$ to be multi-variate gaussians, the KL divergence between them may now be computed in closed form:
+
+
+$$
+    \mathcal{D}[]
+$$
 
 

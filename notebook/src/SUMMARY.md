@@ -30,6 +30,7 @@
     - [Packages](./misc/packages.md)
     - [Skills](./misc/skills.md)
     - [Hash Collisions](./misc/hash_collision.md)
+    - [IMO 2025 Q6](./misc/imo_2025_q6.md)
 - [Identities](./identities.md)
     - [Sigmoid](./identities/sigmoid.md)
     - [Statistics](./identities/statistics.md)
