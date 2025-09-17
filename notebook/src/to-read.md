@@ -91,4 +91,10 @@
 - [RQ-VAE](https://arxiv.org/abs/2203.01941)
 - [Embedding Numeric Features](https://arxiv.org/abs/2203.05556)
 - [Top n-sigma](https://arxiv.org/abs/2411.07641)
+- [Learning facts at scale](https://www.arxiv.org/abs/2508.09494)
+- [Semantic IDs](https://arxiv.org/abs/2508.10478)
+- [RL's razor](https://arxiv.org/abs/2509.04259)
+- [Anisotropic Vector Quantization](https://arxiv.org/abs/1908.10396)
+- [Jet-Nemotron](https://arxiv.org/abs/2508.15884)
+- [Survey of RL](https://www.arxiv.org/abs/2509.08827)
 

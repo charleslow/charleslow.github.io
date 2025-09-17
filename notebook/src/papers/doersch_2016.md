@@ -76,7 +76,7 @@ Some comments on the above:
 - $P(X)$ comes out as a constant because it does not depend on $z$.
 - We can group $Q(z)$ and $P(z)$ together into its own KL divergence term.
 
-So far, we have not made any assumption on the arbitrary distribution $Q(z)$. In the context of trying to maximize $P(X)$, it makes sense to construct a $Q$ which does depend on $X$. So we make that dependency on $X$ explicit: 
+So far, we have not made any assumption on the arbitrary distribution $Q(z)$. In the context of trying to maximize $P(X)$, it makes sense to construct a $Q$ which does depend on $X$. So we make that dependency on $X$ explicit. Let's call this the <<ELBO equation>>. 
 $$
 \begin{align*}
     \log P(X) - \mathcal{D}[Q(z | X) || P(z|X)] &= E_{z \sim Q}[\log P(X |z)] - \mathcal{D}[Q(z | X) || P(z)]\\
@@ -104,11 +104,92 @@ $$
 
 Where $\mu$ and $\Sigma$ are both neural networks with parameters $\theta$ that map a given $X$ deterministically into a mean and variance vector respectively. We only need a vector for the variance because $\Sigma$ is typically constrained to be a diagonal matrix.
 
-Because we chose both $Q(z|X), P(z)$ to be multi-variate gaussians, the KL divergence between them may now be computed in closed form:
-
+Because we chose both $Q(z|X), P(z)$ to be multi-variate gaussians, the KL divergence between them may now be computed in closed form ($k$ is the dimensionality of the distribution):
 
 $$
-    \mathcal{D}[]
+\begin{align*}
+    
+    &\mathcal{D}[\mathcal{N}(\mu_0, \Sigma_0) || \mathcal{N}(\mu_1, \Sigma_1)]\\
+    &= \frac{1}{2}
+    \left(
+        \text{tr}(\Sigma_1^{-1} \Sigma_0) + 
+        (\mu_1 - \mu_0)^\intercal \Sigma_1^{-1}(\mu_1 - \mu_0) - k +
+        \log(\frac{\det \Sigma_1}{\det \Sigma_0})
+    \right)\\
+    &= \frac{1}{2}
+    \left(
+        \text{tr}(\Sigma(X)) + 
+        \mu(X)^\intercal \mu(X) - k +
+        \log \det (\Sigma(X))
+    \right)
+\end{align*}
 $$
+
+The second line above gives the general case, but since our $P(z) = \mathcal{N}(0, I)$, it reduces into the third line. The functions $\mu(X), \Sigma(X)$ express the fact that the parameters of the normal distribution of $Q$ are determined by $X$. 
+
+### Reparametrization Trick
+
+So we have the second term on the RHS expressed as a function of $X$, which can be optimized via SGD. What about the first term $E_{z \sim Q}[\log P(X|z)]$?
+
+This term is more tricky, because it involves two steps. Suppose we approximate the expectation by performing SGD. Then we have to:
+- Sample a $z \sim Q$
+- Compute $\log P(X | z)$ using the decoder
+
+The first sampling step is not an operation that can be backpropagated through, so we cannot optimize this equation as-is. This is where the re-parametrization trick comes into play. 
+
+The <<re-parametrization trick>> essentially moves the stochasticity of the sampling step out of the model forward pass into the data layer. Instead of sampling $z \sim Q$ directly, we first sample an intermediate $\epsilon \sim \mathcal{N}(0, I)$ and treat it as data. Then, we compute deterministically $z = \mu(X) + \Sigma^{1/2}(X) \times \epsilon$. This achieves the same effect as the direct sampling approach, but the difference is that the parameters of $Q$ have entered the equation in a deterministic way that can be backpropagated.
+
+With the trick, we now have fully specified the optimization objective. The equation we take the gradient of is:
+$$
+E_{X \sim D} \left[
+    E_{\epsilon \sim \mathcal{N}(0, I)} [
+        \log P(X | z = \mu(X) + \Sigma^{1/2}(X) \times \epsilon)
+    ]
+    - \mathcal{D} [ Q(z|X) || P(z)]
+\right]
+$$
+
+### Test Time Inference
+
+At test time, when we want to generate new samples, we simply sample a new $z \sim \mathcal{N}(0, I)$, then feed it into the decoder to get a new $X = f(z)$. 
+
+Suppose we want to evaluate the probability of this new test example, i.e. $P(X)$. This is not tractable for the reasons we discussed earlier, as it involves an integral over the distribution of $z$. However, we can make use of the ELBO concept and use the RHS of the ELBO equation as an approximation to $P(X)$. There is still an expectation over $z$, but because sampling $z \sim Q$ gives an expectation that converges much faster than sampling $z \sim \mathcal{N}(0, I)$, we can get a good sense of the probability by sampling a few times.
+
+## Extra Info
+
+This section tackles 3 questions to help our understanding:
+1. How much error is introduced by the additional term $\mathcal{D}[Q(z|X) || P(z | X)]$?
+2. How is the VAE framework linked to Minimum Description Length?
+3. Do VAEs have regularization parameters analogous to sparsity penalties?
+
+### Q1. Error from Lower Bound
+
+Given that we are optimizing for the RHS and not directly for $\log P(X)$, how much error does the additional term $\mathcal{D}[Q(z|X) || P(z | X)]$ introduce? 
+
+Since we assumed that $Q(z | X)$ takes the form of a high dimension gaussian, $P(z | X)$ must also take the form of a gaussian for the KL divergence term to go to $0$. However, this is not necessarily the case - we make no assumption on the distribution of $P(z | X)$. The hope is that if $f$ is sufficiently high-capacity, then there exists some $f$ which both (i) maximizes $P(X)$ and (ii) results in a gaussian-like $P(z | X)$. If such a function exists, then our objective would find it due to the $\mathcal{D}[Q(z|X) || P(z | X)]$ term.
+
+### Q2. Minimum Description Length interpretation
+
+(I don't understand this part.)
+
+Another way to look at the RHS of the ELBO equation is in terms of information theory. $\log P(X)$ may be seen as the total number of bits required to construct a given $X$ under our model using an ideal encoding. The RHS views this as a two-step process to construct $X$.
+- We first use some bits to construct $z$. $\mathcal{D}[Q(z|X) || P(z)]$ may be viewed as the expected information required to convert an uninformative sample from $P(z)$ to a sample from $Q(z|X)$
+- In the second step, $P(X | z)$ measures the amount of information required to reconstruct $X$ from $z$ under an ideal encoding.
+
+Hence the total number of bits $-\log P(X)$ is the sum of these two steps, minus a penalty we pay for $Q$ being a sub-optimal encoding $\mathcal{D}[Q(z|X) || P(z | X)]$.
+
+### Q3. Regularization Effect
+
+It is interesting to view the $\mathcal{D}[Q(z | X) || P(z)]$ term as regularization, since it is encouraging our $Q$ distribution to be similar to a simple distribution. 
+
+In a usual sparse autoencoder, we have a $\lambda$ parameter in an objective function:
+$$
+    || \phi(\psi(X)) - X ||^2 + \lambda || \psi(X) ||_0
+$$
+
+That is, for encoder $\psi$ and decoder $\phi$, we encourage the encoding to be sparse. Similarly, the KL divergence term encourages our encoder $Q$ to be simple.
+
+
+
 
 
