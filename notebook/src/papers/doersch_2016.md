@@ -189,6 +189,13 @@ $$
 
 That is, for encoder $\psi$ and decoder $\phi$, we encourage the encoding to be sparse. Similarly, the KL divergence term encourages our encoder $Q$ to be simple.
 
+Where does a similar parameter like $\lambda$ enter into the ELBO equation? Recall that we chose a normal distribution for $P(X | z) \sim \mathcal{N}(f(z), \sigma^2 \times I)$. It turns out that $\sigma$ plays a similar role to $\lambda$, as we shall see.
+
+Using the PDF of the normal distribution, we have that $\log P(X | z) = C - \frac{1}{2} || X - f(z) ||^2 / \sigma^2$, where $C$ is a constant that does not depend on $f$ and can be ignored during optimization. In the ELBO equation, $\sigma$ appears in the first term of the RHS but not the second term. Hence, by varying $\sigma$, we can control the relative weighting between the two terms. Specifically, a lower $\sigma$ implies less regularization and a larger $\sigma$ implies more regularization.
+
+## Conditional VAEs
+
+
 
 
 
