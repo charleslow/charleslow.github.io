@@ -1,0 +1,294 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Tay 2022 - Differentiable Search Index - Chux&#x27;s Notebook</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../katex.min.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Chux&#x27;s Notebook</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="tay-2022---differentiable-search-index"><a class="header" href="#tay-2022---differentiable-search-index">Tay 2022 - Differentiable Search Index</a></h1>
+<p><a href="https://arxiv.org/abs/2202.06991">Transformer Memory as a Differentiable Search Index</a></p>
+<p>This paper proposes a new paradigm of search. Instead of using Approximate Nearest Neighbour (ANN) search using embeddings, the paper proposes to train a transformer seq2seq model to predict the ID of a document given a search context.</p>
+<p>Although the paper is focused on search and Question-Answering, the approach is general and can be used for any recommendation setting.</p>
+<h2 id="comparison-to-traditional-search-index"><a class="header" href="#comparison-to-traditional-search-index">Comparison to Traditional Search Index</a></h2>
+<p>Traditional search index such as BM25 or ANN search has three steps:</p>
+<ol>
+<li><span style="color:orange">Indexing</span>. Indexing involves storing representations of each document to enable easy search later on. For traditional lexical search like BM25, a sparse and high dimensional vector is stored for each document and an inverted index is built. For ANN search, a dense vector is stored and an index like HNSW is built.</li>
+<li><span style="color:orange">Training</span>. For lexical search, the only "training" is to store the TF-IDF quantities in the index. For ANN search, a contrastive learning objective is used to shape the embedding space for effective retrieval.</li>
+<li><span style="color:orange">Retrieval</span>. For lexical search, a lookup of the inverted index based on the query terms is performed. For ANN search, a Maximum Inner Product (MIPS) search is performed using some algorithm.</li>
+</ol>
+<p>The differentiable search index operates differently. The authors argue that it is more elegant:</p>
+<ol>
+<li><span style="color:orange">Indexing</span>. Indexing is just a specific form of model fine-tuning. Specifically, the task is to predict the <code>docid</code> given the <code>content</code> of the document, i.e. <code>f(doc_content) = docid</code>.
+<ul>
+<li>There is no need to store a separate search index as the only artifact we need becomes the transformer model itself</li>
+</ul>
+</li>
+<li><span style="color:orange">Training</span>. Training is a form of supervised fine-tuning where we predict <code>f(query) = relevant docid</code>.</li>
+<li><span style="color:orange">Retrieval</span>. Retrieval is simply running a forward pass on the transformer on a new query.</li>
+</ol>
+<p>The nice thing about this setup is that it extends naturally to a multi-task setting, by using different prefixes for different tasks. This is similar to the T5 approach for multi-task learning.</p>
+<h2 id="ablations"><a class="header" href="#ablations">Ablations</a></h2>
+<p>The main idea is simple and intuitive, but there are many details to the implementation that are non-trivial.</p>
+<h3 id="indexing-strategy"><a class="header" href="#indexing-strategy">Indexing Strategy</a></h3>
+<p>The indexing step aims to teach the transformer model how to link each <code>docid</code> with the contents of the document. This is entirely new knowledge to the transformer since the docids are arbitrary constructs.</p>
+<p>The following strategies were explored:</p>
+<ol>
+<li><code>f(document context) = docid</code>: this had the best performance</li>
+<li><code>f(docid) = document context</code>: this performed terribly</li>
+<li><code>Mix of 1. and 2.</code>: Mix training batches with both options <code>1</code> and <code>2</code>, with a prefix string to indicate which direction.</li>
+</ol>
+<h3 id="indexing-and-training-order"><a class="header" href="#indexing-and-training-order">Indexing and Training Order</a></h3>
+<p>Recall that we have two modes:</p>
+<ul>
+<li>In indexing mode, our training data is <code>f(document content) = docid</code></li>
+<li>In training mode (or retrieval task), our training data is <code>f(query) = relevant docid</code></li>
+</ul>
+<p>The following strategies were explored:</p>
+<ol>
+<li><code>Index first, train second</code>. This means that we train with the indexing mode until convergence, then switch to training mode</li>
+<li><code>Multi-task</code>. This means that we mix training batches of both indexing mode and training mode and just use a prefix to indicate the different task setting</li>
+</ol>
+<p>The <code>multi-task</code> strategy worked much better. The performance was sensitive to the mix between indexing and retrieval task. The ideal mix was found to be around <code>32</code> instances of indexing task to <code>1</code> instance of retrieval task.</p>
+<h3 id="representation-of-document-ids"><a class="header" href="#representation-of-document-ids">Representation of Document IDs</a></h3>
+<p>The following strategies were explored:</p>
+<ol>
+<li>
+<p><code>Arbitrary Atomic Identifiers</code>. This means assigning an arbitrary random identifier for each document, and letting each identifier be a new token in the vocabulary.</p>
+<p>The downside is that there is an explosion in the vocabulary if we have a lot of items</p>
+</li>
+<li>
+<p><code>Semantically Structured IDs</code>. This means representing each document as an ordered list of tokens, where the tokens contain some semantic meaning.</p>
+<p>This is implemented as a hierarchical k-means clustering.</p>
+<ul>
+<li>Firstly, each document is embedded using a universal T5 embedder.</li>
+<li>Next, k-means with <code>10</code> centroids is performed. The cluster ID <code>0-9</code> is assigned as the first document ID token for each document</li>
+<li>Each cluster is then further clustered to generate the subsequent document ID tokens</li>
+</ul>
+</li>
+</ol>
+<h2 id="inference-time"><a class="header" href="#inference-time">Inference Time</a></h2>
+<p>To generate recommendations at inference time, given a query, we pass it into the transformer model and just do generative decoding with beam search. Beam search maintains at each decoding step top <code>k</code> candidates based on log probability. The top <code>k</code> candidates sorted in descending log probability is thus our list of recommended candidates.</p>
+<h2 id="results"><a class="header" href="#results">Results</a></h2>
+<p>Overall, the semantic ID approach was the best performing, and had significant gains over a fine-tuned dual encoder model.</p>
+<p>The scaling effects of larger models seemed much better with the DSI approach compared to dual encoders. In my experience, dual encoder models also don't seem to benefit much from scaling to larger models (minimal effect scaling from <code>20M</code> models to <code>500M</code> models.)</p>
+<p>The DSI approach is closer in performance with <code>hits@10</code> to dual encoder but had <strong>much</strong> better <code>hits@1</code> performance.</p>
+<h2 id="concerns"><a class="header" href="#concerns">Concerns</a></h2>
+<p>One finding was that shorter representations of the document (truncate at first <code>L</code> tokens) worked significantly better. The authors suggested that longer document lengths might make indexing memorization more difficult. This seems like a significant bottleneck to the paradigm, but future work might resolve this issue.</p>
+<p>One big shortcoming of this current method as-is is that the embedding representation used is an OTS T5 model. Subsequent papers will find that relevance-based fine-tuned embeddings perform much better at generating good semantic IDs to represent each document.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../papers/lee_2022.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../papers/rafailov_2023.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../papers/lee_2022.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../papers/rafailov_2023.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>
