@@ -17,3 +17,19 @@ We may need to uninstall and re-install WSL (Windows Subsystem for Linux) from t
 7. Install mdbook
 	- `cargo install mdbook mdbook-katex`
 
+# ssh-agent forwarding
+
+One challenge in WSL is to forward the ssh-agent from WSL into the devcontainer. Make sure to include the following in `devcontainer.json` for this to happen.
+
+```json
+{
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "remote.containers.sshForwardAgent": true
+      }
+    }
+  }
+}
+```
+

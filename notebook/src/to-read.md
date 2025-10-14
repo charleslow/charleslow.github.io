@@ -114,5 +114,7 @@
 - [Rethinking search](https://arxiv.org/abs/2105.02274)
 - [How much knowledge](https://arxiv.org/abs/2002.08910)
 - [Sentence T5](https://arxiv.org/abs/2108.08877)
-
-
+- [GRAPE](https://arxiv.org/abs/2509.04501)
+- [GPT OSS](https://arxiv.org/abs/2508.10925)
+- [News Recommender](https://arxiv.org/abs/2509.12361)
+- [Advisor Models](https://www.arxiv.org/abs/2510.02453)
