@@ -44,6 +44,7 @@
     - [Doersch 2016 - Tutorial on VAEs](./papers/doersch_2016.md)
     - [Bateni 2017 - Affinity Clustering](./papers/bateni_2017.md)
     - [Guo 2017 - DeepFM](./papers/guo_2017.md)
+    - [Van Den Oord 2017 - VQ-VAE](./papers/van_den_oord_2017.md)
     - [Hamilton 2017 - GraphSAGE](./papers/hamilton_2017.md)
     - [Ma 2018 - Entire Space Multi-Task Model](./papers/ma_2018.md)
     - [Kang 2018 - SASRec](./papers/kang_2018.md)
