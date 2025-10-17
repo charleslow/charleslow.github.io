@@ -149,6 +149,15 @@ E_{X \sim D} \left[
 \right]
 $$
 
+On the second term <<$\mathcal{D} [ Q(z|X) || P(z)]$>>:
+- Note that we have already spelt out the closed form expression above, which involves the encoder neural networks $\mu(X), \Sigma(X)$.
+
+On the first term <<$\log P(X | z)$>>:
+- This is the reconstruction loss which measures how well we reconstructed the input after passing it through the encoder back to the decoder again, so it involves both the encoder and decoder.
+- Specifically, we first sample an $\epsilon \sim \mathcal{N}(0, I)$, then compute $z = \mu(X) + \Sigma^{1/2}(X) \times \epsilon$, which gives us one sample of an encoded input $X$.
+- Recall above that we specified $P( X | z; \theta ) = \mathcal{N}(X | f(z; \theta), \sigma^2 I)$, which is a PDF of a normal distribution with mean given by the decoder applied to sample $z$ and some constant variance.
+- Hence $\log P(X | z) = - \frac{1}{2 \sigma^2} || X - f(z; \theta) ||^2_2 + \text{const.}$ which is an l2 distance
+
 ### Test Time Inference
 
 At test time, when we want to generate new samples, we simply sample a new $z \sim \mathcal{N}(0, I)$, then feed it into the decoder to get a new $X = f(z)$. 
