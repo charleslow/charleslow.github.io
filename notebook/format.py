@@ -5,7 +5,7 @@ import re
 
 def transform_text(input_text):
     """Transform text inside <<text>> to add color"""
-    pattern = re.compile(r"<<(.*?)>>")
+    pattern = re.compile(r"(?<!<)<<(?!<)(.+?)(?<!>)>>(?!>)", re.DOTALL)
     output_text = pattern.sub(r'<span style="color:orange">\1</span>', input_text)
     return output_text
 

@@ -127,3 +127,4 @@
 - [Attention Sinks, Compression Valleys](https://arxiv.org/abs/2510.06477)
 - [Why LMs Hallucinate](https://arxiv.org/abs/2509.11208)
 - [LMs are Bayesian in Expectation, not Realization](https://arxiv.org/abs/2507.11768)
+- [GEPA](https://arxiv.org/abs/2507.19457)

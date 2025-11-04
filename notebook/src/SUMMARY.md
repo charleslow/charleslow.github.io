@@ -100,3 +100,6 @@
     - [Value Function Approximation](./rl_course/lecture06.md)
     - [Policy Gradient](./rl_course/lecture07.md)
     - [Learning & Planning](./rl_course/lecture08.md)
+- [PMPP](./pmpp/main.md)
+    - [Introduction](./pmpp/ch01.md)
+    - [Data Parallel Computing](./pmpp/ch02.md)

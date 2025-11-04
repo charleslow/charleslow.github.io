@@ -1,0 +1,464 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Data Parallel Computing - Chux&#x27;s Notebook</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../katex.min.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Chux&#x27;s Notebook</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="data-parallel-computing"><a class="header" href="#data-parallel-computing">Data Parallel Computing</a></h1>
+<p>When applications run slowly, the issue is usually that there is too much data to process. In many cases, this data can be split up and dealt with independently. Such independent evaluation of different pieces of data is called <span style="color:orange">data parallelism</span>.</p>
+<ul>
+<li>This is different from <span style="color:orange">Task parallelism</span>, which is the task decomposition of applications. For example, we may need to do a vector multiplication and addition on the same set of data. In general, data parallelism is usually the main source of scalability for parallel programs.</li>
+</ul>
+<p>Let us use a running example using color to gray scale conversion. This is a simple data parallel task as each pixel can be dealt with independently. Suppose we have a color image comprising many pixels, each pixel has an <code>r, g, b</code> value ranging from <code>0</code> to <code>1</code> indicating the intensity.</p>
+<p>We use a simple grayscale formula (note that the grayscale formula is because our eyes perceive luminosity of different colors differently):
+<span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">L</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.21</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">0.72</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord">0.07</span><span class="mord mathnormal">b</span></span></span></span></span></p>
+<h2 id="cuda-c-program"><a class="header" href="#cuda-c-program">CUDA C Program</a></h2>
+<p>CUDA C is an extension of ANSI C programming language with minimal new syntax. The structure of a CUDA C program reflects the coexistence of a host (CPU) and one or more devices (GPUs) in the computer. Each source file can have a mixture of host code and device code. By definition, a traditional C program is a CUDA program that contains only host code. The device code is clearly marked with CUDA C keywords.</p>
+<p>When a kernel function is called, a large number of threads are launched on a device to execute the kernel. All the threads that are launched by a kernel call are collectively called a <span style="color:orange">grid</span>. When all threads of a grid have completed, the grid terminates and the execution continues on the host until the next grid is launched.</p>
+<p>Launching a grid generates many threads. In the grayscale example, each thread processes one pixel. One can assume that CUDA threads take very few clock cycles to generate and schedule. In contrast, traditional C programs can take thousands of clock cycles to generate and schedule.</p>
+<blockquote>
+<p><strong>Threads</strong>. A thread is a simplified view of how a processor executes a sequential program. A thread consists of the code of the program, the point in the code that is being executed, and the values of its variables and data structures. The execution of a thread may be viewed as sequential.</p>
+</blockquote>
+<h2 id="vector-addition"><a class="header" href="#vector-addition">Vector Addition</a></h2>
+<p>Vector addition is the hello world example. Here is a simple vector addition in C:</p>
+<blockquote>
+<p>In CUDA programms, we suffix with <code>_h</code> to denote host variables and <code>_d</code> for device variables.</p>
+</blockquote>
+<pre><code class="language-c">void vecAdd(float* A_h, float* B_h, float* C_h, int n) {
+    for (int i = 0; i &lt; n; ++1) {
+        C_h[i] = A_h[i] + B_h[i];
+    }
+}
+int main() {
+    // memory allocation etc.
+    vecAdd(A, B, C, N);
+}
+</code></pre>
+<p>In the vector addition example, we use a simple for loop to do addition. After execution, we can access the modified contents of <code>C</code> to see the results.</p>
+<p>A straightforward way to do vector addition in parallel is as follows:</p>
+<ul>
+<li>Allocate device memory for A, B and C</li>
+<li>Copy A and B to device memory</li>
+<li>Call a kernel to launch threads to perform the actual addition</li>
+<li>Copy C from the device memory back to host</li>
+<li>Free device vector</li>
+</ul>
+<h2 id="device-global-memory"><a class="header" href="#device-global-memory">Device Global Memory</a></h2>
+<p>Each device comes with their own dynamic random access memory called device global memory. e.g. NVIDIA Volta V100 comes with <code>16GB</code> or <code>32GB</code> of global memory. Before calling the addition kernel, we need to allocate space in the device global memory and transfer data from the host memory to the allocated space on the device.</p>
+<ul>
+<li><code>cudaMalloc()</code> is used to allocate object on device global memory
+<ul>
+<li>Takes in address of a pointer to the allocated object</li>
+<li>Size of the allocated object in bytes</li>
+</ul>
+</li>
+<li><code>cudaFree()</code> is used to free object from global memory
+<ul>
+<li>Takes in the pointer to object to be freed</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-c">float *A_d // Pointer to a block of floating point numbers
+int size = n * sizeof(float); // n * 4 bytes
+cudaMalloc((void**) &amp;A_d, size);
+...
+cudaFree(A_d);
+</code></pre>
+<p>Note:</p>
+<ul>
+<li><code>(void**)</code> casts to a generic pointer, which is expected by <code>cudaMalloc</code> which frees any generic object</li>
+<li><code>&amp;A_d</code> means the address of the pointer <code>A_d</code>:
+<ul>
+<li><code>A_d</code> itself is a pointer (on CPU memory) pointing to some spot on GPU memory</li>
+<li>We need to pass the address of <code>A_d</code> to <code>cudaMalloc</code> so that <code>cudaMalloc</code> can modify the contents of <code>A_d</code> to point at the newly allocated GPU memory location</li>
+<li>So <code>cudaMalloc</code> expects the address of a pointer</li>
+</ul>
+</li>
+<li><code>cudaFree</code> in contrast doesn't need to modify <code>A_d</code>, it just needs to go to the GPU location and free up the GPU memory there
+<ul>
+<li>Thus the argument to <code>cudaFree</code> is <code>A_d</code> instead of <code>&amp;A_d</code></li>
+</ul>
+</li>
+<li>Note that <code>A_d</code> is a pointer to device memory, so it cannot be de-referenced in host code
+<ul>
+<li>Dereferencing using <code>*A_d</code> in host code will lead to errors</li>
+</ul>
+</li>
+</ul>
+<p>After space has been allocated on device, we can transfer data from host to device.</p>
+<ul>
+<li><code>cudaMemcpy()</code>
+<ul>
+<li>Pointer to destination</li>
+<li>Pointer to source</li>
+<li>Number of bytes copied</li>
+<li>Type / direction of transfer</li>
+</ul>
+</li>
+</ul>
+<p>Now our <code>vecAdd</code> functio looks like this:</p>
+<pre><code class="language-c">void vecAdd(float* A_h, float* B_h, float* C_h, int n) {
+    int size = n * sizeof(float);
+    float *A_d, *B_d, *C_d;
+
+    cudaMalloc((void **) &amp;A_d, size);
+    cudaMalloc((void **) &amp;B_d, size);
+    cudaMalloc((void **) &amp;C_d, size);
+
+    cudaMemcpy(A_d, A_h, size, cudaMemcpyHostToDevice);
+    cudaMemcpy(B_d, B_h, size, cudaMemcpyHostToDevice);
+
+    // Invoke kernel
+
+    cudaMemcpy(C_h, C_d, size, cudaMemcpyDeviceToHost);
+
+    cudaFree(A_d);
+    cudaFree(B_d);
+    cudaFree(C_d);
+}
+</code></pre>
+<p>The above code is quite self explanatory. This kind of host code that delegates work to a device is called a <span style="color:orange">stub</span>. Note that <code>cudaMemcpyDeviceToHost</code> etc. are special CUDA keywords.</p>
+<blockquote>
+<p>Notice that C syntax is a bit confusing - we write <code>float *A_d, *B_d, *C_d</code> where the <code>*</code> is attached to the variable, but in function parameters we write <code>void vecAdd(float* A_h, ...)</code>. It turns out that both ways of writing compile to the same code, and in both cases we are referring to <code>A_h, A_d</code> as float pointers. The reason why <code>*</code> is bound to the variable when declaring is to avoid the subtle bug of <code>float* A_d, B_d</code>, which actually declares <code>B_d</code> as a float, not a float pointer!</p>
+</blockquote>
+<h2 id="kernel-functions-and-threading"><a class="header" href="#kernel-functions-and-threading">Kernel Functions and Threading</a></h2>
+<p>Since all threads execute the same code, CUDA C programming is an instance of Single Program, Multiple Data (SPMD) parallel programming style. CUDA launches a grid of threads that are organized into a two level hierarchy:</p>
+<ul>
+<li>Each grid is organized as an array of <span style="color:orange">thread blocks</span>, which are also referred to as blocks</li>
+<li>All blocks are of the same size, and each block can contain up to <code>1,024</code> threads</li>
+</ul>
+<p>The total number of threads per block is specified by the host code when a kernel is called. For a given grid of threads, the number of threads in a block is available in a variable called <code>blockDim</code>.</p>
+<ul>
+<li><code>blockDim</code> is a <code>struct</code> with three unsigned integer fields <code>x, y, z</code>, which may be accessed like <code>blockDim.x</code></li>
+<li>The choice of dimensionality for organizing threads usually reflects the dimensionality of the data</li>
+<li>In general, the number of threads is recommended to be a multple of <code>32</code> for hardware reasons</li>
+</ul>
+<p>CUDA kernels and thus CUDA kernel code have access to two more built-in variables called <code>threadIdx</code> and <code>blockIdx</code>:</p>
+<ul>
+<li><code>threadIdx</code> gives each thread a unique coordinate within a block
+<ul>
+<li>The first thread in a block has value <code>0</code> in <code>threadIdx.x</code> variable, second thread has <code>1</code> and so on</li>
+</ul>
+</li>
+<li><code>blockIdx</code> gives all threads in a block a common block coordinate
+<ul>
+<li>All threads in the first block have value <code>0</code> in their <code>blockIdx.x</code> variable</li>
+<li>Second block has value <code>1</code> and so on</li>
+</ul>
+</li>
+<li>Thus we can combine <code>threadIdx</code> and <code>blockIdx</code> to give a unique global index to each thread</li>
+</ul>
+<p>Now we are ready to write kernel code for vector addition:</p>
+<pre><code class="language-c">__global__
+void vecAddKernel(float* A, float* B, float* C, int n) {
+    int i = threadIdx.x + blockDim.x * blockIdx.x;
+    if (i &lt; n) {
+        C[i] = A[i] + B[i];
+    }
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>We do not need suffix <code>_d</code> since there is no confusion - kernel code only runs on device</li>
+<li><code>i</code> is a global index with a different value for each thread</li>
+<li><code>blockDim.x</code> is <code>256</code> for our example, provided by the CUDA runtime
+<ul>
+<li>This is specified in host code, when we launch the kernel</li>
+</ul>
+</li>
+<li>The keyword <code>__global__</code> indicates that this function is a kernel
+<ul>
+<li>In general, there are three qualifier keywords in CUDA C</li>
+<li><code>__host__</code> means callable from host and executed on host (i.e. normal C function)</li>
+<li><code>__device__</code> means callable from device and executed on device</li>
+<li><code>__global__</code> means callable from host / device and executed on device</li>
+</ul>
+</li>
+<li>Note that <code>if (i &lt; n)</code> is a guarding condition
+<ul>
+<li>When we launch a grid, the number of threads is a multiple of the block size</li>
+<li>The number of threads has to be greater than or equal to <code>n</code></li>
+<li>To avoid errors on the excess threads, the conditional statement is used</li>
+</ul>
+</li>
+</ul>
+<p>Notice that the CUDA kernel function has no for-loop. The reason is that the loop has been replaced by the grid of threads. Each thread in the grid corresponds to one iteration of the for loop. This is sometimes referred to as <span style="color:orange">loop parallelism</span>.</p>
+<h2 id="complete-version-of-vecadd"><a class="header" href="#complete-version-of-vecadd">Complete Version of <code>vecAdd</code></a></h2>
+<p>Now we can write the complete version of <code>vecAdd</code>.</p>
+<pre><code class="language-c">void vecAdd(float* A, float* B, float* C, int n) {
+    int size = n * sizeof(float);
+    float *A_d, *B_d, *C_d;
+
+    cudaMalloc((void **) &amp;A_d, size);
+    cudaMalloc((void **) &amp;B_d, size);
+    cudaMalloc((void **) &amp;C_d, size);
+
+    cudaMemcpy(A_d, A, size, cudaMemcpyHostToDevice);
+    cudaMemcpy(B_d, B, size, cudaMemcpyHostToDevice);
+
+    vecAddKernel&lt;&lt;&lt;ceil(n / 256.0), 256&gt;&gt;&gt;(A_d, B_d, C_d, n);
+
+    cudaMemcpy(C, C_d, size, cudaMemcpyDeviceToHost);
+
+    cudaFree(A_d);
+    cudaFree(B_d);
+    cudaFree(C_d);
+}
+</code></pre>
+<p>Note that we call the kernel function with <code>vecAddKernel</code> and specify <span style="color:orange">execution configuration parameters</span> using the "&lt;&lt;&lt; &gt;&gt;&gt;" demarcators.</p>
+<ul>
+<li>The first parameter <code>ceil(n / 256.0)</code> gives the number of blocks in the grid
+<ul>
+<li>Using <code>ceil</code> ensures that we have <code>&gt;= n</code> threads</li>
+<li>Note that <code>256.0</code> is a float so that the division gives a float</li>
+</ul>
+</li>
+<li>The second specifies the number of threads in a block</li>
+</ul>
+<p>If we vary <code>n</code>, the number of thread blocks will vary. A small GPU may execute <code>2</code> thread blocks in parallel, larger GPUs may do <code>64</code> or <code>128</code> at a time.</p>
+<p>In reality, the sequential way of doing <code>vecAdd</code> will probably be faster than the CUDA way, due to the overheads of allocating memory, data transfer, deallocating memory etc. Real CUDA programs do a lot more computation within the kernel to make the overheads worth it.</p>
+<h2 id="compilation"><a class="header" href="#compilation">Compilation</a></h2>
+<p>A traditional C compiler will not work with CUDA code. We need to use NVCC (NVIDIA C Compiler). The host code portions are compiled with standard C/C++ compilers and run as traditional CPU process. The device code is compiled by NVCC into <code>.ptx</code> files which are further compiled by a runtime component of NVCC into real object files.</p>
+<h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
+<ol>
+<li>If we want to use each thread in a grid to calculate one output element of a vector addition, what would be the expression for mapping the thread/block indices to the data index (i)?</li>
+</ol>
+<pre><code class="language-c">i = blockIdx.x * blockDim.x + threadIdx.x;
+</code></pre>
+<ol start="2">
+<li>Assume that we want to use each thread to calculate two adjacent elements of a vector addition. What would be the expression for mapping the thread/block indices to the data index (i) of the first element to be processed by a thread?</li>
+</ol>
+<pre><code class="language-c">i = (blockIdx.x * blockDim.x + threadIdx.x) * 2; 
+</code></pre>
+<ol start="3">
+<li>We want to use each thread to calculate two elements of a vector addition. Each thread block processes 2*blockDim.x consecutive elements that form two sections. All threads in each block will process a section first, each processing one element. They will then all move to the next section, each Page 45processing one element. Assume that variable i should be the index for the first element to be processed by a thread. What would be the expression for mapping the thread/block indices to data index of the first element?</li>
+</ol>
+<pre><code class="language-c">i = blockIdx.x * blockDim.x * 2 + threadIdx.x;
+</code></pre>
+<ol start="4">
+<li>For a vector addition, assume that the vector length is 8000, each thread calculates one output element, and the thread block size is 1024 threads. The programmer configures the kernel call to have a minimum number of thread blocks to cover all output elements. How many threads will be in the grid?</li>
+</ol>
+<pre><code class="language-c">8192
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../pmpp/ch01.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../pmpp/ch01.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
