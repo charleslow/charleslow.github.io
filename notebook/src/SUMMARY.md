@@ -103,3 +103,4 @@
 - [PMPP](./pmpp/main.md)
     - [Introduction](./pmpp/ch01.md)
     - [Data Parallel Computing](./pmpp/ch02.md)
+    - [Multidimensional grids](./pmpp/ch03.md)

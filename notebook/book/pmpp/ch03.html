@@ -1,0 +1,331 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Multidimensional grids - Chux&#x27;s Notebook</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../katex.min.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Chux&#x27;s Notebook</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="03---multidimensional-grids"><a class="header" href="#03---multidimensional-grids">03 - Multidimensional grids</a></h1>
+<p>In the previous chapter we considered a simple 1D kernel. In general, a grid is a three-dimensional array of blocks, and each block is a 3D array of threads. We can specify them like so:</p>
+<pre><code class="language-c">dim3 dimGrid(32, 1, 1);
+dim3 dimBlock(128, 1, 1);
+vecAddKernel&lt;&lt;&lt;dimGrid, dimBlock&gt;&gt;&gt;(...)
+</code></pre>
+<p>This specifies a grid with <code>32</code> blocks and each block has <code>128</code> threads. So the total number of threads in the grid is <code>4,096</code>.</p>
+<p>Or we can let the variables be a function of something else, e.g. if <code>n</code> denotes the size of the vector:</p>
+<pre><code class="language-c">dim3 dimGrid(ceil(n/256.0), 1, 1);
+dim3 dimBlock(256, 1, 1);
+vecAddKernel&lt;&lt;&lt;dimGrid, dimBlock&gt;&gt;&gt;(...)
+</code></pre>
+<p>This fixes the number of threads per block at <code>256</code> and the number of blocks varies with the size of the vector.</p>
+<p>For convenience, if we are specifying 1D grids and blocks, we can just use a single number to represent it.</p>
+<p>In CUDA C, the allowable range of values:</p>
+<ul>
+<li><code>gridDim.x</code> varies from <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> to <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8974em;vertical-align:-0.0833em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">31</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span></li>
+<li><code>gridDim.y</code>, <code>gridDim.z</code> varies from <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> to <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8974em;vertical-align:-0.0833em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">16</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">65</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">535</span></span></span></span></li>
+<li>Consequently, <code>blockDim.x</code> ranges from <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span> to <code>gridDim.x-1</code> and so on</li>
+</ul>
+<p>The total size of a block in current CUDA systems is limited to <code>1024</code> threads. These threads can be distributed across three dimensions in any way as long as the total number of threads does not exceed <code>1024</code>.</p>
+<p>The dimensions of the number of blocks in a grid and the dimensions of the number of threads in a block need not match up.</p>
+<p>Sometimes, we need to refer to the index of a specific block in the grid or a specific thread in a block. The idiomatic way is:</p>
+<ul>
+<li>Block: <code>(blockIdx.z, blockIdx.y, blockIdx.x)</code></li>
+<li>Thread: <code>(threadIdx.z, threadIdx.y, threadIdx.z)</code></li>
+</ul>
+<p>Notice that the order of the index is reverse to the order of specifying the <code>dimGrid</code> or <code>dimBlock</code>. There is some reason for this, although it is not clear to me right now.</p>
+<h2 id="mapping-threads-to-multidimensional-data"><a class="header" href="#mapping-threads-to-multidimensional-data">Mapping Threads to Multidimensional Data</a></h2>
+<p>The choice of 1D, 2D or 3D thread organization is usually based on the nature of the data. For example, pictures are 2D and so it is conventional to choose 2D arrangements.</p>
+<p>Suppose we have a picture with <code>62 x 76</code> pixels, i.e. <code>62</code> in the <code>y</code> dimension and <code>76</code> in the <code>x</code> dimension. Assume we use a <code>16 x 16</code> block, with <code>16</code> threads in the <code>x, y</code> dimensions respectively. We will thus need <code>4</code> blocks in the <code>y</code> direction, and <code>5</code> blocks in the <code>x</code> direction. So for each thread:</p>
+<ul>
+<li>The vertical (row) coordinate is: <code>row = blockIdx.y * blockDim.y + threadIdx.y</code></li>
+<li>The horizontal (column) coordinate is: <code>col = blockIdx.x * blockDim.x + threadIdx.x</code></li>
+</ul>
+<p>How does the kernel call look like? Suppose we have:</p>
+<ul>
+<li><code>n</code> represents number of pixels in the <code>y</code> direction</li>
+<li><code>m</code> represents the number of pixels in the <code>x</code> direction</li>
+<li>The picture data has been copied to device memory stored at pointer <code>Pin_d</code></li>
+</ul>
+<p>Then the host code looks like:</p>
+<pre><code class="language-c">dim3 dimGrid(ceil(m/16.0), ceil(n/16.0), 1);
+dim3 dimBlock(16, 16, 1);
+colorToGrayScaleConversion&lt;&lt;&lt;dimGrid, dimBlock&gt;&gt;&gt;(Pin_d, Pout_d, m, n);
+</code></pre>
+<h2 id="memory-layout"><a class="header" href="#memory-layout">Memory Layout</a></h2>
+<p>Given that we have computed the row and col coordinates for each thread, ideally we would access the elements of <code>Pin_d</code> like <code>Pin_d[row][col]</code>. Unfortunately C does not allow us to do this - we are only allowed to access it as a 2D array in this manner if the dimensions of <code>Pin_d</code> is known at compile time.</p>
+<blockquote>
+<p><strong>Memory Space</strong>. A memory space is a simplified view of how a processor accesses its memory. A memory space is usually associated with each running application. Each location has a byte and an address. Variables that need multiple bytes are stored in consecutive byte locations.</p>
+<p>Since there is only one address for each location, we say that the memory space has a flat layout. Thus, all multidimensional arrays are ultimately flattened into equivalent one dimensional arrays. When a C programmer uses multidimensional syntax to access an element, the transpiler is really translating these accesses into a 1D base pointer.</p>
+</blockquote>
+<p>Hence, the CUDA programmer needs to explicitly linearize the 2D accesses into a 1D access. There are two ways to do this:</p>
+<ul>
+<li><span style="color:orange">row-major layout</span>: rows are placed one after another consecutively in memory space</li>
+<li><span style="color:orange">column-major layout</span>: columns are placed one after another consecutively in memory space</li>
+</ul>
+<p>CUDA C uses the row-major layout; an example of the column-major layout is FORTRAN. We will thus focus on the row major layout.</p>
+<p>Let us denote the element of interest as <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span><span class="mpunct mtight">,</span><span class="mord mathnormal mtight">i</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span>, i.e. the element with <code>y</code> coordinate <code>j</code> and <code>x</code> coordinate <code>i</code>. Suppose <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span></span></span></span> is <code>4 x 4</code> and linearized into <code>16</code> element 1D array. In the flattened row-major layout, we access <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span><span class="mpunct mtight">,</span><span class="mord mathnormal mtight">i</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span> using:</p>
+<pre><code>j * 4 + i 
+</code></pre>
+<p>Now we'll tackle the 2D version of <code>colorToGrayscaleConversion</code>.</p>
+<pre><code class="language-c">__global__
+void colorToGrayscaleConversion(unsigned char * Pout, 
+            unsigned char * Pin, int width, int height) {
+    int col = blockIdx.x * blockDim.x + threadIdx.x;
+    int row = blockIdx.y * blockDim.y + threadIdx.y;
+    if (col &lt; width &amp;&amp; row &lt; height) {
+        int grayOffset = row*width + col;
+        int rgbOffset = grayOffset * CHANNELS;
+        unsigned char r = Pin[rgbOffset];
+        unsigned char g = Pin[rgbOffset + 1];
+        unsigned char b = Pin[rgbOffset + 2];
+        Pout[grayOffset] = 0.21f*r + 0.71f*g + 0.07f*b;
+    }
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Note that the input image is encoded as unsigned chars, since they encode a value from <code>0-255</code>
+<ul>
+<li>Each pixel is represented as <code>3</code> consecutive chars representing the <code>3</code> channels</li>
+<li>Thus pixel <code>i</code> starts at the char located at <code>i*3</code> position</li>
+</ul>
+</li>
+<li>We first compute <code>grayOffset</code>, which corresponds to the location for the pixel we are processing</li>
+<li><code>rgbOffset</code> is <code>3x grayOffset</code> because each pixel has 3 unsigned chars in the input image</li>
+<li>After extracting the <code>r, g, b</code> values from the input image, we compute and store the gray intensity into <code>Pout</code> using the linearized 1D acess <code>grayOffset</code></li>
+</ul>
+<h2 id="3d-arrays"><a class="header" href="#3d-arrays">3D arrays</a></h2>
+<p>We can easily extend the discussion of 2D arrays into 3D. The idea is that the <code>x * y</code> coordinates form a plane, and we insert each "plane" one after another into the address space.</p>
+<ul>
+<li>This means that we track a new
+<pre><code class="language-c">int plane = blockIdx.z * blockDim.z + threadIdx.z
+</code></pre>
+</li>
+<li>And access the 1D index as
+<pre><code class="language-c">P[plane*m*n + row*m + col]
+</code></pre>
+</li>
+</ul>
+<h2 id="image-blur"><a class="header" href="#image-blur">Image Blur</a></h2>
+<p>Image blurring is closer to a real world example. The idea of blurring is to smooth out abrupt variations in pixel values. Mathematically, it is just computing the value of an output pixel as a weightedsum of a patch of pixels surrounding the pixel in the input image. In our simple example, we will take the simple average value of the <code>N x N</code> patch of pixels surrounding our target pixel.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../pmpp/ch02.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../pmpp/ch02.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
