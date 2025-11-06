@@ -413,6 +413,66 @@ void vecAddKernel(float* A, float* B, float* C, int n) {
 </ol>
 <pre><code class="language-c">8192
 </code></pre>
+<ol start="5">
+<li>If we want to allocate an array of v integer elements in the CUDA device global memory, what would be an appropriate expression for the second argument of the cudaMalloc call?</li>
+</ol>
+<pre><code class="language-c">v * sizeof(int)
+</code></pre>
+<ol start="6">
+<li>If we want to allocate an array of n floating-point elements and have a floating-point pointer variable A_d to point to the allocated memory, what would be an appropriate expression for the first argument of the cudaMalloc() call?</li>
+</ol>
+<pre><code class="language-c">(void **) &amp;A_d
+</code></pre>
+<ol start="7">
+<li>If we want to copy 3000 bytes of data from host array A_h (A_h is a pointer to element 0 of the source array) to device array A_d (A_d is a pointer to element 0 of the destination array), what would be an appropriate API call for this data copy in CUDA?</li>
+</ol>
+<pre><code class="language-c">cudaMemcpy(A_d, A_h, 3000, cudaMemcpyHostToDevice)
+</code></pre>
+<ol start="8">
+<li>How would one declare a variable err that can appropriately receive the returned value of a CUDA API call?</li>
+</ol>
+<pre><code class="language-c">cudaError_t err;
+</code></pre>
+<ol start="9">
+<li>Consider the following CUDA kernel and the corresponding host function that calls it:</li>
+</ol>
+<pre><code class="language-c">01 __global__ void foo_kernel(float* a, float* b, unsigned int N){
+02     unsigned int i=blockIdx.x*blockDim.x + threadIdx.x;
+03     if(i &lt; N) {
+04         b[i]=2.7f*a[i] - 4.3f;
+05     }
+06 }
+07 void foo(float* a_d, float* b_d) {
+08     unsigned int N=200000;
+09     foo_kernel &lt;&lt;&lt; (N + 128–1)/128, 128 &gt;&gt;&gt;(a_d, b_d, N);
+10 }
+</code></pre>
+<p>a. What is the number of threads per block?</p>
+<pre><code>128
+</code></pre>
+<p>b. What is the number of threads in the grid?</p>
+<pre><code>1,563 * 128 = 200,064
+</code></pre>
+<p>c. What is the number of blocks in the grid?</p>
+<pre><code>1,563
+</code></pre>
+<p>d. What is the number of threads that execute the code on line 02?</p>
+<pre><code>200,064
+</code></pre>
+<p>e. What is the number of threads that execute the code on line 04?</p>
+<pre><code>200,000
+</code></pre>
+<ol start="10">
+<li>A new summer intern was frustrated with CUDA. He has been complaining that CUDA is very tedious. He had to declare many functions that he plans to execute on both the host and the device twice, once as a host function and once as a device function. What is your response?</li>
+</ol>
+<pre><code>We can use dual qualifiers to declare a function that works on both host and device.
+
+e.g.
+__host__ __device__
+void myFunction(...) {
+    // shared logic usable on both host and device
+}
+</code></pre>
 
                     </main>
 
