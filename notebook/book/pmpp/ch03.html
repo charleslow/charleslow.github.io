@@ -280,6 +280,237 @@ void colorToGrayscaleConversion(unsigned char * Pout,
 </ul>
 <h2 id="image-blur"><a class="header" href="#image-blur">Image Blur</a></h2>
 <p>Image blurring is closer to a real world example. The idea of blurring is to smooth out abrupt variations in pixel values. Mathematically, it is just computing the value of an output pixel as a weightedsum of a patch of pixels surrounding the pixel in the input image. In our simple example, we will take the simple average value of the <code>N x N</code> patch of pixels surrounding our target pixel.</p>
+<p>Similar to before, each thread will handle one output pixel. Thus much of the code will resemble that in the grayscale example.</p>
+<pre><code class="language-c">__global__
+void blurKernel(unsigned char *in, unsigned char *out, int w, int h) {
+    int col = blockIdx.x * blockDim.x + threadIdx.x;
+    int row = blockIdx.y * blockDim.y + threadIdx.y;
+    if (col &lt; w &amp;&amp; row &lt; h) {
+        int pixVal = 0;
+        int pixels = 0;
+        for (int blurRow=-BLUR_SIZE; blurRow&lt;BLUR_SIZE+1; ++blurRow) {
+            for (int blurCol=-BLUR_SIZE; blurCol&lt;BLUR_SIZE+1; ++blurCol) {
+                int curRow = row + blurRow;
+                int curCol = col + blurCol;
+                if (curRow&gt;=0 &amp;&amp; curRow&lt;h &amp;&amp; curCol&gt;=0 &amp;&amp; curCol&lt;w) {
+                    pixVal += in[curRow*w + curCol];
+                    ++pixels;
+                }
+            }
+        }
+        out[row*w + col] = (unsigned char) (pixVal/pixels);
+    }
+}
+</code></pre>
+<p>Code walkthrough</p>
+<ul>
+<li><code>in</code> and <code>out</code> point to the input and output pixel representation of the same size</li>
+<li>The <code>row</code> and <code>col</code> indices are derived as per normal from <code>blockIdx</code> and <code>threadIdx</code></li>
+<li><code>pixVal</code> stores the accumulated intensity, <code>pixels</code> stores the number of valid pixels
+<ul>
+<li>e.g. near the edge, <code>pixels</code> might not represent the full square patch</li>
+</ul>
+</li>
+<li>At each pixel location <code>in[row, col]</code>, we create a nested for loop to look up a square patch around the pixel
+<ul>
+<li>e.g. <code>BLUR_SIZE=1</code> will walk through a <code>3x3</code> patch around the centre pixel</li>
+<li>Notice that instead of a 2D index, we need to linearize into row-major form, i.e. <code>in[curRow*w + curCol]</code></li>
+<li>We accumulate intensity values into <code>pixVal</code> and count pixels walked in <code>pixels</code></li>
+<li>Finally we assign the average intensity into the corresponding location in <code>out</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="matrix-multiplication"><a class="header" href="#matrix-multiplication">Matrix Multiplication</a></h2>
+<p>Matrix multiplication is an important component of Basic Linear Algebra Subprograms (BLAS). Matrix multiplication between an <code>I x j</code> matrix <code>M</code> and a <code>j x k</code> matrix <code>N</code> produces a <code>I x k</code> matrix <code>P</code>. For simplicity, let's consider the case where both <code>N</code> and <code>M</code> are square with <code>Width</code> dimensions.</p>
+<pre><code class="language-c">__global__ void MatrixMulKernel (float* M, float* N, float* P, int Width) {
+    int row = blockIdx.y*blockDim.y + threadIdx.y;
+    int col = blockIdx.x*blockDim.x + threadIdx.x;
+    if ((row &lt; Width) &amp;&amp; (col &lt; Width)) {
+        float Pvalue = 0;
+        for (int k = 0; k &lt; Width; ++k) {
+            Pvalue += M[row*Width + k] * N[k*Width + col];
+        }
+        P[row*Width + col] = Pvalue;
+    }
+}
+</code></pre>
+<p>Code walkthrough:</p>
+<ul>
+<li><code>row</code> and <code>col</code> are derived as per usual
+<ul>
+<li>For one position in the output matrix <code>P[row, col]</code></li>
+<li>We dot product <code>M[row, :]</code> with <code>N[:, col]</code></li>
+</ul>
+</li>
+<li>The inner index <code>k</code> loops through the columns of <code>M</code> and the rows of <code>N</code> to compute the dot product</li>
+<li>Note the row-major linearized accesses to <code>M</code>, <code>N</code> and <code>P</code></li>
+</ul>
+<p>Note that for a given block of threads, it will process some contiguous rows from <code>M</code> and some contiguous columns from <code>N</code>. This means that visually, each block will process a tile of elements in the output matrix <code>P</code>.</p>
+<h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
+<blockquote>
+<ol>
+<li>In this chapter we implemented a matrix multiplication kernel that has each thread produce one output matrix element. In this question, you will implement different matrix-matrix multiplication kernels and compare them.</li>
+</ol>
+<p>a. Write a kernel that has each thread produce one output matrix row. Fill in the execution configuration parameters for the design.</p>
+</blockquote>
+<p>Suppose we have input matrices <code>M</code> and <code>N</code> which are both square with width <code>Width</code>. Since each thread does a whole row, we just need to use one row of <code>M</code> per thread but work through the entire <code>N</code> matrix.</p>
+<p>The configuration parameters would be <code>MatrixMulKernelRowWise&lt;&lt;&lt;ceil(Width / n_threads), n_threads&gt;&gt;&gt;</code>, since we just need one thread per row of <code>M</code>.</p>
+<pre><code class="language-c">__global__ void MatrixMulKernelRowWise (float* M, float* N, float* P, int Width) {
+    int row = blockIdx.x*blockDim.x + threadIdx.x;
+    if (row &lt; Width) {
+        for (int col = 0; col &lt; Width; ++col) {
+            float Pvalue = 0;
+            for (int k = 0; k &lt; Width; ++k) {
+                Pvalue += M[row*Width + k] * N[k*Width + col];
+            }
+            P[row*Width + col] = Pvalue;
+        }
+    }
+}
+</code></pre>
+<blockquote>
+<p>b. Write a kernel that has each thread produce one output matrix column. Fill in the execution configuration parameters for the design.</p>
+</blockquote>
+<p>This is very similar, except that we work through the whole <code>M</code> matrix and only use a single column from <code>N</code>.</p>
+<p>The configuration parameters would be <code>MatrixMulKernelColWise&lt;&lt;&lt;ceil(Width / n_threads), n_threads&gt;&gt;&gt;</code>, since we just need one thread per col of <code>N</code>.</p>
+<pre><code class="language-c">__global__ void MatrixMulKernelColWise (float* M, float* N, float* P, int Width) {
+    int col = blockIdx.x*blockDim.x + threadIdx.x;
+    if (col &lt; Width) {
+        for (int row = 0; row &lt; Width; ++row) {
+            float Pvalue = 0;
+            for (int k = 0; k &lt; Width; ++k) {
+                Pvalue += M[row*Width + k] * N[k*Width + col];
+            }
+            P[row*Width + col] = Pvalue;
+        }
+    }
+}
+</code></pre>
+<blockquote>
+<p>c. Analyze the pros and cons of each of the two kernel designs.</p>
+</blockquote>
+<p>Not very sure about this, but my thinking is that the row-wise version is more efficient. Note that access to <code>N</code> is strided in both cases, so the difference is in how we access <code>M</code>.</p>
+<p>Since each thread processes one row of <code>M</code>, we get the following:</p>
+<ul>
+<li>thread 1 accesses <code>M[0, 0]</code>. Increment <code>k</code> and we access <code>M[0, 1]</code>, which is the next element in memory layout.</li>
+<li>thread 2 accesses <code>M[1, 0]</code>. Increment <code>k</code> and we access <code>M[1, 1]</code>, which is next element in memory layout</li>
+</ul>
+<blockquote>
+</blockquote>
+<p>So as we increment <code>k</code>, each thread can benefit from its local cache and read consecutive elements efficiently.</p>
+<p>In contrast, for col-wise:</p>
+<ul>
+<li>We start at row <code>0</code>, and all threads access <code>M[0, 0]</code>. The access is efficient as we increment <code>k</code>.</li>
+<li>But for each subsequent row, we need to read a row of <code>M</code> from global memory again</li>
+<li>So we incur much more global memory accesses than the row-wise approach</li>
+</ul>
+<blockquote>
+<ol start="2">
+<li>A matrix-vector multiplication takes an input matrix B and a vector C and produces one output vector A. Each element of the output vector A is the dot product of one row of the input matrix B and C, that is, <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">A</span><span class="mopen">[</span><span class="mord mathnormal">i</span><span class="mclose">]</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1858em;vertical-align:-0.4358em;"></span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.162em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.4358em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mopen">[</span><span class="mord mathnormal">i</span><span class="mclose">]</span><span class="mopen">[</span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span><span class="mclose">]</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mopen">[</span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span><span class="mclose">]</span></span></span></span>. For simplicity we will handle only square matrices whose elements are single-precision floating-point numbers. Write a matrix-vector multiplication kernel and the host stub function that can be called with four parameters: pointer to the output matrix, pointer to the input matrix, pointer to the input vector, and the number of elements in each dimension. Use one thread to calculate an output vector element.</li>
+</ol>
+</blockquote>
+<p>Assuming that <code>B</code> has dimensions <code>h x w</code> and thus <code>C</code> has dimension <code>w</code>. Each thread processes one row of <code>B</code> and the entire <code>C</code> vector.</p>
+<pre><code class="language-c">__global__ void MatrixVectorMulKernel(float* A, float* B, float* C, int w, int h) {
+    int row = blockIdx.x*blockDim.x + threadIdx.x;
+    if (row &lt; h) {
+        float Pvalue = 0;
+        for (int col = 0; col &lt; w; ++col) {
+            Pvalue += B[row*w + col] * C[col];
+        }
+        A[row] = Pvalue;
+    }
+}
+void matrixVectorMul(float* A, float* B, float* C, int w, int h) {
+    int sizeA = h * sizeof(float);
+    int sizeB = h * w * sizeof(float);
+    int sizeC = w * sizeof(float);
+    float *A_d, *B_d, *C_d;
+
+    cudaMalloc((void **) &amp;A_d, sizeA);
+    cudaMalloc((void **) &amp;B_d, sizeB);
+    cudaMalloc((void **) &amp;C_d, sizeC);
+
+    cudaMemcpy(B_d, B, sizeB, cudaMemcpyHostToDevice);
+    cudaMemcpy(C_d, C, sizeC, cudaMemcpyHostToDevice);
+    
+    int block_dim = 256;
+    int grid_dim = (h + block_dim - 1) / block_dim
+    MatrixVectorMulKernel&lt;&lt;&lt;grid_dim, block_dim&gt;&gt;&gt;(A_d, B_d, C_d, w, h);
+
+    cudaMemcpy(A, A_d, sizeA, cudaMemcpyDeviceToHost);
+    cudaFree(A_d);
+    cudaFree(B_d);
+    cudaFree(C_d);
+}
+</code></pre>
+<blockquote>
+<ol start="3">
+<li>Consider the following CUDA kernel and the corresponding host function that calls it:</li>
+</ol>
+</blockquote>
+<pre><code class="language-c">__global__ void foo_kernel(float* a, float* b, unsigned int M, unsigned int N) {
+    unsigned int row = blockIdx.y * blockDim.y + threadIdx.y;
+    unsigned int col = blockIdx.x * blockDim.x + threadIdx.x;
+    if (row &lt; M &amp;&amp; col &lt; N) {
+        b[row * N + col] = a[row * N + col] / 2.1f + 4.8f;
+    }
+}
+
+void foo(float* a_d, float* b_d) {
+    unsigned int M = 150;
+    unsigned int N = 300;
+    dim3 bd(16, 32);
+    dim3 gd((N - 1) / 16 + 1, (M - 1) / 32 + 1);
+    foo_kernel&lt;&lt;&lt;gd, bd&gt;&gt;&gt;(a_d, b_d, M, N);
+}
+</code></pre>
+<blockquote>
+<p>a. What is the number of threads per block?</p>
+</blockquote>
+<p><code>512</code></p>
+<blockquote>
+<p>b. What is the number of threads in the grid?</p>
+</blockquote>
+<p>We have <code>gd(19, 5)</code>, so <code>95</code> blocks per grid. <code>95 x 512 = 48,640</code> threads per grid.</p>
+<blockquote>
+<p>c. What is the number of blocks in the grid?</p>
+</blockquote>
+<p><code>95</code></p>
+<blockquote>
+<p>d. What is the number of threads that execute the code on line 05?</p>
+</blockquote>
+<p><code>150 x 300 = 45,000</code></p>
+<blockquote>
+<ol start="4">
+<li>Consider a 2D matrix with a width of 400 and a height of 500. The matrix is stored as a one-dimensional array. Specify the array index of the matrix element at row 20 and column 10:</li>
+</ol>
+</blockquote>
+<blockquote>
+<p>a. If the matrix is stored in row-major order.</p>
+</blockquote>
+<p>Each row is appended subsequent to each other, so we have <code>20 * 400 + 10 = 8010</code>.</p>
+<blockquote>
+<p>b. If the matrix is stored in column-major order.</p>
+</blockquote>
+<p>Each column is appended subsequent to each other, so we have <code>10 * 500 + 20 = 5020</code>.</p>
+<blockquote>
+<ol start="5">
+<li>Consider a 3D tensor with a width of 400, a height of 500, and a depth of 300. The tensor is stored as a one-dimensional array in row-major order. Specify the array index of the tensor element at x=10, y=20, and z=5.</li>
+</ol>
+</blockquote>
+<p>In row-major format, for an array <code>A[z, y, x]</code>, the rightmost index changes fastest. Suppose we have <code>10</code> in each dimension. Then we go:</p>
+<ul>
+<li><code>A[0, 0, 0]</code> to <code>A[0, 0, 1]</code> etc.</li>
+<li>Then <code>A[0, 0, 9]</code> to <code>A[0, 1, 0]</code> when the <code>y</code> dimension changes</li>
+<li>Then <code>A[0, 9, 9]</code> to <code>A[1, 0, 0]</code> when the <code>z</code> dimension changes</li>
+</ul>
+<p>So to locate <code>A[5, 20, 10]</code>:</p>
+<ul>
+<li>First we find the start of the relevant plane <code>5 * 500 * 400</code></li>
+<li>Then within this plane, we find the start of the relevant row <code>20 * 400</code></li>
+<li>Then within this row, we find the element <code>10</code></li>
+</ul>
+<p>So the answer is the sum of all these: <code>1,008,010</code>.</p>
 
                     </main>
 
