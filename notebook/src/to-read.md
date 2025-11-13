@@ -128,3 +128,5 @@
 - [Why LMs Hallucinate](https://arxiv.org/abs/2509.11208)
 - [LMs are Bayesian in Expectation, not Realization](https://arxiv.org/abs/2507.11768)
 - [GEPA](https://arxiv.org/abs/2507.19457)
+- [In Context Learning as Implicit Bayesian Inference](https://arxiv.org/abs/2111.02080)
+- [SPLADE](https://arxiv.org/abs/2107.05720)

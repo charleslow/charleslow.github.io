@@ -1,0 +1,437 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Compute Architecture - Chux&#x27;s Notebook</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../katex.min.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Chux&#x27;s Notebook</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="compute-architecture"><a class="header" href="#compute-architecture">Compute Architecture</a></h1>
+<p>This chapter elaborates on aspects of the GPU compute architecture that are important for CUDA programmers to reason about.</p>
+<h2 id="architecture"><a class="header" href="#architecture">Architecture</a></h2>
+<p>A GPU is organized into an array of Streaming Multiprocessors (SMs).</p>
+<ul>
+<li>e.g. A100 has <code>108</code> SMs</li>
+</ul>
+<p>Each SM has several processing units called streaming processors or just CUDA cores. These cores share control logic and memory resources</p>
+<ul>
+<li>e.g. A100 has <code>64</code> cores per SM, so <code>6,912</code> cores in the GPU</li>
+</ul>
+<p>In terms of memory:</p>
+<ul>
+<li>Each SM has a set of on-chip memory structures collectively called <span style="color:orange">Memory</span></li>
+<li>All SMs also have access to gigabytes of off-chip device memory, called <span style="color:orange">Global Memory</span></li>
+<li>For recent GPUs, these are HBM or HBM2</li>
+<li>We will refer to this as DRAM (dynamic random access memory)</li>
+</ul>
+<h2 id="block-scheduling"><a class="header" href="#block-scheduling">Block Scheduling</a></h2>
+<p>When a kernel is called, a grid of threads is launched. These threads are assigned to SMs on a block by block basis, i.e. all threads in a block are simultaneously assigned to the same SM.</p>
+<p>Usually, multiple blocks are simultaneously assigned to one SM. The number of blocks that can be processed at the same time by an SM depends on hardware constraints.</p>
+<p>This means that there is a limit on the number of blocks that are simultaneously executing on a CUDA GPU. The runtime system needs to maintain a list of blocks to execute and assign new blocks to SMs that have finished execution.</p>
+<p>Since we are guaranteed that all threads on the same block are assigned to the same SM, it is possible for these threads on the same block to interact with each other. One interaction is <span style="color:orange">barrier synchronization</span>.</p>
+<h2 id="synchronization"><a class="header" href="#synchronization">Synchronization</a></h2>
+<p>There is a <code>__syncthreads()</code> function to coorindate activities between threads in the same block. When a thread calls it, it will be held at the program location of the call until every thread in the block reaches that location.</p>
+<p><strong>Each <code>__syncthreads</code> call must be executed by all threads in a block</strong>. If we use control flows like <code>if-else</code>, each <code>__syncthreads</code> call is considered a different barrier. Hence, if some threads go through the <code>if</code> branch and others the <code>else</code> branch, we can end in a deadlock as we never reach the state where <em>all</em> threads hit the same <code>__syncthreads</code> call.</p>
+<p>Note that by design, threads in different blocks cannot perform barrier synchronization with each other. This means that CUDA runtime can execute blocks in any order. This flexibility allows the runtime to efficiently allocate blocks to SMs according the GPU capacity.</p>
+<h2 id="warps-and-simd"><a class="header" href="#warps-and-simd">Warps and SIMD</a></h2>
+<p>Here we go into further details on thread scheduling within a block. When a block is assigned to an SM, it gets further divided into 32-thread units called <span style="color:orange">warps</span>. Each warp comprises <code>32</code> threads of consecutive <code>threadIdx</code> values.</p>
+<ul>
+<li>threads <code>0-31</code> form the first warp</li>
+<li>threads <code>32-63</code> form the next warp etc.</li>
+<li>If the number of threads is not a multiple of <code>32</code>, the warp will be padded with extra dormant threads to complete the warp</li>
+</ul>
+<p>Blocks are partitioned into warps based on thread indices. If the blockDim is one-dimensional, the partitioning and ordering is trivial. If there are two or three dimensions, the thread indices will be linearized using a <span style="color:orange">row-major</span> layout before partitioning and ordering into warps.</p>
+<p>An SM is designed to execute all threads in a warp following the Single Instruction, Multiple Data (SIMD) model. This means that at any point in time, a single instruction is fetched and executed for all threads in a warp (for the most part, common exception is conditional branches).</p>
+<ul>
+<li>For e.g., the A100 SM has <code>64</code> cores, split into <code>4</code> processing blocks with <code>16</code> cores each. Threads in the same warp get assigned to the same processing block, which fetches one instruction and executes it for all <code>32</code> threads simultaneously.</li>
+</ul>
+<p>The advantage of SIMD is that the cost of the control hardware (the instruction fetch/dispatch unit) is shared across many execution units. This allows for a smaller percentage of the hardware to be dedicated to control flow.</p>
+<h2 id="control-divergence"><a class="header" href="#control-divergence">Control Divergence</a></h2>
+<p>In the case of control divergence, i.e. <code>if-else</code> statements exist in the kernel code which depends on <code>threadIdx</code>, then the SIMD model breaks down. To accommodate such cases, the runtime makes multiple passes through each branch.</p>
+<p>For example if we do <code>if (threadIdx.x &lt; 24)</code>, then one pass is done to compute those threads below the threshold, and another pass for those above the threshold. The threads which are not executing at any point in time are just put on hold / held inactive. The threads then reconverge after the conditional statement and continue executing.</p>
+<p>Another example is to control the number of loops based on data:</p>
+<pre><code class="language-c">N = a[threadIdx.x];
+for (i=0; i &lt; N; ++i) {
+    // do something
+}
+</code></pre>
+<p>The cost we pay for this flexibility is the extra number of passes we need to make.</p>
+<p>The most common example of control divergence is handling boundary conditions due to the number of data points not being a multiple of the number of threads. For this case, only the last boundary case has control divergence. Hence when the size of data is large, the effects of control divergence is minimal.</p>
+<p>An important implication of control divergence is that <span style="color:orange">one cannot assume that all threads in a warp have the same execution timing</span>. Hence we must use <code>__syncwarp</code> if we are depending on such behaviour.</p>
+<h2 id="warp-scheduling-and-latency-tolerance"><a class="header" href="#warp-scheduling-and-latency-tolerance">Warp Scheduling and Latency Tolerance</a></h2>
+<p>When assigning threads to SMs, we usually assign far more threads than cores available on the SM. A natural question to ask is whether we should just assign the number of threads to be equal to the number of cores at each request?</p>
+<p>It turns out that having many threads (or warps) waiting around for execution on SMs is an important feature for GPUs to <span style="color:orange">tolerate long latency operations</span> like reading from global memory.</p>
+<p>When a warp of threads arrives at an SM and it is not ready for execution (as it is waiting for the result of a previously initiated memory access operation), the warp is not selected. Instead the SM will select another warp that is ready for execution. This mechanism allows the SM to "hide" the latency of long latency operations and fill it with meaningful work.</p>
+<p>This dynamic scheduling of warps is made even more efficient due to <span style="color:orange">zero-overhead scheduling</span> design of GPUs. In CPUs, context switching is more expensive because when switching context from a thread that is waiting to a thread that is ready to make progress, some work needs to be done to save and restore register contents, adding significant overhead.</p>
+<p>In GPUs, because SMs hold all the execution states of assigned warps in the hardware registers, there is very little overhead in switching between warps. Since GPUs can effectively "hide" the latency of long latency operations, GPUs dedicate less chip area to latency-reduction mechanisms like cache memories and branch prediction mechanisms, allowing them to focus more on floating point execution and large bandwidth memory access.</p>
+<h2 id="occupancy"><a class="header" href="#occupancy">Occupancy</a></h2>
+<p>As we saw, over-subscription of warps to SMs is key for tolerating long latency operations. Hence, the goal is to maximize the number of warps assigned to an SM.</p>
+<blockquote>
+<p><strong>Occupancy</strong>. The ratio of the number of warps assigned to an SM over the maximum number of warps an SM supports is refrred to as occupancy.</p>
+</blockquote>
+<p>Due to different limits on resource allocation, an inefficient configuration can lead to under-utilization and sub-optimal occupancy. For example, the A100 has the following limits:</p>
+<ul>
+<li>Up to <code>32</code> blocks per SM</li>
+<li>Up to <code>64</code> warps per SM</li>
+<li>i.e. up to <code>2,048</code> thread slots per SM</li>
+<li>Up to <code>1,024</code> threads per block</li>
+</ul>
+<p>If we set <code>block_size=512</code>, <code>num_blocks=4</code>, then we get to max out our thread slots at <code>2,048</code></p>
+<p>But if we set <code>block_size=32</code>, and maximize the number of blocks at <code>num_blocks=32</code>, we only utilize <code>1,024</code> thread slots. Because we utilized too few threads per block, we end up with only <code>50%</code> occupancy.</p>
+<p>Anoter scenario for under-utilization is when the number of threads per block is not divisible by the block size. For example, if we choose <code>block_size=768</code>, then the maximum <code>num_blocks=2</code>. This results in <code>1,536 / 2,048 = 75%</code> occupancy.</p>
+<p>Another factor that may lower occupancy is the <span style="color:orange">impact of register usage</span>. The A100 has a maximum of <code>65,536</code> registers per SM, so to run at full occupancy, we can only support <code>65,536 / 2,048 = 32</code> registers per thread. If our kernel code uses <code>64</code> registers, then the maximum occupancy we can achieve is <code>1,024 / 2,048 = 50%</code> regardless of the block size.</p>
+<h2 id="querying-device-properties"><a class="header" href="#querying-device-properties">Querying device properties</a></h2>
+<p>Get number of CUDA devices in the system:</p>
+<pre><code class="language-c">int devCount;
+cudaGetDeviceCount(&amp;devCount);
+</code></pre>
+<p>Get device properties:</p>
+<pre><code class="language-c">cudaDeviceProp devProp;
+for (unsigned int i = 0; i &lt; devCount; i++) {
+    cudaGetDeviceProperties(&amp;devProp, i);
+    // Do something with devProp
+}
+</code></pre>
+<p>Some attributes of <code>devProp</code>:</p>
+<ul>
+<li><code>devProp.maxThreadsPerBlock</code> gives the maximum number of threads allowed in a block in the device.</li>
+<li><code>devProp.multiProcessorCount</code> gives the number of SMs in the device</li>
+<li><code>devProp.clockRate</code> gives the clock frequency of the device</li>
+<li><code>devProp.maxThreadsDim[0]</code> gives the maximum number of threads in the x dimension. Use <code>1</code> for y dimension and <code>2</code> for z dimension.</li>
+<li><code>devProp.maxGridSize[0]</code> similarly gives the maximum number of blocks in the x dimension in the grid.</li>
+<li><code>devProp.regsPerBlock</code> gives the number of registers that are available in each SM. The name is a minomer - it is usually equivalent to the number of registers per SM as well.</li>
+<li><code>devProp.warpSize</code> gives the size of a warp.</li>
+</ul>
+<h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
+<blockquote>
+<ol>
+<li>Consider the following CUDA kernel and the corresponding host function that calls it:</li>
+</ol>
+</blockquote>
+<pre><code class="language-c">__global__ void foo_kernel(int* a, int* b) {
+    unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
+    if (threadIdx.x &lt; 40 || threadIdx.x &gt;= 104) {
+        b[i] = a[i] + 1;
+    }
+    if (i % 2 == 0) {
+        a[i] = b[i] * 2;
+    }
+    for (unsigned int j = 0; j &lt; 5 - (i % 3); ++j) {
+        b[i] += j;
+    }
+}
+
+void foo(int* a_d, int* b_d) {
+    unsigned int N = 1024;
+    foo_kernel&lt;&lt;&lt; (N + 128 - 1) / 128, 128 &gt;&gt;&gt;(a_d, b_d);
+}
+</code></pre>
+<blockquote>
+<p>a. What is the number of warps per block?</p>
+</blockquote>
+<blockquote>
+<p>b. What is the number of warps in the grid?</p>
+</blockquote>
+<blockquote>
+<p>c. For the statement on line 04:</p>
+<ul>
+<li>How many warps in the grid are active?</li>
+<li>How many warps in the grid are divergent?</li>
+<li>What is the SIMD efficiency (in %) of warp 0 of block 0?</li>
+<li>What is the SIMD efficiency (in %) of warp 1 of block 0?</li>
+<li>What is the SIMD efficiency (in %) of warp 3 of block 0?</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>d. For the statement on line 07:</p>
+<ul>
+<li>How many warps in the grid are active?</li>
+<li>How many warps in the grid are divergent?</li>
+<li>What is the SIMD efficiency (in %) of warp 0 of block 0?</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>e. For the loop on line 09:</p>
+<ul>
+<li>How many iterations have no divergence?</li>
+<li>How many iterations have divergence?</li>
+</ul>
+</blockquote>
+<blockquote>
+<ol start="2">
+<li>For a vector addition, assume that the vector length is 2000, each thread calculates one output element, and the thread block size is 512 threads. How many threads will be in the grid?</li>
+</ol>
+</blockquote>
+<blockquote>
+<ol start="3">
+<li>For the previous question, how many warps do you expect to have divergence due to the boundary check on vector length?</li>
+</ol>
+</blockquote>
+<blockquote>
+<ol start="4">
+<li>Consider a hypothetical block with 8 threads executing a section of code before reaching a barrier. The threads require the following amount of time (in microseconds) to execute the sections: 2.0, 2.3, 3.0, 2.8, 2.4, 1.9, 2.6, and 2.9; they spend the rest of their time waiting for the barrier. What percentage of the threads’ total execution time is spent waiting for the barrier?</li>
+</ol>
+</blockquote>
+<blockquote>
+<ol start="5">
+<li>A CUDA programmer says that if they launch a kernel with only 32 threads in each block, they can leave out the __syncthreads() instruction wherever barrier synchronization is needed. Do you think this is a good idea? Explain.</li>
+</ol>
+</blockquote>
+<blockquote>
+<ol start="6">
+<li>If a CUDA device’s SM can take up to 1536 threads and up to 4 thread blocks, which of the following block configurations would result in the most number of threads in the SM?</li>
+</ol>
+<ul>
+<li>128 threads per block</li>
+<li>256 threads per block</li>
+<li>512 threads per block</li>
+<li>1024 threads per block</li>
+</ul>
+</blockquote>
+<blockquote>
+<ol start="7">
+<li>Assume a device that allows up to 64 blocks per SM and 2048 threads per SM. Indicate which of the following assignments per SM are possible. In the cases in which it is possible, indicate the occupancy level.</li>
+</ol>
+<ul>
+<li>8 blocks with 128 threads each</li>
+<li>16 blocks with 64 threads each</li>
+<li>32 blocks with 32 threads each</li>
+<li>64 blocks with 32 threads each</li>
+<li>32 blocks with 64 threads eachPage 92</li>
+</ul>
+</blockquote>
+<blockquote>
+<ol start="8">
+<li>Consider a GPU with the following hardware limits: 2048 threads per SM, 32 blocks per SM, and 64K (65,536) registers per SM. For each of the following kernel characteristics, specify whether the kernel can achieve full occupancy. If not, specify the limiting factor.</li>
+</ol>
+<ul>
+<li>The kernel uses 128 threads per block and 30 registers per thread.</li>
+<li>The kernel uses 32 threads per block and 29 registers per thread.</li>
+<li>The kernel uses 256 threads per block and 34 registers per thread.</li>
+</ul>
+</blockquote>
+<blockquote>
+<ol start="9">
+<li>A student mentions that they were able to multiply two 1024×1024 matrices using a matrix multiplication kernel with 32×32 thread blocks. The student is using a CUDA device that allows up to 512 threads per block and up to 8 blocks per SM. The student further mentions that each thread in a thread block calculates one element of the result matrix. What would be your reaction and why?</li>
+</ol>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../pmpp/ch03.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../pmpp/ch03.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

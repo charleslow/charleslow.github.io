@@ -81,6 +81,7 @@
     - [Solatorio 2024 - GISTEmbed](./papers/solatorio_2024.md)
     - [Sanjabi 2025 - 360Brew](./papers/sanjabi_2025.md)
     - [Zhang 2025 - Qwen3 Embedding](./papers/zhang_2025.md)
+    - [Chlon 2025 - LLMs are Bayesian in Expectation](./papers/chlon_2025_a.md)
 - [Talks / Articles]()
     - [Yan 2025 - LLM for Recsys](./talks/yan_2025_ai_engineer.md)
     - [Tandon 2025 - Gemini for YouTube](./talks/tandon_2025_gemini_youtube.md)
@@ -104,3 +105,4 @@
     - [Introduction](./pmpp/ch01.md)
     - [Data Parallel Computing](./pmpp/ch02.md)
     - [Multidimensional grids](./pmpp/ch03.md)
+    - [Compute Architecture](./pmpp/ch04.md)
