@@ -300,9 +300,12 @@ void foo(int* a_d, int* b_d) {
 <blockquote>
 <p>a. What is the number of warps per block?</p>
 </blockquote>
+<p><code>128 / 32 = 4</code></p>
 <blockquote>
 <p>b. What is the number of warps in the grid?</p>
 </blockquote>
+<p>Number of blocks is <code>1,024 / 128 = 8</code>.
+So number of warps is <code>8 * 4 = 32</code>.</p>
 <blockquote>
 <p>c. For the statement on line 04:</p>
 <ul>
@@ -313,6 +316,13 @@ void foo(int* a_d, int* b_d) {
 <li>What is the SIMD efficiency (in %) of warp 3 of block 0?</li>
 </ul>
 </blockquote>
+<ul>
+<li>Each block has <code>4</code> warps. Amongst the warps, only warp 2 is inactive. So total active warps = <code>3 * 8 = 24</code>.</li>
+<li>Warps <code>1</code> and <code>3</code> are divergent.</li>
+<li>Efficiency of warp 0 of block 0 is <code>100%</code></li>
+<li>Not clear how SIMD efficiency for a divergent warp is defined. Efficiency of warp 1 of block 0 is <code>8 / 32 = 25%</code> on the <code>True</code> pass and <code>75%</code> on the <code>False</code> pass.</li>
+<li>Efficiency of warp 3 of block 0 is  <code>24 / 32 = 75%</code> on the <code>True</code> pass and <code>25%</code> on the <code>False</code> psas.</li>
+</ul>
 <blockquote>
 <p>d. For the statement on line 07:</p>
 <ul>
@@ -321,6 +331,11 @@ void foo(int* a_d, int* b_d) {
 <li>What is the SIMD efficiency (in %) of warp 0 of block 0?</li>
 </ul>
 </blockquote>
+<ul>
+<li>All warps are active</li>
+<li>All warps are divergent</li>
+<li><code>50%</code></li>
+</ul>
 <blockquote>
 <p>e. For the loop on line 09:</p>
 <ul>
@@ -328,26 +343,37 @@ void foo(int* a_d, int* b_d) {
 <li>How many iterations have divergence?</li>
 </ul>
 </blockquote>
+<p>The number of <code>j</code> loops depends on the result of <code>j &lt; 5 - (i % 3)</code>:</p>
+<ul>
+<li><code>j</code> runs from <code>0-4</code></li>
+<li><code>j</code> runs from <code>0-3</code></li>
+<li><code>j</code> runs from <code>0-2</code></li>
+</ul>
+<p>Hence there is always divergence in any warp.</p>
 <blockquote>
 <ol start="2">
 <li>For a vector addition, assume that the vector length is 2000, each thread calculates one output element, and the thread block size is 512 threads. How many threads will be in the grid?</li>
 </ol>
 </blockquote>
+<p><code>2,048</code></p>
 <blockquote>
 <ol start="3">
 <li>For the previous question, how many warps do you expect to have divergence due to the boundary check on vector length?</li>
 </ol>
 </blockquote>
+<p><code>1</code> warp is divergent, <code>1</code> warp is inactive.</p>
 <blockquote>
 <ol start="4">
 <li>Consider a hypothetical block with 8 threads executing a section of code before reaching a barrier. The threads require the following amount of time (in microseconds) to execute the sections: 2.0, 2.3, 3.0, 2.8, 2.4, 1.9, 2.6, and 2.9; they spend the rest of their time waiting for the barrier. What percentage of the threads’ total execution time is spent waiting for the barrier?</li>
 </ol>
 </blockquote>
+<p>The slowest thread is <code>3.0</code>, so total time is <code>3 * 8 = 24</code>. The sum of execution times is <code>19.9</code>, so total time waiting is <code>17.1%</code>.</p>
 <blockquote>
 <ol start="5">
 <li>A CUDA programmer says that if they launch a kernel with only 32 threads in each block, they can leave out the __syncthreads() instruction wherever barrier synchronization is needed. Do you think this is a good idea? Explain.</li>
 </ol>
 </blockquote>
+<p>No, because we still need it for syncing across different warps in the same block. Also if there's divergence, there is no guarantee that threads in the same warp execute in lock step.</p>
 <blockquote>
 <ol start="6">
 <li>If a CUDA device’s SM can take up to 1536 threads and up to 4 thread blocks, which of the following block configurations would result in the most number of threads in the SM?</li>
@@ -359,33 +385,67 @@ void foo(int* a_d, int* b_d) {
 <li>1024 threads per block</li>
 </ul>
 </blockquote>
+<p><code>512</code> with <code>3</code> thread blocks.</p>
 <blockquote>
 <ol start="7">
 <li>Assume a device that allows up to 64 blocks per SM and 2048 threads per SM. Indicate which of the following assignments per SM are possible. In the cases in which it is possible, indicate the occupancy level.</li>
 </ol>
-<ul>
-<li>8 blocks with 128 threads each</li>
-<li>16 blocks with 64 threads each</li>
-<li>32 blocks with 32 threads each</li>
-<li>64 blocks with 32 threads each</li>
-<li>32 blocks with 64 threads eachPage 92</li>
-</ul>
 </blockquote>
+<ul>
+<li>8 blocks with 128 threads each
+<ul>
+<li>Possible, occupancy = <code>50%</code></li>
+</ul>
+</li>
+<li>16 blocks with 64 threads each
+<ul>
+<li>Possible, occupancy = <code>50%</code></li>
+</ul>
+</li>
+<li>32 blocks with 32 threads each
+<ul>
+<li>Possible, occupancy = <code>50%</code></li>
+</ul>
+</li>
+<li>64 blocks with 32 threads each
+<ul>
+<li>Possible, occupancy = <code>100%</code></li>
+</ul>
+</li>
+<li>32 blocks with 64 threads each
+<ul>
+<li>Possible, occupancy = <code>100%</code></li>
+</ul>
+</li>
+</ul>
 <blockquote>
 <ol start="8">
 <li>Consider a GPU with the following hardware limits: 2048 threads per SM, 32 blocks per SM, and 64K (65,536) registers per SM. For each of the following kernel characteristics, specify whether the kernel can achieve full occupancy. If not, specify the limiting factor.</li>
 </ol>
-<ul>
-<li>The kernel uses 128 threads per block and 30 registers per thread.</li>
-<li>The kernel uses 32 threads per block and 29 registers per thread.</li>
-<li>The kernel uses 256 threads per block and 34 registers per thread.</li>
-</ul>
 </blockquote>
+<ul>
+<li>The kernel uses 128 threads per block and 30 registers per thread.
+<ul>
+<li>Yes, we can hit full occupancy</li>
+</ul>
+</li>
+<li>The kernel uses 32 threads per block and 29 registers per thread.
+<ul>
+<li>No, not enough threads per block, we can only get <code>50%</code> occupancy</li>
+</ul>
+</li>
+<li>The kernel uses 256 threads per block and 34 registers per thread.
+<ul>
+<li>No, we have too many registers per thread, so we cannot have <code>2,048</code> threads.</li>
+</ul>
+</li>
+</ul>
 <blockquote>
 <ol start="9">
 <li>A student mentions that they were able to multiply two 1024×1024 matrices using a matrix multiplication kernel with 32×32 thread blocks. The student is using a CUDA device that allows up to 512 threads per block and up to 8 blocks per SM. The student further mentions that each thread in a thread block calculates one element of the result matrix. What would be your reaction and why?</li>
 </ol>
 </blockquote>
+<p>It does not seem possible as he has <code>1,024</code> threads per block which exceeds the hardware limit.</p>
 
                     </main>
 
