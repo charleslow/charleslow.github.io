@@ -106,3 +106,4 @@
     - [Data Parallel Computing](./pmpp/ch02.md)
     - [Multidimensional grids](./pmpp/ch03.md)
     - [Compute Architecture](./pmpp/ch04.md)
+    - [Memory Architecture](./pmpp/ch05.md)

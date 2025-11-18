@@ -1,0 +1,562 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Memory Architecture - Chux&#x27;s Notebook</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../katex.min.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Chux&#x27;s Notebook</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="memory-architecture"><a class="header" href="#memory-architecture">Memory Architecture</a></h1>
+<p>This chapter focuses on the memory architecture of GPUs and how to organize and position data for efficient access.</p>
+<p>Consider the matrix multiplication code back in chapter 3. This performs a for loop to compute the dot product between a row of M and a column of N.</p>
+<pre><code class="language-c">for (int k = 0; k &lt; Width; ++k) {
+    Pvalue += M[row*Width + k] * N[k*Width + col];
+}
+</code></pre>
+<p>In every iteration of the loop:</p>
+<ul>
+<li>We perform two global memory accesses (for M and N respectively)</li>
+<li>We perform one floating point multiplication and one floating point addition</li>
+<li>The ratio of floating point operation (FLOP) to bytes accessed is <code>2 FLOP / 8 bytes = 0.25 FLOP/B</code>. This is called <span style="color:orange">arithmetic intensity</span> or <span style="color:orange">computational intensity</span> in the literature.</li>
+</ul>
+<p>The compute to global memory access has implications for the performance of a GPU kernel.</p>
+<ul>
+<li>An A100 has peak global memory bandwidth of <code>1555 GB/s</code>. With <code>0.25 FLOP/B</code>, we can get <code>1555 GB/s * 0.25 FLOP/B = 389 giga FLOPs/s (GLOPS)</code> number of single precision floating point operations.</li>
+<li>But A100 has a cap of <code>19,500 GLOPS</code>, so we are only using <code>2%</code> of the compute capacity!</li>
+<li>We are severely limited by memory accesses, and this type of program is called <code>memory-bound</code> programs</li>
+</ul>
+<h2 id="roofline-model"><a class="header" href="#roofline-model">Roofline Model</a></h2>
+<p>The roofline model provides a visual representation of the performance of an application relative to hardware limits.</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: center"><img src="../images/pmpp/ch_05_roofline_model.png" alt="Roofline model illustrating bandwidth and compute ceilings" /></th></tr></thead><tbody>
+<tr><td style="text-align: center"><strong>Roofline model for analyzing GPU efficiency</strong></td></tr>
+</tbody></table>
+</div>
+<p>The axes meanings:</p>
+<ul>
+<li><code>x-axis</code> is the computational intensity measured in <code>FLOP/B</code>. This quantity is determined by how the application is written.</li>
+<li><code>y-axis</code> is the computational throughput, i.e. obtained by multiplying the computational intensity by the maximum memory bandwith of our hardware device (a fixed constant)
+<ul>
+<li>The <span style="color:orange">peak throughput</span> horizontal line is the hard cap of the hardware on the peak throughput it can support</li>
+</ul>
+</li>
+</ul>
+<p>The sloping line labelled <span style="color:orange">peak bandwidth</span> represents the hardward limit of the memory bandwidth. The slope is obtained by multipling the current position on the x-axis by the maximum memory bandwidth (say <code>1555GB/s</code> in the example above), which gives us a slope. We cannot have any point above this line because it would require a memory bandwidth that exceeds the hardware limits.</p>
+<p>A point on the plot represents an application with its computational intensity (FLOPS / byte accessed) and computational throughput (FLOPS / s). Note that in real applications, these are measured using programs like NVIDIA NSight using hardware counters. The position of the point relative to the lines tells us its efficiency:</p>
+<ul>
+<li>Points can only be below the two lines, as we cannot exceed hardware limits</li>
+<li>Points closer to the lines are more efficient, as we are nearing hardware limits</li>
+</ul>
+<p>Based on the diagram:</p>
+<ul>
+<li>Point <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> is compute bound - it is already quite computationally intensive and near the peak computational throughput, so we need a more powerful GPU to improve it further.</li>
+<li>Point <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> is inefficient - neither memory nor compute bound. It can be improved by improving the memory bandwidth utilization.</li>
+<li>Point <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> is memory bound - it is utilizing memory bandwidth effectively but the compute intensity can be improved. e.g. To fully utilize the <code>19,500 GLOPS</code> from the A100, we need to increase compute efficiency to <code>19,500 (GFLOP/s) / 1,555 (GB/s) = 12.5 FLOP/B</code>. This means that for each single precision floating point number accessed, we need to perform <code>50 FLOPS</code>! This can be achieved for certain applications like matrix multiplication.</li>
+</ul>
+<h2 id="cuda-memory-types"><a class="header" href="#cuda-memory-types">CUDA Memory Types</a></h2>
+<p>There are different memory types on a GPU with different uses:</p>
+<ul>
+<li>Registers
+<ul>
+<li>Registers are on-chip memory, which means very short latency, high bandwidth access</li>
+<li>Highly limited number of registers per SMs, using too many in kernel code can result in low occupancy</li>
+<li>Allocated to individual threads - each thread can only access its own registers</li>
+</ul>
+</li>
+<li>Shared memory
+<ul>
+<li>Also on-chip memory, but it resides outside of the Processing Unit</li>
+<li>Accessing data requires a memory load (as opposed to registers), so it is slower than registers, but the memory load is much faster than global memory as it is on-chip</li>
+<li>Allocated to thread blocks - all threads in a block can access shared memory variables</li>
+</ul>
+</li>
+<li>Global memory
+<ul>
+<li>All threads can access</li>
+<li>Off-chip memory, so relatively high latency and low bandwidth access</li>
+</ul>
+</li>
+<li>Local memory
+<ul>
+<li>Placed in global memory and has similar access latency</li>
+<li>Not shared across threads</li>
+<li>Each thread has its own section of global memory that it uses as its own private local memory that is private to the thread but cannot be allocated in registers</li>
+<li>e.g. statically allocated arrays</li>
+</ul>
+</li>
+</ul>
+<p>Efficient GPU code requires us to make full use of registers whenever possible:</p>
+<ul>
+<li>Access bandwidth of registers is at least 2 orders of magnitude higher than global memory</li>
+<li>When a variable is stored in registers, its access no longer consume off-chip global memory bandwith, which is reflected as an increased compute to global memory access ratio</li>
+<li>Each access to registers involves fewer instructions than access to global memory due to built-in register operands.
+<ul>
+<li>e.g. <code>fadd r1, r2, r3</code> directly adds values in registers <code>r2, r3</code> and stores it into <code>r1</code>. There is no loading step</li>
+<li>But if the first operand is in the global memory, we need to do an extra loading step</li>
+</ul>
+<pre><code>load r2, r4, offset
+fadd r1, r2, r3
+</code></pre>
+</li>
+<li>The energy consumed for accessing a value in the register file is an order of magnitude lower than accessing the value from global memory.</li>
+</ul>
+<h2 id="cuda-syntax"><a class="header" href="#cuda-syntax">CUDA Syntax</a></h2>
+<p>We can declare variables and reside them in the intended type of memory based on our application design.</p>
+<blockquote>
+<p><strong>Scope</strong>. Scope identifies the set of threads than can access a variable. If the scope is a single thread, a private version of the variable is created for each thread.</p>
+<p><strong>Lifetime</strong>. The lifetime is the portion of a program's execution duration when the variable is available, If the lifetime is within a grid's execution, it must be declared within the kernel function. When the kernel is executed multiple times, the value is not maintained across these invocations. If the lifetime is entire application, it must be declared outside of any function body.</p>
+</blockquote>
+<p><span style="color:orange">Automatic Scalar Variables</span>. All automatic scalar variables declared in the kernel and device functions are automatically placed into registers. This means that a private copy of that variable in generated for every thread that executes the kernel function.</p>
+<ul>
+<li>Scope: Thread</li>
+<li>Lifetime: Grid</li>
+</ul>
+<p><span style="color:orange">Automatic array variables</span>. These are array variables defined in kernel code, such as <code>float buf[128]</code>. Note that the array size must be specified at compile time. These are put into local memory (part of global memory), so access is very slow. In practice, these are seldom used.</p>
+<ul>
+<li>Scope: Thread</li>
+<li>Lifetime: Grid</li>
+</ul>
+<p><span style="color:orange">Shared Memory variables</span>. These are declared in the kernel function and put into shared memory. The scope of a shared variable is in a thread block, so all threads in a block see the same version of a shared variable (and can read and write to it). A private version of the variable is created for each block during kernel execution. Accessing shared variables from the shared memory is extremely fast and highly parallel, and it is a good way for threads in a block to communicate with each other.</p>
+<ul>
+<li>Declaration: <code>__device__ __shared__ int SharedVar;</code></li>
+<li>Scope: Block</li>
+<li>Lifetime: Grid</li>
+</ul>
+<p><span style="color:orange">Constant Memory variables</span>. These are declared in the host code outside of any function body, and its values cannot be changed by kernel function code. The name is indicative: its usually used for global constants like model parameters or for things like a fixed convolution filter. Constant variables are stored in global memory but are cached for extremely fast and parallel access. The total size of constant variables in an application is limited to <code>65,536 bytes</code>.</p>
+<ul>
+<li>Declaration: <code>__device__ __constant__ int ConstVar;</code></li>
+<li>Scope: Grid</li>
+<li>Lifetime: Application</li>
+</ul>
+<p><span style="color:orange">Global Memory variables</span>. These are placed in global memory where access is slow. The advantage of global memory is that it is accessible by all threads and the contents persist throughout the entire application. So it is a way for threads to collaborate across blocks. However, because there is no barrier synchronization method for threads across blocks, usually global variables are used to pass information from one kernel invocation to another kernel.</p>
+<ul>
+<li>Declaration: <code>__device__ int GlobalVar;</code></li>
+<li>Scope: Grid</li>
+<li>Lifetime: Application</li>
+</ul>
+<h2 id="tiling"><a class="header" href="#tiling">Tiling</a></h2>
+<p>The intrinsic memory tradeoff in CUDA is that global memory is large but slow, and shared memory is small but fast. Hence a good strategy is to partition the data into subsets called tiles so that each tile fits into the shared memory.</p>
+<p>Consider the matrix multiplication example in chapter 3 where each thread computes one value of the output matrix <code>P = M dot N</code>, and thus access one row of <code>M</code> and one column of <code>N</code>.</p>
+<ul>
+<li>For brevity, define <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span><span class="mpunct mtight">,</span><span class="mord mathnormal mtight">x</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span> as <code>M[y*Width + x]</code>, <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span><span class="mpunct mtight">,</span><span class="mord mathnormal mtight">x</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span> as <code>N[y*Width + x]</code>, <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span><span class="mpunct mtight">,</span><span class="mord mathnormal mtight">x</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span> as <code>P[y*Width + x]</code></li>
+<li>Suppose <code>Width=4</code> and our block size is <code>2 x 2</code></li>
+</ul>
+<p>Now observe that there are duplicate global memory accesses across threads in a block:</p>
+<ul>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span><span class="mpunct mtight">,</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span> is accessed for computing both <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span><span class="mpunct mtight">,</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span> and <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span><span class="mpunct mtight">,</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span></li>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span><span class="mpunct mtight">,</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span> is accessed for computing both <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span><span class="mpunct mtight">,</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span> and <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mpunct mtight">,</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span></li>
+<li>And so on</li>
+</ul>
+<p>Instead of accessing global memory twice, we could have accessed it once, loaded it into shared memory, and then have threads read from shared memory thereafter (almost negligible cost compared to accessing global memory). In fact, a given value (like <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span><span class="mpunct mtight">,</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span>) will be accessed <code>block_size</code> times for a given block, so the larger our block size, the more efficient our memory access can be.</p>
+<p>We are limited by the size of shared memory, so we need to further tile <code>M</code> and <code>N</code> matrices so that it will fit into shared memory. For simplicity, consider tiling <code>M</code> and <code>N</code> into <code>2 x 2</code> <em>tiles</em> also.</p>
+<p>Our strategy will now be like so:</p>
+<ul>
+<li>Initialize <code>2 x 2</code> shared variables <code>Mds</code> and <code>Nds</code></li>
+<li>Load a tile of <code>M</code> into <code>Mds</code>:
+<ul>
+<li>For e.g. the first tile would be <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span><span class="mpunct mtight">,</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span><span class="mpunct mtight">,</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mpunct mtight">,</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mpunct mtight">,</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span></li>
+</ul>
+</li>
+<li>Load a tile of <code>N</code> into <code>Nds</code>:
+<ul>
+<li>For e.g. the first tile would be <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span><span class="mpunct mtight">,</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span><span class="mpunct mtight">,</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mpunct mtight">,</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mpunct mtight">,</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span></li>
+</ul>
+</li>
+<li>Launch threads to accumulate partial dot product into thread-specific <code>Pvalue</code>:
+<ul>
+<li>Instead of reading from <code>M</code> and <code>N</code>, we read the required variables from <code>Mds</code> and <code>Nds</code> instead</li>
+<li>e.g. <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9805em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord text"><span class="mord">thread</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span><span class="mpunct mtight">,</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span> computes <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9805em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord text"><span class="mord">Pvalue</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span><span class="mpunct mtight">,</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mord"><span class="mspace"> </span><span class="mrel"><span class="mord"><span class="mord">+</span></span><span class="mord"><span class="mrel">=</span></span></span><span class="mspace"> </span></span><span class="mord"><span class="mord text"><span class="mord">Mds</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span><span class="mpunct mtight">,</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.9805em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord text"><span class="mord">Nds</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span><span class="mpunct mtight">,</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.9805em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord text"><span class="mord">Mds</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span><span class="mpunct mtight">,</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.9805em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord text"><span class="mord">Nds</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mpunct mtight">,</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span></li>
+<li>Note that this is a partial dot product for <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9805em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord text"><span class="mord">Pvalue</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span><span class="mpunct mtight">,</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span>, we need to accumulate to it again</li>
+</ul>
+</li>
+<li>Move on to the next tile and accumulate to <code>Pvalue</code> again:
+<ul>
+<li>e.g. Second tile is <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span><span class="mpunct mtight">,</span><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span><span class="mpunct mtight">,</span><span class="mord mtight">3</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mpunct mtight">,</span><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mpunct mtight">,</span><span class="mord mtight">3</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span></li>
+<li>e.g. Second tile is <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="mpunct mtight">,</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="mpunct mtight">,</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">3</span><span class="mpunct mtight">,</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">3</span><span class="mpunct mtight">,</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span></li>
+</ul>
+</li>
+</ul>
+<p>Note that with this tiling strategy, we will need to do this in multiple steps (or phases) for a given block. In general, we need <code>Width / TILE_WIDTH</code> phases to complete the matrix multiplication.</p>
+<h2 id="a-tiled-matmul-kernel"><a class="header" href="#a-tiled-matmul-kernel">A tiled matmul kernel</a></h2>
+<p>Now we can tackle the matmul kernel.</p>
+<pre><code class="language-c"># define TILE_WIDTH 16
+__global__ void matrixMulKernel(float* M, float* N, float* P, int Width) {
+    __shared__ float Mds[TILE_WIDTH][TILE_WIDTH];
+    __shared__ float Nds[TILE_WIDTH][TILE_WIDTH];
+
+    int bx = blockIdx.x;    int by = blockIdx.y;
+    int tx = threadIdx.x;   int ty = threadIdx.y;
+
+    // Identify P[Row, Col] to work on
+    int Row = by * TILE_WIDTH + ty;
+    int Col = bx * TILE_WIDTH + tx;
+
+    float Pvalue = 0;
+    for (int ph = 0; ph &lt; Width/TILE_WIDTH; ++ph) {
+        // Load M, N into shared memory
+        Mds[ty][tx] = M[Row*Width + ph*TILE_WIDTH + tx];
+        Nds[ty][tx] = N[(ph*TILE_WIDTH + ty)*Width + Col];
+        __syncthreads();
+
+        for (int k = 0; k &lt; TILE_WIDTH; ++k) {
+            Pvalue += Mds[ty][k] * Nds[k][tx]
+        }
+        __syncthreads();
+    }
+    P[Row*Width + Col] = Pvalue;
+}
+</code></pre>
+<p>Notes on the above:</p>
+<ul>
+<li><code>Mds, Nds</code> are shared variables that are common for all threads in a block</li>
+<li>Since each thread is working on one element of output <code>P</code>, we find <code>Row</code> and <code>Col</code> respectively (to compute <code>P[Row, Col]</code>)
+<ul>
+<li>Note that the algorithm assumes each block computes exactly one tile, so <code>TILE_WIDTH = BLOCK_SIZE</code></li>
+<li>Therefore <code>Row = by * TILE_WIDTH + ty</code></li>
+<li>And <code>Col = bx * TILE_WIDTH + tx</code></li>
+</ul>
+</li>
+</ul>
+<p>Now we tackle the for loop part which loops through the phase counter <code>ph</code>.</p>
+<ul>
+<li>Recall that each phase uses one tile of <code>M</code> and one tile of <code>N</code>.</li>
+<li>The phase counter <code>ph</code> tells us how many phases we have already processed</li>
+</ul>
+<h3 id="loading-data-into-shared-memory"><a class="header" href="#loading-data-into-shared-memory">Loading Data into Shared Memory</a></h3>
+<p>For each phase, we first load data into shared memory:</p>
+<ul>
+<li>Each thread loads one value of <code>M</code> nad one value of <code>N</code> into shared memory</li>
+<li>Since we have <code>TILE_WIDTH x TILE_WIDTH</code> number of threads per block, in each phase we load this many elements into <code>Mds</code> and <code>Nds</code> respectively</li>
+</ul>
+<p>Which data should each thread load?</p>
+<ul>
+<li>For <code>M</code>:
+<ul>
+<li>Note that <code>Row</code> already gives us the row of <code>M</code> to be loaded for this thread (constant across phases)</li>
+<li>The beginning column for this block and phase is <code>ph * TILE_WIDTH</code>, because we have processed <code>ph</code> number of tiles to the left</li>
+<li>So we want <code>M[Row, ph*TILE_WIDTH]</code>, which is indexed as <code>M[Row*Width + ph*TILE_WIDTH + tx]</code> in row major form</li>
+</ul>
+</li>
+<li>For <code>N</code>:
+<ul>
+<li><code>Col</code> already gives us the column of <code>N</code> to be loaded for this thread (constant across phases)</li>
+<li>The beginning row for this block and phase is <code>ph * TILE_WIDTH</code></li>
+<li>So we want <code>N[ph*TILE_WIDTH + ty, Col]</code>, which is indexed as <code>N[(ph*TILE_WIDTH + ty)*Width + Col]</code></li>
+</ul>
+</li>
+</ul>
+<p>Finally, we call <code>__syncthreads()</code> barrier synchronization. This is necessary because for the computation phase, each thread requires values of <code>Mds,Nds</code> that other threads have loaded for it. Hence we must make sure all threads have loaded into shared memory before we proceed to compute.</p>
+<ul>
+<li>This is called <span style="color:orange">read-after-write</span> synchronization - we require data to be written before we can read from it</li>
+<li>Also called <span style="color:orange">true dependence</span> because there is truly a dependence from the reader on the written data</li>
+</ul>
+<h3 id="computation-phase"><a class="header" href="#computation-phase">Computation Phase</a></h3>
+<p>Now we have loaded the requisite data into <code>Mds</code> and <code>Nds</code>, we can accumulate into <code>Pvalue</code>. The tiled matmul is such that we accumulate into <code>Pvalue</code> as though we were just doing a simple dot product between <code>Mds</code> and <code>Nds</code>. This compute phase is very fast as we are reading from shared memory.</p>
+<p>Finally, another <code>__syncthreads()</code> is called. This is to ensure that computation has completed before we start loading values into <code>Mds</code> and <code>Nds</code> in the next phase, overwriting their values.</p>
+<ul>
+<li>This is called <span style="color:orange">write-after-read</span> synchronization - threads must wait for data to be read by all threads that need it before overwriting it</li>
+<li>Another name is <span style="color:orange">false dependence</span>. The dependence is false because the writing thread actually does not need any data from the reading thread - the dependence occurs purely because they are sharing the same memory location.</li>
+</ul>
+<h3 id="summary"><a class="header" href="#summary">Summary</a></h3>
+<p>The savings from tiled matmul is significant. With <code>16 x 16</code> tiles, we reduce global memory access by a factor of <code>16</code>, which brings our <code>0.25 FLOP/B</code> to <code>4 FLOP/B</code>. There are further optimizations we can make later.</p>
+<h2 id="boundary-checks"><a class="header" href="#boundary-checks">Boundary Checks</a></h2>
+<p>In the previous section, we assume that <code>Width</code> is a multiple of <code>TILE_WIDTH</code>. This section extends it to handle arbitrary matrix sizes. As with before, we need to add boundary checks to avoid accessing non-existent values or even accessing wrong values that corrupt the final output.</p>
+<p>The modified kernel code is shown (only the for loop part):</p>
+<pre><code class="language-c">float Pvalue = 0;
+for (int ph = 0; ph &lt; ceil(Width/(float) TILE_WIDTH); ++ph) {
+    if ((Row &lt; Width) &amp;&amp; (ph*TILE_WIDTH+tx) &lt; Width)
+        Mds[ty][tx] = M[Row*Width + ph*TILE_WIDTH + tx];
+    else Mds[ty][tx] = 0.0f;
+    if ((ph*TILE_WIDTH+ty) &lt; Width &amp;&amp; Col &lt; Width)
+        Nds[ty][tx] = N[(ph*TILE_WIDTH+ty)*Width + Col];
+    else Nds[ty][tx] = 0.0f;
+    __syncthreads();
+
+    for (int k = 0; k &lt; TILE_WIDTH; ++k) {
+        Pvalue += Mds[ty][k] * Nds[k][tx];
+    }
+    __syncthreads();
+}
+if (Row &lt; Width) &amp;&amp; (Col &lt; Width)
+    P[Row*Width + Col] = Pvalue;
+</code></pre>
+<p>For boundary checks on <code>M</code>:</p>
+<ul>
+<li>As we recall, the <code>y</code> and <code>x</code> element accessed are <code>Row</code> and <code>ph*TILE_WIDTH + tx</code> respectively</li>
+<li>Hence we just need to check if both of these are less than <code>Width</code></li>
+</ul>
+<p>For boundary checks on <code>N</code>:</p>
+<ul>
+<li>The <code>y</code> and <code>x</code> element accessed are <code>(ph*TILE_WIDTH+ty)</code> and <code>Col</code> respectively</li>
+<li>Hence we just need to check if both of these are less than <code>Width</code></li>
+</ul>
+<p>For accessing <code>M</code> and <code>N</code>, if we are accessing an out of bounds value, simply load <code>0.0</code> into <code>Mds</code> and <code>Nds</code> respectively. This will ensure that when accumulating into <code>Pvalue</code>, using an out of bound value will result in adding <code>0.0</code> and hence not affect the final output.</p>
+<p>Finally when assigning values into <code>P</code>, we just check if <code>Row, Col</code> are within bounds.</p>
+<h2 id="impact-of-memory-use-on-occupancy"><a class="header" href="#impact-of-memory-use-on-occupancy">Impact of Memory Use on Occupancy</a></h2>
+<p>Earlier on we saw that register usage can reduce occupancy. Similarly, using too much shared memory can reduce the number of blocks assigned and hence reduce occupancy.</p>
+<p>For example, an A100 can have up to <code>164KB</code> of shared memory per SM and support a maximum of <code>2048</code> threads per SM.</p>
+<ul>
+<li>This means that to use up all thread slots, a thread block cannot use more than an average of <code>164 KB / 2048 threads = 82B / thread</code></li>
+</ul>
+<p>For our tiled matmul example:</p>
+<ul>
+<li>Each block has <code>TILE_WIDTH * TILE_WIDTH</code> threads per block</li>
+<li>Each block uses <code>4B * TILE_WIDTH * TILE_WIDTH</code> shared memory for <code>Mds</code> and <code>Nds</code> respectively</li>
+<li>So it uses <code>8B</code> per thread, which is less than <code>82B</code> and we are fine</li>
+</ul>
+<p>But consider a kernel that uses <code>32KB</code> of shared memory, and each block has <code>256</code> threads.</p>
+<ul>
+<li>Then each thread uses on average <code>32KB / 256 = 128B</code>. This exceeds the <code>82B/thread</code> limit.</li>
+<li>So we can only launch at most <code>164KB / 128B = 1.3k threads</code>, which is around <code>60%</code> occupancy</li>
+</ul>
+<h3 id="dynamic-sizing-of-shared-memory"><a class="header" href="#dynamic-sizing-of-shared-memory">Dynamic sizing of shared memory</a></h3>
+<p>Since the size of shared memory on an SM is device specific, we want the host code to dynamically adjust the <code>TILE_WIDTH</code> and hence amount of shared memory used by a kernel.</p>
+<ul>
+<li>This can be done using <code>cudaGetDeviceProperties</code>, and using <code>devProp.sharedMemPerBlock</code> to give the amount of shared memory available in each SM.</li>
+</ul>
+<p>Unfortunately, we cannot specify <code>Mds</code> and <code>Nds</code> as before using <code>TILE_WIDTH</code>, because the value of <code>TILE_WIDTH</code> must be available at compile time. If we want to change this value, we must recompile the code.</p>
+<p>The workaround for such a scenario is to use <code>extern __shared__ Mds_Nds[];</code> inside the kernel code. This allows for a dynamically allocated shared array.</p>
+<ul>
+<li>However, since we only have one merged array, we'll need to manually define where <code>Mds</code> ends and <code>Nds</code> starts</li>
+<li>We also need to linearize our access to the array</li>
+</ul>
+<p>At runtime, we can dynamically configure the amount of shared memory for each block using the <strong>third</strong> configuration parameter for a kernel call:</p>
+<pre><code class="language-c">size_t size = calculate_appropriate_SM_usage(devProp.sharedMemPerBlock, ...);
+
+matrixMulKernel&lt;&lt;&lt;dimGrid,dimBlock,size&gt;&gt;&gt;(Md, Nd, Pd, Width, size/2, size/2);
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Note that <code>size_t</code> is a built-in type for declaring a variable to hold the size information for dynamically allocated data structures, in number of bytes.</li>
+<li>Also note that we pass <code>size/2</code> for the size of <code>Mds</code> and <code>Nds</code> respectively</li>
+</ul>
+<p>The kernel code can then be modified to accommodate the new structure:</p>
+<pre><code class="language-c">#define TILE_WIDTH 16
+__global__ void matrixMulKernel(float* M, float* N, float* P, int Width,
+                                    unsigned Mdz_sz, unsigned Nds_sz) {
+    extern __shared__ char float Mds_Nds[];
+    float *Mds = (float*) Mds_Nds;
+    float *Nds = Mds_Nds + Nds_sz;
+}
+</code></pre>
+<p>Note that we would need to use linearized accesses to <code>Mds</code> and <code>Nds</code>. e.g. <code>Mds[ty][tx]</code> becomes <code>Mds[ty*TILE_WIDTH+tx]</code>.</p>
+<h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../pmpp/ch04.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../pmpp/ch04.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
