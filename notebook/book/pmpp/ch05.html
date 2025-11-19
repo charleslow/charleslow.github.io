@@ -511,6 +511,218 @@ __global__ void matrixMulKernel(float* M, float* N, float* P, int Width,
 </code></pre>
 <p>Note that we would need to use linearized accesses to <code>Mds</code> and <code>Nds</code>. e.g. <code>Mds[ty][tx]</code> becomes <code>Mds[ty*TILE_WIDTH+tx]</code>.</p>
 <h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
+<blockquote>
+<ol>
+<li>Consider matrix addition. Can one use shared memory to reduce the global memory bandwidth consumption? Hint: Analyze the elements that are accessed by each thread and see whether there is any commonality between threads.</li>
+</ol>
+</blockquote>
+<p>No - each element of input matrices <code>A + B</code> are accessed exactly once, so no memory savings.</p>
+<blockquote>
+<ol start="2">
+<li>Draw the equivalent of Fig. 5.7 for a 8×8 matrix multiplication with 2×2 tiling and 4×4 tiling. Verify that the reduction in global memory bandwidth is indeed proportional to the dimension size of the tiles.</li>
+</ol>
+</blockquote>
+<ul>
+<li>With 2x2 tiling, there are 4 phases, so each element gets accessed from global memory 4x</li>
+<li>With 4x4 tiling, there are 2 phases, so each element gets accessed from global memory 2x</li>
+<li>So the reduction in memory bandwidth is proportional to the tile size</li>
+</ul>
+<p>With 2x2 tiling, each element gets accessed twice per phase. With 4x4 tiling, each element gets accessed 4x per phase. So the reduction in global memory bandwidth is scaled accordingly.</p>
+<blockquote>
+<ol start="3">
+<li>What type of incorrect execution behavior can happen if one forgot to use one or both __syncthreads() in the kernel of Fig. 5.9?</li>
+</ol>
+</blockquote>
+<p>This is the tiled matrix multiplication code.</p>
+<ul>
+<li>If we miss the first <code>__syncthreads</code>, we could get "read-before-write" situations where another thread tries to load the values of <code>Mds</code> or <code>Nds</code> before it is written. This leads to wrong outputs.</li>
+<li>If we miss the second <code>__syncthreads</code>, we could get "write-before-read" situations, where another thread has already overwritten the values of <code>Mds</code> or <code>Nds</code> in the next phase before we have read from it. This leads to wrong outputs.</li>
+</ul>
+<blockquote>
+<ol start="4">
+<li>Assuming that capacity is not an issue for registers or shared memory, give one important reason why it would be valuable to use shared memory instead of registers to hold values fetched from global memory? Explain your answer.</li>
+</ol>
+</blockquote>
+<p>Threads in the same block can access the shared memory, so we can benefit as long as our application requires multiple threads to access the same values. Registers are private to each thread and we cannot benefit.</p>
+<blockquote>
+<ol start="5">
+<li>For our tiled matrix-matrix multiplication kernel, if we use a 32×32 tile, what is the reduction of memory bandwidth usage for input matrices M and N?</li>
+</ol>
+</blockquote>
+<p>32x</p>
+<blockquote>
+<ol start="6">
+<li>Assume that a CUDA kernel is launched with 1000 thread blocks, each of which has 512 threads. If a variable is declared as a local variable in the kernel, how many versions of the variable will be created through the lifetime of the execution of the kernel?</li>
+</ol>
+</blockquote>
+<p>512,000</p>
+<blockquote>
+<ol start="7">
+<li>In the previous question, if a variable is declared as a shared memory variable, how many versions of the variable will be created through the lifetime of the execution of the kernel?</li>
+</ol>
+</blockquote>
+<p>1000</p>
+<blockquote>
+<ol start="8">
+<li>Consider performing a matrix multiplication of two input matrices with dimensions N×N. How many times is each element in the input matrices requested from global memory when:
+a. There is no tiling?
+b. Tiles of size T×T are used?</li>
+</ol>
+</blockquote>
+<p>Easier to reason about total number of accesses:</p>
+<ul>
+<li>With no tiling, each thread accesses <code>2N</code> elements and there are <code>NxN</code> threads, so <code>2N^3</code></li>
+<li>With tiling, each block accesses <code>2TN</code> elements, and there are <code>N/T * N/T</code> blocks, so <code>2N^3/T</code> accesses</li>
+</ul>
+<blockquote>
+<ol start="9">
+<li>A kernel performs 36 floating-point operations and seven 32-bit global memory accesses per thread. For each of the following device properties, indicate whether this kernel is compute-bound or memory-bound.
+a. Peak FLOPS=200 GFLOPS, peak memory bandwidth=100 GB/second
+b. Peak FLOPS=300 GFLOPS, peak memory bandwidth=250 GB/second</li>
+</ol>
+</blockquote>
+<p>The computational intensity is <code>36 FLOP / (7 * 4B) = 1.3 FLOP/B</code></p>
+<ul>
+<li>With peak memory bandwidth of <code>100 GB/s</code>, our throughput is <code>1.3 (FLOP/B) * (100 GB/s) = 130 GFLOPS</code>. This means we are memory bound as we are not hitting peak FLOPS</li>
+<li>With peak memory bandwidth of <code>250 GB/s</code>, our throughput is <code>1.3 (FLOP/B) * (250 GB/s) = 325 GLOPS</code>. This means we are compute bound as we have hit peak FLOPS</li>
+</ul>
+<blockquote>
+<ol start="10">
+<li>To manipulate tiles, a new CUDA programmer has written a device kernel that will transpose each tile in a matrix. The tiles are of size BLOCK_WIDTH by BLOCK_WIDTH, and each of the dimensions of matrix A is known to be a multiple of BLOCK_WIDTH. The kernel invocation and code are shown below. BLOCK_WIDTH is known at compile time and could be set anywhere from 1 to 20.</li>
+</ol>
+</blockquote>
+<pre><code class="language-cpp">01 dim3 blockDim(BLOCK_WIDTH, BLOCK_WIDTH);
+02 dim3 gridDim(A_width/blockDim.x, A_height/blockDim.y);
+03 BlockTranspose&lt;&lt;&lt;gridDim, blockDim&gt;&gt;&gt;(A, A_width, A_height);
+
+04 __global__ void
+05 BlockTranspose(float* A_elements, int A_width, int A_height)
+06 {
+07     __shared__ float blockA[BLOCK_WIDTH][BLOCK_WIDTH];
+08     int baseIdx = blockIdx.x * BLOCK_WIDTH + threadIdx.x;
+09     baseIdx += (blockIdx.y * BLOCK_WIDTH + threadIdx.y) * A_width;
+
+10     blockA[threadIdx.y][threadIdx.x] = A_elements[baseIdx];
+11     A_elements[baseIdx] = blockA[threadIdx.x][threadIdx.y];
+12 }
+</code></pre>
+<blockquote>
+<p>a. Out of the possible range of values for BLOCK_WIDTH, for what values of BLOCK_WIDTH will this kernel function execute correctly on the device?</p>
+</blockquote>
+<p>The code works like so:</p>
+<ul>
+<li>Each thread handles an element of <code>A</code></li>
+<li>The tile / block size is <code>BLOCK_WIDTH</code></li>
+<li>For each thread:
+<ul>
+<li><code>threadIdx.x</code> and <code>threadIdx.y</code> give the <code>x,y</code> coordinates within a block</li>
+<li>We wish to swap these elements by temporarily assigning into <code>blockA</code></li>
+</ul>
+</li>
+<li>What is the index of the element we are accessing?
+<ul>
+<li>The <code>y</code> index in <code>A</code> would be <code>blockIdx.y * BLOCK_WIDTH + threadIdx.y</code></li>
+<li>The <code>x</code> index in <code>A</code> would be <code>blockIdx.x * BLOCK_WIDTH + threadIdx.x</code></li>
+<li>So the serialized form is <code>y*A_width + x</code> as shown in the code</li>
+</ul>
+</li>
+</ul>
+<p>The problem with the code is that we have a potential "write-before-read" situation in line 10-11:</p>
+<ul>
+<li>Consider <code>thread1: threadIdx.y=i, threadIdx.x=j</code> and <code>thread2: threadIdx.y=j, threadIdx.x=i</code> which are two threads in mirror coordinates to each other</li>
+<li>It is possible that <code>thread1</code> completes the transpose operation before <code>thread2</code> and writes into <code>A_elements</code> before <code>thread2</code> reads</li>
+<li>Then, we end up with <code>thread1</code> and <code>thread2</code> writing the same value into their designated slots which is incorrect</li>
+</ul>
+<p>The only <code>BLOCK_WIDTH</code> value which works is <code>1</code>.</p>
+<blockquote>
+<p>b. If the code does not execute correctly for all BLOCK_SIZE values, what is the root cause of this incorrect execution behavior? Suggest a fix to the code to make it work for all BLOCK_SIZE values.</p>
+</blockquote>
+<p>Add a <code>__syncthreads()</code> between lines 10 and 11.</p>
+<blockquote>
+<ol start="11">
+<li>Consider the following CUDA kernel and the corresponding host function that calls it:</li>
+</ol>
+</blockquote>
+<pre><code class="language-cpp">01 __global__ void foo_kernel(float* a, float* b) {
+02     unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
+03     float x[4];
+04     __shared__ float y_s;
+05     __shared__ float b_s[128];
+06     for (unsigned int j = 0; j &lt; 4; ++j) {
+07         x[j] = a[j * blockDim.x * gridDim.x + i];
+08     }
+09     if (threadIdx.x == 0) {
+10         y_s = 7.4f;
+11     }
+12     b_s[threadIdx.x] = b[i];
+13     __syncthreads();
+14     b[i] = 2.5f * x[0] + 3.7f * x[1] + 6.3f * x[2] + 8.5f * x[3]
+15          + y_s * b_s[threadIdx.x] + b_s[(threadIdx.x + 3) % 128];
+16 }
+17 
+18 void foo(int* a_d, int* b_d) {
+19     unsigned int N = 1024;
+20     foo_kernel&lt;&lt;&lt; (N + 128 - 1) / 128, 128 &gt;&gt;&gt;(a_d, b_d);
+21 }
+</code></pre>
+<blockquote>
+<p>a. How many versions of the variable i are there?</p>
+</blockquote>
+<p><code>i</code> is private to each thread, so <code>1024</code> copies.</p>
+<blockquote>
+<p>b. How many versions of the array x[] are there?</p>
+</blockquote>
+<p><code>x[4]</code> is a local memory variable and private to each thread, so <code>1024</code> copies.</p>
+<blockquote>
+<p>c. How many versions of the variable y_s are there?</p>
+</blockquote>
+<p><code>y_s</code> is a shared memory variable, one per block, so <code>8</code> copies.</p>
+<blockquote>
+<p>d. How many versions of the array b_s[] are there?</p>
+</blockquote>
+<p><code>b_s</code> is also shared memory, so <code>8</code> copies.</p>
+<blockquote>
+<p>e. What is the amount of shared memory used per block (in bytes)?</p>
+</blockquote>
+<p>We have <code>(128 + 1) * 4B = 516B</code>.</p>
+<blockquote>
+<p>f. What is the floating-point to global memory access ratio of the kernel (in OP/B)?</p>
+</blockquote>
+<p>There are <code>6</code> memory accesses, so <code>24B</code> in each thread:</p>
+<ul>
+<li>Line 7 has <code>4</code> loads</li>
+<li>Line 12 has <code>1</code> load</li>
+<li>Line 14 has <code>1</code> store</li>
+</ul>
+<p>There are <code>10</code> floating point operations on lines 14 and 15:</p>
+<ul>
+<li><code>5</code> multiplications</li>
+<li><code>5</code> additions</li>
+</ul>
+<p>So FLOP/B is <code>10 / 24 = 0.42 FLOP/B</code>.</p>
+<blockquote>
+<ol start="12">
+<li>Consider a GPU with the following hardware limits: 2048 threads/SM, 32 blocks/SM, 64K (65,536) registers/SM, and 96 KB of shared memory/SM. For each of the following kernel characteristics, specify whether the kernel can achieve full occupancy. If not, specify the limiting factor.</li>
+</ol>
+<p>a. The kernel uses 64 threads/block, 27 registers/thread, and 4 KB of shared memory/block.</p>
+</blockquote>
+<p>Checks:</p>
+<ul>
+<li>Total threads: <code>64 threads/block * 32 blocks = 2048</code>. Hits thread limits ✔</li>
+<li>Shared memory: given shared memory limits, we can only have <code>96KB / 4KB = 24 blocks</code>. So occupancy can only be 75%. ✖</li>
+<li>Registers: <code>27 * 2048 = 55,296</code>. Within limits ✔</li>
+</ul>
+<p>Cannot reach full occupancy due to shared memory usage.</p>
+<blockquote>
+<p>b. The kernel uses 256 threads/block, 31 registers/thread, and 8 KB of shared memory/block.</p>
+</blockquote>
+<p>Checks:</p>
+<ul>
+<li>Total threads: <code>256 threads/block * 8 blocks = 2048</code>. Hits thread limits ✔</li>
+<li>Shared memory: given shared memory limits, we have <code>96KB / 8KB = 12 blocks</code>. So we can have 8 blocks no problem. ✔</li>
+<li>Registers: <code>31 * 2048 = 63,488</code>. Within limits ✔</li>
+</ul>
+<p>Can reach full occupancy.</p>
 
                     </main>
 
