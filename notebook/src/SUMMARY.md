@@ -107,3 +107,4 @@
     - [Multidimensional grids](./pmpp/ch03.md)
     - [Compute Architecture](./pmpp/ch04.md)
     - [Memory Architecture](./pmpp/ch05.md)
+    - [Performance Considerations](./pmpp/ch06.md)
