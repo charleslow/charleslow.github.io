@@ -177,61 +177,11 @@
                                 </div>
                             </div>
 
-                            {/* Code Snippet */}
-                            <div className="flex-1 flex flex-col min-h-[200px]">
-                                <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Pseudo-CUDA Kernel</h2>
-                                <div className="flex-1 bg-slate-900 text-slate-300 p-4 rounded-lg font-mono text-xs overflow-auto shadow-inner">
-                                    <pre>{`
-__global__ void matMulCoarsened(
-    float* A, float* B, float* C, 
-    int N) 
-{
-  // Calculate global row index
-  int row = blockIdx.y * blockDim.y 
-            + threadIdx.y;
-            
-  // Calculate base col index for thread
-  int colBase = (blockIdx.x * blockDim.x 
-                + threadIdx.x) 
-                * ${coarseningFactor}; // FACTOR
-
-  if (row < N && colBase < N) {
-    
-    // Registers for accumulation
-    float sum[${coarseningFactor}]; 
-    
-    // Initialize
-    for (int i=0; i < ${coarseningFactor}; i++) 
-       sum[i] = 0.0f;
-
-    // THE LOOP
-    for (int k = 0; k < N; k++) {
-      float a_val = A[row * N + k];
-      
-      // Compute multiple outputs
-      // Reuse 'a_val' ${coarseningFactor} times!
-      for (int i=0; i < ${coarseningFactor}; i++) {
-         if (colBase + i < N) {
-           sum[i] += a_val * B[k * N + (colBase + i)];
-         }
-      }
-    }
-
-    // Write back
-    for (int i=0; i < ${coarseningFactor}; i++) {
-       if (colBase + i < N)
-         C[row * N + colBase + i] = sum[i];
-    }
-  }
-}
-                                    `}</pre>
-                                </div>
-                            </div>
-
                         </aside>
 
                         {/* Visualization Area */}
-                        <div className="flex-1 bg-slate-50 p-8 overflow-y-auto flex flex-col items-center justify-center">
+                        <div className="flex-1 bg-slate-50 overflow-y-auto relative">
+                           <div className="min-h-full flex flex-col items-center justify-center p-8">
                             
                             {/* Top Row: A and B */}
                             <div className="flex gap-12 mb-12">
@@ -362,6 +312,7 @@ __global__ void matMulCoarsened(
                                     This reduces the total number of threads launched by a factor of {coarseningFactor}.
                                 </div>
                             </div>
+                           </div>
                         </div>
                     </main>
                 </div>
