@@ -317,7 +317,187 @@ if (row &lt; Width &amp;&amp; col &lt; Width) {
 <li>It may make more sense for a single thread block to compute a few adjacent <code>P</code> tiles at once, and thus load this slice of matrix <code>M</code> only once and reduce redundant memory accesses</li>
 </ul>
 <p>Here we can dive into the thread coarsening matrix multiplication kernel:</p>
-<pre><code class="language-c"></code></pre>
+<pre><code class="language-c">#define TILE_WIDTH 32
+#define COARSE_FACTOR 4
+__global__ void matrixMulKernel(float* M, float* N, float* P, int width) {
+    __shared__ float Mds[TILE_WIDTH][TILE_WIDTH];
+    __shared__ float Nds[TILE_WIDTH][TILE_WIDTH];
+
+    int bx = blockIdx.x; int by = blockIdx.y;
+    int tx = threadIdx.x; int ty = threadIdx.y;
+
+    int row = by * TILE_WIDTH + ty;
+    int colStart = bx * TILE_WIDTH * COARSE_FACTOR + tx;
+
+    float Pvalue[COARSE_FACTOR];
+    for (int c = 0; c &lt; COARSE_FACTOR; ++c) {
+        Pvalue[c] = 0.0f;
+    }
+
+    for (int ph = 0; ph &lt; width/TILE_WIDTH; ++ph) {
+        Mds[ty][tx] = M[row*width + ph*TILE_WIDTH + tx];
+        for (int c = 0; c &lt; COARSE_FACTOR; ++c) {
+            int col = colStart + c * TILE_WIDTH;
+            Nds[ty][tx] = N[(ph * TILE_WIDTH + ty) * width + col];
+            __syncthreads();
+            for (int k = 0; k &lt; TILE_WIDTH; ++k) {
+                Pvalue[c] += Mds[ty][k] * Nds[k][tx];
+            }
+            __syncthreads();
+        }
+    }
+    for (int c = 0; c &lt; COARSE_FACTOR; ++c) {
+        int col = colStart + c * TILE_WIDTH;
+        P[row * width + col] = Pvalue[c];
+    }
+}
+</code></pre>
+<p>Let's unpack the code above. Notice that instead of each thread block processing one tile of the output <code>P</code> matrix, now one thread block will process <code>COARSE_FACTOR = 4</code> adjacent tiles of <code>P</code></p>
+<ul>
+<li>Therefore, each thread now processes <code>4</code> cells instead of <code>1</code> cell</li>
+</ul>
+<p>First we identify <code>row</code> and <code>colStart</code>:</p>
+<ul>
+<li><code>row</code> is the row of <code>P</code> that we are computing. This is as per normal</li>
+<li><code>colStart</code> is the start of the column that we are computing. Because each thread is now doing <code>4</code> cells, we multiply by <code>COARSE_FACTOR</code> to start further down. It is also the "start" because there are 4 cells to compute, and this variable indicates the first cell.</li>
+</ul>
+<p>Initialize <code>Pvalue</code>: instead of one float, we have an array of <code>4</code> floats.</p>
+<p>Now the main loop:</p>
+<ul>
+<li>The outer loop is over phases, which is as per previous. Each phase loads a new tile of <code>M</code> (by moving rightwards) and a new tile of <code>N</code> (by moving downwards) to compute the same <code>P</code> tile in a tiled manner.</li>
+<li>Notice that we load a tile of <code>M</code> for this block that will be <span style="color:orange">reused</span> across multiple loops of the <span style="color:orange">coarsening loop</span> over <code>c</code>.
+<ul>
+<li>The way <code>M</code> is loaded is as per normal - we locate the correct <code>row</code>, and the column is determined by <code>ph * TILE_WIDTH + tx</code></li>
+</ul>
+</li>
+<li>The coarsening loop is where things are interesting:
+<ul>
+<li>For a given value of <code>c</code>, we are working on one tile of <code>N</code></li>
+<li>Each iteration of the loop moves us in a stride of <code>TILE_WIDTH</code> to the right, as reflected by the way <code>col</code> is computed as <code>colStart + c * TILE_WIDTH</code></li>
+<li>e.g. a given thread may compute <code>col = 0, 32, 64, 96</code> instead of <code>col = 0, 1, 2, 3</code></li>
+<li>Once we have computed <code>col</code> to account for coarsening, the indexing into <code>N</code> is as per previous</li>
+</ul>
+</li>
+</ul>
+<p>So we see that for the same <code>M</code> tile that is loaded, we reuse it <code>COARSE_FACTOR</code> times for different <code>N</code> tiles. Thread coarsening is a common technique that can led to substantial performance improvements.</p>
+<h3 id="pitfalls"><a class="header" href="#pitfalls">Pitfalls</a></h3>
+<p>There are some potential pitfalls for thread coarsening:</p>
+<ul>
+<li>Not to apply optimization when it is unnecessary. Thread coarsening is only beneficial when there is a price paid for parallelization, such as redundant data loading. It will not help when there is no price paid.</li>
+<li>Apply too much coarsening such that hardware resources become underutilized. By applying coarsening, we reduce the amount of parallelism exposed and can lead to underutilisation.</li>
+<li>Third pitfall is that our coarsened kernel ends up using more resources which can hurt occupancy, for example, by using more registers per thread or more shared memory per thread block.</li>
+</ul>
+<h2 id="checklist-of-optimizations"><a class="header" href="#checklist-of-optimizations">Checklist of optimizations</a></h2>
+<ol>
+<li>Maximizing occupancy
+<ul>
+<li>Idea: more parallel memory accesses to hide DRAM latency</li>
+<li>Strategy: tune parameters like threads per block, shared memory per block, registers per thread to maximize occupancy</li>
+</ul>
+</li>
+<li>Enabling coalesced global memory accesses
+<ul>
+<li>Idea: less global memory traffic and better utilization of DRAM burst to efficiently read data</li>
+<li>Strategies:
+<ul>
+<li>Transfer from global to shared memory in a coalesced manner and perform uncoalesced accesses in shared memory</li>
+<li>Rearrange mapping of threads to data</li>
+<li>Rearrange layout of data</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Minimize control divergence
+<ul>
+<li>Idea: Higher SIMD efficiency and have less idle cores during SIMD execution</li>
+<li>Strategies:
+<ul>
+<li>Rearrange mapping of threads to work and / or data</li>
+<li>Rearrange layout of data</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Tiling of reused data
+<ul>
+<li>Idea: Less global memory traffic by reusing tiles</li>
+<li>Strategies:
+<ul>
+<li>Place reused data in shared memory or registers so that we only read from global memory once</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Privatisation
+<ul>
+<li>Idea: Less contention of writes to a shared copy of data and serialization of atomic updates</li>
+<li>Strategy:
+<ul>
+<li>Apply partial updates to a private copy of the data and then updataing the universal copy when done</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Thread coarsening
+<ul>
+<li>Idea: Less redundant work, divergene and global memory traffic</li>
+<li>Strategy:
+<ul>
+<li>Assign multiple units of parallelism to each thread to reduce the price of parallelism when unnecessarily incurred</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
+<blockquote>
+<ol>
+<li>Write a matrix multiplication kernel function that corresponds to the design illustrated in Fig. 6.4.</li>
+</ol>
+</blockquote>
+<blockquote>
+<ol start="2">
+<li>For tiled matrix multiplication, of the possible range of values for BLOCK_SIZE, for what values of BLOCK_SIZE will the kernel completely avoid uncoalesced accesses to global memory? (You need to consider only square blocks.)</li>
+</ol>
+</blockquote>
+<blockquote>
+<ol start="3">
+<li>Consider the following CUDA kernel:</li>
+</ol>
+</blockquote>
+<pre><code class="language-c">__global__ void foo_kernel(float* a, float* b, float* c, float* d, float* e) {
+    unsigned int i = blockIdx.x*blockDim.x + threadIdx.x;
+    __shared__ float a_s[256];
+    __shared__ float bc_s[4*256];
+    a_s[threadIdx.x] = a[i];
+    for(unsigned int j = 0; j &lt; 4; ++j) {
+        bc_s[j*256 + threadIdx.x] = b[j*blockDim.x*gridDim.x + i] + c[i*4 + j];
+    }
+    __syncthreads();
+    d[i + 8] = a_s[threadIdx.x];
+    e[i*8] = bc_s[threadIdx.x*4];
+}
+</code></pre>
+<blockquote>
+<p>For each of the following memory accesses, specify whether they are coalesced or uncoalesced or coalescing is not applicable:</p>
+<p>a. The access to array a of line 05</p>
+<p>b. The access to array a_s of line 05</p>
+<p>c. The access to array b of line 07</p>
+<p>d. The access to array c of line 07</p>
+<p>e. The access to array bc_s of line 07</p>
+<p>f. The access to array a_s of line 10</p>
+<p>g. The access to array d of line 10</p>
+<p>h. The access to array bc_s of line 11</p>
+<p>i. The access to array e of line 11</p>
+</blockquote>
+<blockquote>
+<ol start="4">
+<li>What is the floating point to global memory access ratio (in OP/B) of each of the following matrix-matrix multiplication kernels?</li>
+</ol>
+<p>a. The simple kernel described in Chapter 3, Multidimensional Grids and Data, without any optimizations applied.</p>
+<p>b. The kernel described in Chapter 5, Memory Architecture and Data Locality, with shared memory tiling applied using a tile size of 32332.</p>
+<p>c. The kernel described in this chapter with shared memory tiling applied using a tile size of 32332 and thread coarsening applied using a coarsening factor of 4.</p>
+</blockquote>
 
                     </main>
 
