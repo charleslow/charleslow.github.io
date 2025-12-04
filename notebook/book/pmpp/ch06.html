@@ -455,11 +455,69 @@ __global__ void matrixMulKernel(float* M, float* N, float* P, int width) {
 <li>Write a matrix multiplication kernel function that corresponds to the design illustrated in Fig. 6.4.</li>
 </ol>
 </blockquote>
+<p>Fig 6.4 is the corner turning example. Suppose we have matrices <code>M x N = P</code>. For simplicity, we assume square matrices of <code>Width</code>.</p>
+<p>The access to <code>M</code> remains the same as normal tiled matrix multiplication, but we want to change the way <code>N</code> is loaded into shared memory, since the assumption is that <code>N</code> is stored in column major format.</p>
+<p>Doing a recap: each block computes a tile of <code>P</code>. Let <code>T</code> denotes the <code>TILE_WIDTH</code>. The rows and columns are determined by the current values of <code>by</code> and <code>bx</code> respectively:</p>
+<ul>
+<li>The first row of the block is <code>by * T</code></li>
+<li>The first column of the block is <code>bx * T</code></li>
+<li><code>ty</code> and <code>tx</code> gives us the coordinate of the exact element within the block</li>
+</ul>
+<p>Now let's focus on <code>N</code>. Here we need to distinguish between the logical indexing into <code>N</code> (call it <code>N_logical</code>) and the indexing into <code>N</code> based on how it is stored (column major, call it <code>N_stored</code>). We start with the logical view:</p>
+<ul>
+<li>Each phase of the tiled matmul moves us downward on <code>N</code></li>
+<li>So we start at row <code>ph * T</code> and work downwards</li>
+<li>The columns are fixed as <code>bx * T</code> to <code>bx * (T+1) - 1</code></li>
+</ul>
+<p>Since <code>N</code> is stored in column major, we need to swap the indexing when referring to <code>N_stored</code>. So:</p>
+<ul>
+<li>We start at row <code>bx * T</code> (denoted <code>N_rowstart</code> in code)</li>
+<li>We start at column <code>ph * T</code> (denoted <code>N_colstart</code> in code)</li>
+</ul>
+<p>Now we have found the correct coordinates of the tile within <code>N</code>. This is where it gets tricky: we want to read the elements of this tile in a coalesced way, such that incrementing <code>tx</code> by <code>1</code> reads the next element in the linearized array.</p>
+<ul>
+<li>So the first element is <code>N_rowstart * Width</code> corresponding to <code>N_logical[ph*T, bx*T]</code></li>
+<li>Second element is <code>N_rowstart * Width + 1</code> corresponding to <code>N_logical[ph*T + 1, bx*T]</code> etc.</li>
+<li>This means that we will be reading in the transpose of this N tile, and we need to transpose it again when loading into <code>Nds</code> so that we get the correct tile when doing the final multiplication</li>
+</ul>
+<p>Hopefully this analysis sheds some light on the code below.</p>
+<pre><code class="language-c"># define TILE_WIDTH 16
+__global__ void matrixMulKernel(float* M, float* N, float* P, int Width) {
+    __shared__ float Mds[TILE_WIDTH][TILE_WIDTH];
+    __shared__ float Nds[TILE_WIDTH][TILE_WIDTH];
+
+    int bx = blockIdx.x;    int by = blockIdx.y;
+    int tx = threadIdx.x;   int ty = threadIdx.y;
+
+    // Identify P[Row, Col] to work on
+    int Row = by * TILE_WIDTH + ty;
+    int Col = bx * TILE_WIDTH + tx;
+
+    float Pvalue = 0;
+    for (int ph = 0; ph &lt; Width/TILE_WIDTH; ++ph) {
+        // Load M, N into shared memory
+        Mds[ty][tx] = M[Row*Width + ph*TILE_WIDTH + tx];
+        // Note: rowstart, colstart refers to N_stored
+        int N_rowstart = bx * TILE_WIDTH;
+        int N_colstart = ph * TILE_WIDTH;
+        Nds[tx][ty] = N[(N_rowstart + ty)*Width + N_colstart + tx];
+        __syncthreads();
+
+        for (int k = 0; k &lt; TILE_WIDTH; ++k) {
+            // We index Nds as per usual since it is now row major
+            Pvalue += Mds[ty][k] * Nds[k][tx];
+        }
+        __syncthreads();
+    }
+    P[Row*Width + Col] = Pvalue;
+}
+</code></pre>
 <blockquote>
 <ol start="2">
 <li>For tiled matrix multiplication, of the possible range of values for BLOCK_SIZE, for what values of BLOCK_SIZE will the kernel completely avoid uncoalesced accesses to global memory? (You need to consider only square blocks.)</li>
 </ol>
 </blockquote>
+<p>Not too sure about this one. Since a warp has <code>32</code> threads, and we read <code>32</code> elements simultaneously, it is good if block_size is a multiple of <code>32</code>, so that we get coalesced reads of <code>32</code> elements at once.</p>
 <blockquote>
 <ol start="3">
 <li>Consider the following CUDA kernel:</li>
@@ -480,24 +538,76 @@ __global__ void matrixMulKernel(float* M, float* N, float* P, int width) {
 </code></pre>
 <blockquote>
 <p>For each of the following memory accesses, specify whether they are coalesced or uncoalesced or coalescing is not applicable:</p>
+</blockquote>
+<blockquote>
 <p>a. The access to array a of line 05</p>
+</blockquote>
+<p>Coalesced because increasing <code>tx</code> by <code>1</code> takes the next element of <code>a</code></p>
+<blockquote>
 <p>b. The access to array a_s of line 05</p>
+</blockquote>
+<p>Not applicable, <code>a_s</code> is shared memory.</p>
+<blockquote>
 <p>c. The access to array b of line 07</p>
+</blockquote>
+<p>Coalesced because increasing <code>tx</code> by <code>1</code> will take the next element of <code>b</code></p>
+<blockquote>
 <p>d. The access to array c of line 07</p>
+</blockquote>
+<p>Not coalesced because increasing <code>tx</code> by <code>1</code> will increase the index into <code>c</code> by <code>4</code>.</p>
+<blockquote>
 <p>e. The access to array bc_s of line 07</p>
+</blockquote>
+<p>Not applicable, <code>bc_s</code> is shared memory.</p>
+<blockquote>
 <p>f. The access to array a_s of line 10</p>
+</blockquote>
+<p>Not applicable, <code>a_s</code> is shared memory.</p>
+<blockquote>
 <p>g. The access to array d of line 10</p>
+</blockquote>
+<p>Coalesced.</p>
+<blockquote>
 <p>h. The access to array bc_s of line 11</p>
+</blockquote>
+<p>Not applicable.</p>
+<blockquote>
 <p>i. The access to array e of line 11</p>
 </blockquote>
+<p>Not coalesced, increasing <code>tx</code> will increment access to <code>e</code> by <code>8</code>.</p>
 <blockquote>
 <ol start="4">
 <li>What is the floating point to global memory access ratio (in OP/B) of each of the following matrix-matrix multiplication kernels?</li>
 </ol>
-<p>a. The simple kernel described in Chapter 3, Multidimensional Grids and Data, without any optimizations applied.</p>
-<p>b. The kernel described in Chapter 5, Memory Architecture and Data Locality, with shared memory tiling applied using a tile size of 32332.</p>
-<p>c. The kernel described in this chapter with shared memory tiling applied using a tile size of 32332 and thread coarsening applied using a coarsening factor of 4.</p>
 </blockquote>
+<blockquote>
+<p>a. The simple kernel described in Chapter 3, Multidimensional Grids and Data, without any optimizations applied.</p>
+</blockquote>
+<p>In the simple matmul, each thread accesses <code>Width</code> number of elements of <code>M</code> and <code>N</code> respectively, and performs a <code>sum</code> and <code>multiplication</code> for each loop.</p>
+<ul>
+<li><code>2 x Width</code> number of global memory accesses</li>
+<li><code>2 x Width</code> number of OPs</li>
+<li><code>OP/B = 2 x Width / (2 x Width x 4) = 1/4</code> (because <code>4 bytes</code> per float)</li>
+</ul>
+<blockquote>
+<p>b. The kernel described in Chapter 5, Memory Architecture and Data Locality, with shared memory tiling applied using a tile size of 32 x 32.</p>
+</blockquote>
+<p>For tiled matmul (see <a href="ch05.html#a-tiled-matmul-kernel">tiled matmul</a>), each thread still does <code>2 x Width</code> number of OPs. But the number of global memory accesses is now <code>2 x Width / TILE_WIDTH</code>.</p>
+<ul>
+<li><code>OP / B = 2 x Width / (2 x Width x 4 / 32) = 8 OP/B</code></li>
+</ul>
+<blockquote>
+<p>c. The kernel described in this chapter with shared memory tiling applied using a tile size of 32 x 32 and thread coarsening applied using a coarsening factor of 4.</p>
+</blockquote>
+<p><a href="ch06.html#thread-coarsening">Thread coarsening</a> means that we reuse the same <code>M</code> tile for computing <code>4</code> output tiles:</p>
+<ul>
+<li><code>Width / TILE_WIDTH x COARSE_FACTOR</code> number of accesses for <code>N</code></li>
+<li><code>Width / TILE_WIDTH</code> number of accesses for <code>M</code></li>
+<li><code>2 x Width x COARSE_FACTOR</code> number of FLOPs</li>
+<li>So numerator is <code>2 x Width</code></li>
+<li>Denominator is <code>4 x Width / (TILE_WIDTH x COARSE_FACTOR) x Width / (TILE_WIDTH)</code></li>
+<li><code>OP / B = 2/4 / (1/128 + 1/32) = 12.8 OP/B</code></li>
+</ul>
 
                     </main>
 
