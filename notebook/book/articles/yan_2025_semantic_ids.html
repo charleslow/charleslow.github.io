@@ -1,0 +1,408 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Yan 2025 - Semantic IDs - Chux&#x27;s Notebook</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../katex.min.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Chux&#x27;s Notebook</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="yan-2025---semantic-ids"><a class="header" href="#yan-2025---semantic-ids">Yan 2025 - Semantic IDs</a></h1>
+<ul>
+<li>Article: <a href="https://eugeneyan.com/writing/semantic-ids/">https://eugeneyan.com/writing/semantic-ids/</a></li>
+<li>Code: <a href="https://github.com/eugeneyan/semantic-ids-llm">https://github.com/eugeneyan/semantic-ids-llm</a></li>
+</ul>
+<p>Eugene Yan's experience of training an LLM-recommender hybrid that can recommend items using natural language.</p>
+<h2 id="extend-the-vocab"><a class="header" href="#extend-the-vocab">Extend the vocab</a></h2>
+<p>Insert semantic ID tokens like <code>&lt;|sid_0|&gt;</code>, <code>&lt;|sid_1|&gt;</code> into the vocab. Sequences of these tokens will be used to represent the catalog. So an item may be represented like:</p>
+<pre><code>&lt;|sid_start|&gt;&lt;|sid_173|&gt;&lt;|sid_324|&gt;&lt;|sid_764|&gt;&lt;|sid_768|&gt;&lt;|sid_end|&gt;
+</code></pre>
+<h2 id="data"><a class="header" href="#data">Data</a></h2>
+<p>He used video games category of Amazon Reviews 2023, because it has rich product metadata and lots of behavioural data.</p>
+<ul>
+<li>Keep only products with titles longer that <code>20 chars</code> and description longer than <code>100 chars</code></li>
+<li><code>66k</code> products</li>
+<li><code>737k</code> rows of interactions</li>
+</ul>
+<h2 id="training-semantic-ids"><a class="header" href="#training-semantic-ids">Training Semantic IDs</a></h2>
+<p>Used RQ-VAE to train semantic IDs. Will not expound on RQ-VAE here. Eugene used:</p>
+<ul>
+<li><code>3-level</code> codebook</li>
+<li>Each level has <code>256</code> codes</li>
+<li>This has collisions on around <code>10%</code> of the <code>66k products</code></li>
+<li>Added a sequentially increasing token to each ID to ensure uniqueness</li>
+</ul>
+<h2 id="baselines"><a class="header" href="#baselines">Baselines</a></h2>
+<ol>
+<li>Train a SASRec model on semantic IDs to compare against traditional SASRec</li>
+<li>Use Qwen3-Embedding-0.6B to encode product metadata into embeddings</li>
+<li>Finetune Qwen3-8B to recommend items via semantic IDs</li>
+</ol>
+<h2 id="data-cleaning"><a class="header" href="#data-cleaning">Data Cleaning</a></h2>
+<ul>
+<li>Clean item descriptions using Gemini 2.5 Flash to remove HTML, reduce verbosity</li>
+<li>Remove promotional text, standardize formatting for titles etc.</li>
+<li>Augment data by extracting structured metadata like product type, platform, genre, hardware type etc.</li>
+<li>Build user interaction histories</li>
+</ul>
+<h2 id="training-rq-vae"><a class="header" href="#training-rq-vae">Training RQ-VAE</a></h2>
+<p>First, we get the <code>1,024</code> embeddings using Qwen3-0.6B, then l2-normalize. The RQ VAE consists of:</p>
+<ul>
+<li>An encoder</li>
+<li>A codebook with 3 quantization levels</li>
+<li>A symmetric decoder</li>
+</ul>
+<p>Some tricks:</p>
+<ul>
+<li>Use rotation trick as a replacement for the straight through estimator</li>
+<li>Initialize codebooks with k means clustering</li>
+<li>Reset unused codes</li>
+<li>Large batch size</li>
+</ul>
+<p>Metrics for measuring quality of RQ-VAE:</p>
+<ol>
+<li><code>loss/reconstruction</code>: How well we can reconstruct the original item embeddings after compressing and decompressing</li>
+<li><code>loss/vq</code>: Combined codebook and commitment loss across all levels.</li>
+</ol>
+<ul>
+<li>Ensures that encoder outputs and codebook vectors stay close together</li>
+</ul>
+<ol start="3">
+<li><code>loss/total</code>: sum of <code>loss/vq</code> and <code>loss/reconstruction</code></li>
+<li><code>loss/validation</code>: total loss but on the held out validation set. Our <span style="color:orange">deciding metric</span>.</li>
+<li><code>metrics/avg_residual_norm</code>: Leftover residuals between the quantized embedding and the original embedding</li>
+<li><code>metrics/unique_ids_proportion</code>: % of items with unique IDS in a batch</li>
+</ol>
+<ul>
+<li>Helps to check against codebook collapse</li>
+<li>We want this metric to be high</li>
+</ul>
+<ol start="7">
+<li>Codebook distribution</li>
+</ol>
+<ul>
+<li>Plot the item distribution amongst the <code>256</code> codes at each level</li>
+<li>It should look like a uniform distribution</li>
+</ul>
+<p>Some hyperparameter tuning:</p>
+<ul>
+<li>Set <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.5</span></span></span></span>:
+<ul>
+<li>Tried <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord">0.25</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">0.5</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1.0‘.</span></span></span></span>\beta<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">i</span><span class="mord mathnormal">s</span><span class="mord mathnormal">t</span><span class="mord mathnormal">h</span><span class="mord mathnormal">eco</span><span class="mord mathnormal">mmi</span><span class="mord mathnormal">t</span><span class="mord mathnormal">m</span><span class="mord mathnormal">e</span><span class="mord mathnormal">n</span><span class="mord mathnormal" style="margin-right:0.02691em;">tw</span><span class="mord mathnormal">e</span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord mathnormal">h</span><span class="mord mathnormal">tt</span><span class="mord mathnormal">ha</span><span class="mord mathnormal">t</span><span class="mord mathnormal">ba</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">an</span><span class="mord mathnormal">cesreco</span><span class="mord mathnormal">n</span><span class="mord mathnormal">s</span><span class="mord mathnormal">t</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">u</span><span class="mord mathnormal">c</span><span class="mord mathnormal">t</span><span class="mord mathnormal">i</span><span class="mord mathnormal">o</span><span class="mord mathnormal">na</span><span class="mord mathnormal">cc</span><span class="mord mathnormal">u</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.03588em;">cy</span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mord mathnormal">i</span><span class="mord mathnormal">t</span><span class="mord mathnormal">h</span><span class="mord mathnormal">co</span><span class="mord mathnormal">d</span><span class="mord mathnormal">e</span><span class="mord mathnormal">b</span><span class="mord mathnormal">oo</span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mord mathnormal">co</span><span class="mord mathnormal">mmi</span><span class="mord mathnormal">t</span><span class="mord mathnormal">m</span><span class="mord mathnormal">e</span><span class="mord mathnormal">n</span><span class="mord mathnormal">t</span><span class="mord">−</span></span></span></span>\beta = 0.5$ had the lowest validation loss, so it was chosen</li>
+</ul>
+</li>
+<li>Investing in data cleaning significantly improved all the metrics</li>
+</ul>
+<h2 id="sasrec-comparison"><a class="header" href="#sasrec-comparison">SASRec comparison</a></h2>
+<p>Eugene tested two SASRec variants:</p>
+<ul>
+<li>Traditional SASRec
+<ul>
+<li>Each item has a unique ID with no semantic meaning</li>
+<li>Model uses 2 causal attention blocks, 64 dim hidden dimension, trained with binary cross entropy loss</li>
+<li>Dot product of embeddings is used to generate scores</li>
+</ul>
+</li>
+<li>Semantic SASRec
+<ul>
+<li>For semantic version, each item is a sequence of semantic tokens</li>
+<li>Hence for each position, the model needs to generate a sequence of tokens to represent an item</li>
+<li>Instead of binary cross entropy loss, we need to sum up the cross entropy loss at each position</li>
+<li><span style="color:orange">Question</span>: does it make sense to add some weights to put more weightage on the first semantic token and decay it for subsequent positions?</li>
+<li>Teacher forcing is used for this training</li>
+<li>A larger model is used here, 4 causal attention blocks and 384 hidden dim</li>
+</ul>
+</li>
+</ul>
+<p>From this experiment, Eugene found that traditional SASRec is significantly better. But he puts this down to the difficulty of generating a sequence of tokens compared to directly generating one token. I also note that we are not using a pretrained LLM here, which means we are missing out on some pretrained capabilities that we could have tapped on.</p>
+<h2 id="finetuning-qwen-8b"><a class="header" href="#finetuning-qwen-8b">Finetuning Qwen-8B</a></h2>
+<p>Now finally we train the language model to converse in semantic IDs.</p>
+<p>First, we build the training dataset of <code>4.2 million</code> conversations of various task types:</p>
+<ul>
+<li>Given a semantic ID, predict the item description</li>
+<li>Given item description, predict the semantic ID</li>
+<li>Predict the next item in the user's sequence</li>
+<li>Understand relationships between item categories</li>
+<li>Multi-hop reasoning</li>
+</ul>
+<p>Each of these are formatted as a conversation with a system prompt, user prompt and assistant response. Now, we finetune the model in two phases.</p>
+<p>In <span style="color:orange">Phase 1</span>, we focus on extending the model's vocabulary.</p>
+<ul>
+<li>We add <code>1,027</code> new vocabulary items to the model's vocabulary, and resize the model's embedding matrix for them.</li>
+<li>In this phase, we freeze all the model parameters except the input and output embedding layers, training <code>15%</code> of total parameters</li>
+<li>Train for <code>1,000</code> steps with relatively high learning rate</li>
+</ul>
+<p>In <span style="color:orange">Phase 2</span>, we do the full training:</p>
+<ul>
+<li>Train for 3 epochs on the full dataset</li>
+<li>3% warmup, lower learning rate, 8-bit AdamW optimizer for memory efficiency</li>
+<li>Monitor progress with callbacks:
+<ul>
+<li>Track gradient norms</li>
+<li>Measure hierarchical accuracy (I guess on different codebook granularities) on recommendation tasks</li>
+<li>Sample model outputs on fixed set of conversational inputs</li>
+</ul>
+</li>
+</ul>
+<h2 id="inference"><a class="header" href="#inference">Inference</a></h2>
+<p>Now the model is trained, we can have chat / recommendation conversations with it:</p>
+<blockquote>
+<p><span style="color:orange">User</span>: “Halo 3 Limited Edition -Xbox 360”, “Lost Planet: Extreme Condition - Xbox 360”, “Lost Planet: Extreme Condition Collector’s Edition -Xbox 360” &lt;|rec|&gt;</p>
+<p><span style="color:orange">Model</span>: <code>&lt;|sid_start|&gt;&lt;|sid_64|&gt;&lt;|sid_351|&gt;&lt;|sid_733|&gt;&lt;|sid_768|&gt;&lt;|sid_end|&gt;</code></p>
+</blockquote>
+<p>The model can also explain its recs:</p>
+<blockquote>
+<p><span style="color:orange">User</span>: I just finished “Dragon Quest Heroes II Explorer’s Edition - PlayStation 4”. Suggest another &lt;|rec|&gt; and explain why:</p>
+<p><span style="color:orange">Model</span>: <code>&lt;|sid_start|&gt;&lt;|sid_139|&gt;&lt;|sid_289|&gt;&lt;|sid_534|&gt;&lt;|sid_768|&gt;&lt;|sid_end|&gt;</code></p>
+<p>If you liked Dragon Quest Heroes II, you might like Nights of Azure because both are action RPGs for the PlayStation 4 with a focus on combat and character progression. Both games offer a narrative-driven experience with a strong emphasis on combat mechanics, suggesting a shared player interest in this genre.</p>
+</blockquote>
+<p>We can even have multi-turn conversation with the model:</p>
+<blockquote>
+<p><span style="color:orange">User</span>: I’m looking for games similar to Mario Kart. &lt;|rec|&gt;</p>
+<p><span style="color:orange">Model</span>: <code>&lt;|sid_start|&gt;&lt;|sid_131|&gt;&lt;|sid_503|&gt;&lt;|sid_738|&gt;&lt;|sid_768|&gt;&lt;|sid_end|&gt;, &lt;|sid_start|&gt;&lt;|sid_131|&gt;&lt;|sid_260|&gt;&lt;|sid_577|&gt;&lt;|sid_768|&gt;&lt;|sid_end|&gt;, &lt;|sid_start|&gt;&lt;|sid_145|&gt;&lt;|sid_416|&gt;&lt;|sid_671|&gt;&lt;|sid_768|&gt;&lt;|sid_end|&gt;</code></p>
+<p><span style="color:orange">User</span>: How about something similar but for Xbox? &lt;|rec|&gt;</p>
+<p><span style="color:orange">Model</span>: <code>&lt;|sid_start|&gt;&lt;|sid_183|&gt;&lt;|sid_461|&gt;&lt;|sid_517|&gt;&lt;|sid_768|&gt;&lt;|sid_end|&gt;, &lt;|sid_start|&gt;&lt;|sid_183|&gt;&lt;|sid_461|&gt;&lt;|sid_562|&gt;&lt;|sid_768|&gt;&lt;|sid_end|&gt;,&lt;|sid_start|&gt;&lt;|sid_183|&gt;&lt;|sid_461|&gt;&lt;|sid_616|&gt;&lt;|sid_768|&gt;&lt;|sid_end|&gt;</code></p>
+<p><span style="color:orange">User</span>: Suggest a name and description for the bundle.</p>
+<p><span style="color:orange">Model</span>: Xbox Racing Legends: Speed &amp; Style Pack</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../talks/han_2025_grpo.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../nlp_course/intro.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../talks/han_2025_grpo.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../nlp_course/intro.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
