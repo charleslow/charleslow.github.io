@@ -232,33 +232,33 @@
 <p>Metrics for measuring quality of RQ-VAE:</p>
 <ol>
 <li><code>loss/reconstruction</code>: How well we can reconstruct the original item embeddings after compressing and decompressing</li>
-<li><code>loss/vq</code>: Combined codebook and commitment loss across all levels.</li>
-</ol>
+<li><code>loss/vq</code>: Combined codebook and commitment loss across all levels.
 <ul>
 <li>Ensures that encoder outputs and codebook vectors stay close together</li>
 </ul>
-<ol start="3">
+</li>
 <li><code>loss/total</code>: sum of <code>loss/vq</code> and <code>loss/reconstruction</code></li>
 <li><code>loss/validation</code>: total loss but on the held out validation set. Our <span style="color:orange">deciding metric</span>.</li>
 <li><code>metrics/avg_residual_norm</code>: Leftover residuals between the quantized embedding and the original embedding</li>
-<li><code>metrics/unique_ids_proportion</code>: % of items with unique IDS in a batch</li>
-</ol>
+<li><code>metrics/unique_ids_proportion</code>: % of items with unique IDS in a batch
 <ul>
 <li>Helps to check against codebook collapse</li>
 <li>We want this metric to be high</li>
 </ul>
-<ol start="7">
-<li>Codebook distribution</li>
-</ol>
+</li>
+<li>Codebook distribution
 <ul>
 <li>Plot the item distribution amongst the <code>256</code> codes at each level</li>
 <li>It should look like a uniform distribution</li>
 </ul>
+</li>
+</ol>
 <p>Some hyperparameter tuning:</p>
 <ul>
 <li>Set <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.5</span></span></span></span>:
 <ul>
-<li>Tried <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord">0.25</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">0.5</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1.0‘.</span></span></span></span>\beta<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">i</span><span class="mord mathnormal">s</span><span class="mord mathnormal">t</span><span class="mord mathnormal">h</span><span class="mord mathnormal">eco</span><span class="mord mathnormal">mmi</span><span class="mord mathnormal">t</span><span class="mord mathnormal">m</span><span class="mord mathnormal">e</span><span class="mord mathnormal">n</span><span class="mord mathnormal" style="margin-right:0.02691em;">tw</span><span class="mord mathnormal">e</span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord mathnormal">h</span><span class="mord mathnormal">tt</span><span class="mord mathnormal">ha</span><span class="mord mathnormal">t</span><span class="mord mathnormal">ba</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">an</span><span class="mord mathnormal">cesreco</span><span class="mord mathnormal">n</span><span class="mord mathnormal">s</span><span class="mord mathnormal">t</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">u</span><span class="mord mathnormal">c</span><span class="mord mathnormal">t</span><span class="mord mathnormal">i</span><span class="mord mathnormal">o</span><span class="mord mathnormal">na</span><span class="mord mathnormal">cc</span><span class="mord mathnormal">u</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.03588em;">cy</span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mord mathnormal">i</span><span class="mord mathnormal">t</span><span class="mord mathnormal">h</span><span class="mord mathnormal">co</span><span class="mord mathnormal">d</span><span class="mord mathnormal">e</span><span class="mord mathnormal">b</span><span class="mord mathnormal">oo</span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mord mathnormal">co</span><span class="mord mathnormal">mmi</span><span class="mord mathnormal">t</span><span class="mord mathnormal">m</span><span class="mord mathnormal">e</span><span class="mord mathnormal">n</span><span class="mord mathnormal">t</span><span class="mord">−</span></span></span></span>\beta = 0.5$ had the lowest validation loss, so it was chosen</li>
+<li>Tried <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">0.25</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">0.5</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1.0</span></span></span></span>. <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span></span></span></span> is the commitment weight that balances reconstruction accuracy with codebook commitment</li>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.5</span></span></span></span> had the lowest validation loss, so it was chosen</li>
 </ul>
 </li>
 <li>Investing in data cleaning significantly improved all the metrics</li>
@@ -335,6 +335,314 @@
 <p><span style="color:orange">User</span>: Suggest a name and description for the bundle.</p>
 <p><span style="color:orange">Model</span>: Xbox Racing Legends: Speed &amp; Style Pack</p>
 </blockquote>
+<h2 id="code"><a class="header" href="#code">Code</a></h2>
+<ul>
+<li><a href="#device_managerpy">device_manager.py</a></li>
+<li><a href="#tokenize_itemspy">tokenize_items.py</a></li>
+<li><a href="#embed_itemspy">embed_items.py</a></li>
+<li><a href="#train_rqvaepy">train_rqvae.py</a>
+<ul>
+<li><a href="#quantizationoutput">QuantizationOutput</a></li>
+<li><a href="#vectorquantizer">VectorQuantizer</a></li>
+<li><a href="#rqvae">RQVAE</a></li>
+</ul>
+</li>
+<li><a href="#finetune_qwen3_8b_vocabpy">finetune_qwen3_8b_vocab.py</a></li>
+</ul>
+<p>Here we deep dive into Eugene's code and how it is implemented. Most of the code is contained in the <a href="https://github.com/eugeneyan/semantic-ids-llm/tree/main/src"><code>/src</code> directory</a>.</p>
+<h3 id="device_managerpy"><a class="header" href="#device_managerpy">device_manager.py</a></h3>
+<p>The <code>DeviceManager</code> detects the device (<code>cpu</code> or <code>cuda</code> or <code>mps</code>) and is instantiated early in the scripts. The interesting part <code>torch.set_float32_matmul_precision("high")</code> performed when device is <code>cuda</code>. It's supposed to speed up <code>float32</code> operations?</p>
+<h3 id="tokenize_itemspy"><a class="header" href="#tokenize_itemspy">tokenize_items.py</a></h3>
+<p>This script tokenizes the product descriptions of video games:</p>
+<ul>
+<li>Uses <code>Qwen/Qwen3-Embedding-0.6B</code></li>
+<li>Batch size = <code>32</code>, max length = <code>2048</code></li>
+<li>Reads the data from <code>data/output/Video_Games_items_updated.parquet</code> into polars</li>
+<li>Looks for the <code>item_context</code> field (already preprocessed)</li>
+<li>Uses the following prompt which will be tokenized</li>
+</ul>
+<pre><code>Instruct: Given a product description, generate a semantic embedding that captures
+    its key features and characteristics.
+Query: {original_item_text}
+</code></pre>
+<ul>
+<li>Saves tokenized <code>input_ids</code> and <code>attention_masks</code> and saves them in <code>.npz</code> (compressed numpy) format using <code>np.savez_compressed</code></li>
+</ul>
+<h3 id="embed_itemspy"><a class="header" href="#embed_itemspy">embed_items.py</a></h3>
+<p>Takes the tokenized file and embeds them.</p>
+<ul>
+<li>Writes embedded items into a parquet file</li>
+</ul>
+<h3 id="train_rqvaepy"><a class="header" href="#train_rqvaepy">train_rqvae.py</a></h3>
+<p>Compresses an item embedding into hierarchical semantic IDs.</p>
+<p>The <code>RQVAEConfig</code> defines the following parameters:</p>
+<ul>
+<li><code>item_embedding_dim</code>: embedding dim of our embedding model</li>
+<li><code>encoder_hidden_dims</code>: <code>[512, 256, 128]</code> the size of the VAE encoder</li>
+<li><code>codebook_embedding_dim</code>: <code>32</code> Dimension of codebook vectors
+<ul>
+<li><span style="color:orange">Qn:</span> this does not need to match qwen embedding dim?</li>
+</ul>
+</li>
+<li><code>codebook_quantization_levels</code>: <code>3</code> levels in the codebook</li>
+<li><code>codebook_size</code>: <code>256</code> number of codes per level</li>
+<li><code>commitment_weight</code>: <code>0.25</code> Commitment loss weight (beta)</li>
+<li><code>use_rotation_trick</code>: <code>True</code> Use rotation trick for better gradient flow</li>
+<li><code>batch_size</code>: <code>32768</code> training batch size (why so large?)</li>
+<li><code>gradient_accumulation_steps</code>: <code>1</code></li>
+<li><code>num_epochs</code>: <code>20000</code></li>
+<li><code>scheduler_type</code>: <code>cosine_with_warmup</code></li>
+<li><code>warmup_start_lr</code>: <code>1e-8</code> used for cosine_with_warmup</li>
+<li><code>warmup_steps</code>: <code>200</code> used for cosine_with_warmup</li>
+<li><code>max_lr</code>: <code>3e-4</code> maximum learning rate (start of cosine)</li>
+<li><code>min_lr</code>: <code>1e-6</code> minimum learning rate (end of cosine)</li>
+<li><code>use_gradient_clipping</code>: <code>True</code></li>
+<li><code>gradient_clip_norm</code>: <code>1.0</code></li>
+<li><code>use_kmeans_init</code>: <code>True</code> initializes codebook vectors using k-means</li>
+<li><code>reset_unused_codes</code>: <code>True</code> reset unused codes periodically to avoid collapse</li>
+<li><code>steps_per_codebook_reset</code>: <code>2</code> Reset unused codebook codes every N steps</li>
+<li><code>codebook_usage_threshold</code>: <code>1.0</code> only reset if usage falls below this proportion (0-1)</li>
+<li><code>val_split</code>: <code>0.05</code></li>
+<li><code>steps_per_train_log</code>: <code>10</code> log every N steps</li>
+<li><code>steps_per_val_log</code>: <code>200</code> validate and checkpoint every N steps</li>
+</ul>
+<p><code>EmbeddingDataset</code> is a torch dataset holding the embeddings:</p>
+<ul>
+<li>Extracts all embeddings and holds them in a <code>torch.tensor</code> at init
+<ul>
+<li>Not worried about OOM?</li>
+</ul>
+</li>
+</ul>
+<h4 id="quantizationoutput"><a class="header" href="#quantizationoutput">QuantizationOutput</a></h4>
+<p><code>QuantizationOutput</code> is used to hold data for one quantized item:</p>
+<ul>
+<li>Holds the local loss for one codebook layer</li>
+<li>Subclasses <code>NamedTuple</code> which is more lightweight than <code>dataclass</code></li>
+<li><code>quantized_st: Tensor</code>
+<ul>
+<li>The quantized vector which is passed onto the next layer</li>
+<li>Has the "gradient trick" (either straight through or rotation trick) applied</li>
+<li>Allows backpropagation into the encoder even though we passed through the non-differentiable codebook layer</li>
+</ul>
+</li>
+<li><code>quantized: Tensor</code>
+<ul>
+<li>The raw nearest neighbour vectors from the codebook</li>
+<li>No gradients</li>
+<li><span style="color:orange">Observation</span> <code>quantized</code> and <code>quantized_st</code> should be identical in values, just that one has gradients attached</li>
+</ul>
+</li>
+<li><code>indices: Tensor</code>
+<ul>
+<li>These are integer indices which represent the semantic IDs</li>
+</ul>
+</li>
+<li><code>loss: Tensor</code>
+<ul>
+<li>The combined loss for this specific codebook layer</li>
+<li><code>loss = codebook_loss + beta * commitment_loss</code></li>
+</ul>
+</li>
+<li><code>codebook_loss: Tensor</code>
+<ul>
+<li>Measures how well the codebook vector matches the encoder output</li>
+</ul>
+</li>
+<li><code>commitment_loss: Tensor</code>
+<ul>
+<li>Measures how well the encoder output matches the codebook vectors</li>
+</ul>
+</li>
+</ul>
+<h4 id="vectorquantizer"><a class="header" href="#vectorquantizer">VectorQuantizer</a></h4>
+<p>The <code>VectorQuantizer</code> implements one layer of the codebook and is the meat of the logic for training RQVAE. It will be stacked together layer multiple times to form the codebook.</p>
+<ul>
+<li>At initialization:
+<ul>
+<li>Initializes with <code>RQVAEConfig</code> to hold parameters</li>
+<li>Initialize <code>self.embedding</code> to an embedding of size <code>codebook_size=256, codebook_embedding_dim=32</code>
+<ul>
+<li>Uniform initialization <code>self.embedding.weight.data.uniform_(-1 / self.codebook_size, 1 / self.codebook_size)</code></li>
+</ul>
+</li>
+<li>Registers some buffers for tracking codebook usage:
+<ul>
+<li><code>self.register_buffer("usage_count", torch.zeros(self.codebook_size))</code></li>
+<li><code>self.register_buffer("update_count", torch.tensor(0))</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>find_nearest_codes(x)</code>:
+<ul>
+<li>Takes an input vector <code>x</code>, compares it to all vectors in the codebook, and returns the nearest one</li>
+<li>Simply uses <code>torch.cdist</code> to compute distances, then <code>torch.argmin</code> to get the nearest</li>
+<li>Returns a tuple of torch tensors:
+<ul>
+<li>The nearest index (i.e. codeword) to <code>x</code></li>
+<li>The quantized embedding at the index position</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>forward(x)</code> -&gt; <code>QuantizationOutput</code>:
+<ul>
+<li>Finds the nearest index and quantized embeddings for a batch of <code>x</code>
+<ul>
+<li>Call <code>find_nearest_codes</code> to get <code>indices</code> and <code>quantized</code></li>
+</ul>
+</li>
+<li>Applies the gradient estimator to get <code>quantized_st</code>
+<ul>
+<li>This will be used for gradient backprop to the encoder later</li>
+<li><code>apply_gradient_estimator</code> either uses the straight through or rotation method</li>
+</ul>
+</li>
+<li>Compute losses:
+<ul>
+<li><code>codebook_loss</code> is the MSE loss between <code>x.detach()</code> and <code>quantized</code>
+<ul>
+<li>We want to pull the codebook embeddings toward <code>x</code></li>
+</ul>
+</li>
+<li><code>commitment_loss</code> is the MSE loss between <code>x</code> and <code>quantized.detach()</code>
+<ul>
+<li>We want to pull encoder output toward codebook embeddings</li>
+</ul>
+</li>
+<li><code>loss = codebook_loss + beta * commitment_loss</code></li>
+</ul>
+</li>
+<li>Everything is packaged into <code>QuantizationOutput</code> and returned</li>
+<li><code>self.update_usage</code> is also called:
+<ul>
+<li>Updates counts of which indices were the nearest to <code>x</code></li>
+<li>Updates the number of training steps</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Straight through
+<ul>
+<li>The straight through gradient estimator simply returns <code>x + (quantized - x).detach()</code></li>
+<li>Essentially, the embeddings passed forward is <code>quantized</code></li>
+<li>But the vector used for gradient backprop is <code>x</code> (hence straight-through back to the encoded <code>x</code>)</li>
+<li>This is a naive method but works well enough</li>
+</ul>
+</li>
+<li>Rotation
+<ul>
+<li>The problem with the straight through estimator is that we use <code>quantized</code> for the forward pass but use <code>x</code> for the backward pass
+<ul>
+<li>This can be problematic especially if <code>q</code> and <code>x</code> are far apart</li>
+</ul>
+</li>
+<li>The rotation idea is to apply a rotation to <code>x</code> until it aligns with <code>q</code>
+<ul>
+<li>Since the rotation is differentiable, we get better gradients back to <code>x</code></li>
+</ul>
+</li>
+<li>We compute (to check later):
+<ul>
+<li>Let <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">u</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">x</span><span class="mord">/∣∣</span><span class="mord mathnormal">x</span><span class="mord">∣∣</span></span></span></span></li>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.3744em;vertical-align:-0.52em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8544em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">∣∣</span><span class="mord mathnormal mtight">u</span><span class="mbin mtight">+</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">q</span><span class="mord mtight">∣∣</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.4461em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">u</span><span class="mbin mtight">+</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">q</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.52em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span> is the halfway vector between <code>u</code> and <code>q</code></li>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">ro</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">2</span><span class="mopen">⟨</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mclose">⟩</span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">2</span><span class="mopen">⟨</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">u</span><span class="mclose">⟩</span><span class="mord mathnormal" style="margin-right:0.03588em;">q</span></span></span></span></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>reset_unused_codes</code>
+<ul>
+<li>Look up <code>self.usage_count</code> to find unused indices (used <code>0</code> times)</li>
+<li>Take the current batch of encoded data, and randomly select them to become the new codebook vectors</li>
+<li>This makes it likely for them to be used in the next forward pass since they correspond to actual encoder outputs</li>
+<li>All usage counters are reset after this</li>
+</ul>
+</li>
+</ul>
+<h4 id="rqvae"><a class="header" href="#rqvae">RQVAE</a></h4>
+<p>The RQVAE class now assembles multiple <code>VectorQuantizer</code> into the actual VAE to create semantic IDs.</p>
+<p>At initialization:</p>
+<ul>
+<li><code>self.encoder</code>: a simple MLP that shrinks the input embedding down to the codebook dimension
+<ul>
+<li>In this code, we go from <code>1024 -&gt; 512 -&gt; 256 -&gt; 128 -&gt; 32</code></li>
+</ul>
+</li>
+<li><code>self.decoder</code>: a simple MLP that goes backward from quantized vector up to embedding dimension
+<ul>
+<li>In this code, the decoder dims are just the reversed of the encoder dims</li>
+<li>So we go from <code>32 -&gt; 128 -&gt; 256 -&gt; 512 -&gt; 1024</code></li>
+</ul>
+</li>
+<li>Both encoder and decoder are wrapped in <code>nn.Sequential</code></li>
+<li><code>self.vq_layers</code> contains the <code>VectorQuantizer</code>s
+<ul>
+<li>It is an <code>nn.ModuleList</code> of <code>3</code> <code>VectorQuantizer</code>s</li>
+</ul>
+</li>
+<li><code>forward</code>: the main magic of this class
+<ul>
+<li>First we encode input item embedding <code>z = self.encode(x)</code></li>
+<li>Also init <code>residual = z</code></li>
+<li>Init <code>quantized_out = torch.zeros_like(z)</code>
+<ul>
+<li>The quantization output will be the sum of</li>
+</ul>
+</li>
+<li>Now we run a for loop through the vector quantizer layers:
+<ul>
+<li>First we compute the quantization output for this level (which contains the mapped ID for this level etc.)
+<ul>
+<li><code>vq_output: QuantizationOutput = vq_layer(residual)</code></li>
+</ul>
+</li>
+<li>Then we update the residual by subtracting the nearest codebook vector
+<ul>
+<li><code>residual -= vq_output.quantized.detach()</code></li>
+</ul>
+</li>
+<li>We accumulate the codebook vectors (with gradients) into <code>quantized_out</code>
+<ul>
+<li><code>quantized_out += vq_output.quantized_st</code></li>
+<li>Recall that the final representation passed to the decoder is <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6944em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1944em;"><span class="mord">^</span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.2809em;vertical-align:-0.2997em;"></span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9812em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.2029em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">L</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2997em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">e</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></li>
+</ul>
+</li>
+<li>We also accumulate the loss for each layer
+<ul>
+<li><code>vq_loss += vq_output.loss</code></li>
+<li>This is the codebook + commitment loss, reconstruction loss comes later</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Finally we get the total loss
+<ul>
+<li>Compute the reconstruction loss
+<ul>
+<li><code>x_recon = self.decode(quantized_out)</code></li>
+<li><code>recon_loss = F.mse_loss(x_recon, x)</code></li>
+<li><code>loss = recon_loss + vq_loss</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>encode_to_semantic_ids</code>: encodes an item embedding <code>x</code> to an integer tensor representing its semantic ID</li>
+<li><code>decode_from_semantic_ids</code>: decodes an integer tensor <code>semantic_ids</code> by looking up the codebook, summing up the levels and passing back into the <code>decoder</code></li>
+<li><code>kmeans_init</code>
+<ul>
+<li>Runs kmeans on one batch of embeddings to initialize the codebook vectors</li>
+<li>Runs kmeans to get <code>256</code> centroid vectors</li>
+<li>Copies these vectors into the codebook directly</li>
+<li>Process layer by layer</li>
+</ul>
+</li>
+</ul>
+<h3 id="finetune_qwen3_8b_vocabpy"><a class="header" href="#finetune_qwen3_8b_vocabpy">finetune_qwen3_8b_vocab.py</a></h3>
+<p>This script performs <span style="color:orange">Stage 1</span> of the qwen fine-tuning. It focuses on extending the vocabulary to include new semantic ID tokens and trains embeddings for these new tokens.</p>
 
                     </main>
 
@@ -365,22 +673,6 @@
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

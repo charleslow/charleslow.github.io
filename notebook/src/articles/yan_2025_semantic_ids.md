@@ -56,20 +56,20 @@ Some tricks:
 Metrics for measuring quality of RQ-VAE:
 1. `loss/reconstruction`: How well we can reconstruct the original item embeddings after compressing and decompressing
 2. `loss/vq`: Combined codebook and commitment loss across all levels.
-- Ensures that encoder outputs and codebook vectors stay close together
+    - Ensures that encoder outputs and codebook vectors stay close together
 3. `loss/total`: sum of `loss/vq` and `loss/reconstruction`
 4. `loss/validation`: total loss but on the held out validation set. Our <<deciding metric>>.
 5. `metrics/avg_residual_norm`: Leftover residuals between the quantized embedding and the original embedding
 6. `metrics/unique_ids_proportion`: % of items with unique IDS in a batch
-- Helps to check against codebook collapse
-- We want this metric to be high
+    - Helps to check against codebook collapse
+    - We want this metric to be high
 7. Codebook distribution
-- Plot the item distribution amongst the `256` codes at each level
-- It should look like a uniform distribution
+    - Plot the item distribution amongst the `256` codes at each level
+    - It should look like a uniform distribution
 
 Some hyperparameter tuning:
 - Set $\beta = 0.5$:
-    - Tried $\beta = 0.25, 0.5, 1.0`. $\beta$ is the commitment weight that balances reconstruction accuracy with codebook commitment
+    - Tried $\beta = 0.25, 0.5, 1.0$. $\beta$ is the commitment weight that balances reconstruction accuracy with codebook commitment
     - $\beta = 0.5$ had the lowest validation loss, so it was chosen
 - Investing in data cleaning significantly improved all the metrics
 
@@ -144,9 +144,198 @@ We can even have multi-turn conversation with the model:
 > 
 > <<Model>>: Xbox Racing Legends: Speed & Style Pack
 
+## Code
 
+- [device_manager.py](#device_managerpy)
+- [tokenize_items.py](#tokenize_itemspy)
+- [embed_items.py](#embed_itemspy)
+- [train_rqvae.py](#train_rqvaepy)
+    - [QuantizationOutput](#quantizationoutput)
+    - [VectorQuantizer](#vectorquantizer)
+    - [RQVAE](#rqvae)
+- [finetune_qwen3_8b_vocab.py](#finetune_qwen3_8b_vocabpy)
 
+Here we deep dive into Eugene's code and how it is implemented. Most of the code is contained in the [`/src` directory](https://github.com/eugeneyan/semantic-ids-llm/tree/main/src).
 
+### device_manager.py
+
+The `DeviceManager` detects the device (`cpu` or `cuda` or `mps`) and is instantiated early in the scripts. The interesting part `torch.set_float32_matmul_precision("high")` performed when device is `cuda`. It's supposed to speed up `float32` operations?
+
+### tokenize_items.py
+
+This script tokenizes the product descriptions of video games:
+- Uses `Qwen/Qwen3-Embedding-0.6B`
+- Batch size = `32`, max length = `2048`
+- Reads the data from `data/output/Video_Games_items_updated.parquet` into polars
+- Looks for the `item_context` field (already preprocessed)
+- Uses the following prompt which will be tokenized
+```
+Instruct: Given a product description, generate a semantic embedding that captures
+    its key features and characteristics.
+Query: {original_item_text}
+```
+- Saves tokenized `input_ids` and `attention_masks` and saves them in `.npz` (compressed numpy) format using `np.savez_compressed`
+
+### embed_items.py
+
+Takes the tokenized file and embeds them.
+- Writes embedded items into a parquet file
+
+### train_rqvae.py
+
+Compresses an item embedding into hierarchical semantic IDs.
+
+The `RQVAEConfig` defines the following parameters:
+- `item_embedding_dim`: embedding dim of our embedding model
+- `encoder_hidden_dims`: `[512, 256, 128]` the size of the VAE encoder
+- `codebook_embedding_dim`: `32` Dimension of codebook vectors
+    - <<Qn:>> this does not need to match qwen embedding dim?
+- `codebook_quantization_levels`: `3` levels in the codebook
+- `codebook_size`: `256` number of codes per level
+- `commitment_weight`: `0.25` Commitment loss weight (beta)
+- `use_rotation_trick`: `True` Use rotation trick for better gradient flow
+- `batch_size`: `32768` training batch size (why so large?)
+- `gradient_accumulation_steps`: `1`
+- `num_epochs`: `20000`
+- `scheduler_type`: `cosine_with_warmup`
+- `warmup_start_lr`: `1e-8` used for cosine_with_warmup
+- `warmup_steps`: `200` used for cosine_with_warmup
+- `max_lr`: `3e-4` maximum learning rate (start of cosine)
+- `min_lr`: `1e-6` minimum learning rate (end of cosine)
+- `use_gradient_clipping`: `True`
+- `gradient_clip_norm`: `1.0`
+- `use_kmeans_init`: `True` initializes codebook vectors using k-means
+- `reset_unused_codes`: `True` reset unused codes periodically to avoid collapse
+- `steps_per_codebook_reset`: `2` Reset unused codebook codes every N steps
+- `codebook_usage_threshold`: `1.0` only reset if usage falls below this proportion (0-1)
+- `val_split`: `0.05`
+- `steps_per_train_log`: `10` log every N steps
+- `steps_per_val_log`: `200` validate and checkpoint every N steps
+
+`EmbeddingDataset` is a torch dataset holding the embeddings:
+- Extracts all embeddings and holds them in a `torch.tensor` at init
+    - Not worried about OOM?
+
+#### QuantizationOutput
+
+`QuantizationOutput` is used to hold data for one quantized item:
+- Holds the local loss for one codebook layer
+- Subclasses `NamedTuple` which is more lightweight than `dataclass`
+- `quantized_st: Tensor`
+    - The quantized vector which is passed onto the next layer
+    - Has the "gradient trick" (either straight through or rotation trick) applied
+    - Allows backpropagation into the encoder even though we passed through the non-differentiable codebook layer
+- `quantized: Tensor`
+    - The raw nearest neighbour vectors from the codebook
+    - No gradients
+    - <<Observation>> `quantized` and `quantized_st` should be identical in values, just that one has gradients attached
+- `indices: Tensor`
+    - These are integer indices which represent the semantic IDs
+- `loss: Tensor`
+    - The combined loss for this specific codebook layer
+    - `loss = codebook_loss + beta * commitment_loss`
+- `codebook_loss: Tensor`
+    - Measures how well the codebook vector matches the encoder output
+- `commitment_loss: Tensor`
+    - Measures how well the encoder output matches the codebook vectors
+
+#### VectorQuantizer
+
+The `VectorQuantizer` implements one layer of the codebook and is the meat of the logic for training RQVAE. It will be stacked together layer multiple times to form the codebook.
+- At initialization:
+    - Initializes with `RQVAEConfig` to hold parameters
+    - Initialize `self.embedding` to an embedding of size `codebook_size=256, codebook_embedding_dim=32`
+        - Uniform initialization `self.embedding.weight.data.uniform_(-1 / self.codebook_size, 1 / self.codebook_size)`
+    - Registers some buffers for tracking codebook usage:
+        - `self.register_buffer("usage_count", torch.zeros(self.codebook_size))`
+        - `self.register_buffer("update_count", torch.tensor(0))`
+- `find_nearest_codes(x)`:
+    - Takes an input vector `x`, compares it to all vectors in the codebook, and returns the nearest one
+    - Simply uses `torch.cdist` to compute distances, then `torch.argmin` to get the nearest
+    - Returns a tuple of torch tensors:
+        - The nearest index (i.e. codeword) to `x`
+        - The quantized embedding at the index position
+- `forward(x)` -> `QuantizationOutput`:
+    - Finds the nearest index and quantized embeddings for a batch of `x` 
+        - Call `find_nearest_codes` to get `indices` and `quantized`
+    - Applies the gradient estimator to get `quantized_st`
+        - This will be used for gradient backprop to the encoder later
+        - `apply_gradient_estimator` either uses the straight through or rotation method
+    - Compute losses:
+        - `codebook_loss` is the MSE loss between `x.detach()` and `quantized`
+            - We want to pull the codebook embeddings toward `x`
+        - `commitment_loss` is the MSE loss between `x` and `quantized.detach()`
+            - We want to pull encoder output toward codebook embeddings
+        - `loss = codebook_loss + beta * commitment_loss`
+    - Everything is packaged into `QuantizationOutput` and returned
+    - `self.update_usage` is also called:
+        - Updates counts of which indices were the nearest to `x`
+        - Updates the number of training steps
+- Straight through
+    - The straight through gradient estimator simply returns `x + (quantized - x).detach()`
+    - Essentially, the embeddings passed forward is `quantized`
+    - But the vector used for gradient backprop is `x` (hence straight-through back to the encoded `x`)
+    - This is a naive method but works well enough
+- Rotation
+    - The problem with the straight through estimator is that we use `quantized` for the forward pass but use `x` for the backward pass
+        - This can be problematic especially if `q` and `x` are far apart
+    - The rotation idea is to apply a rotation to `x` until it aligns with `q`
+        - Since the rotation is differentiable, we get better gradients back to `x`
+    - We compute (to check later):
+        - Let $u = x / ||x||$
+        - $w = \frac{u + q}{||u + q||}$ is the halfway vector between `u` and `q`
+        - $x_{rot} = x - 2 \langle x, w \rangle w + 2 \langle x, u \rangle q$
+- `reset_unused_codes`
+    - Look up `self.usage_count` to find unused indices (used `0` times)
+    - Take the current batch of encoded data, and randomly select them to become the new codebook vectors
+    - This makes it likely for them to be used in the next forward pass since they correspond to actual encoder outputs 
+    - All usage counters are reset after this
+
+#### RQVAE
+
+The RQVAE class now assembles multiple `VectorQuantizer` into the actual VAE to create semantic IDs.
+
+At initialization:
+- `self.encoder`: a simple MLP that shrinks the input embedding down to the codebook dimension
+    - In this code, we go from `1024 -> 512 -> 256 -> 128 -> 32`
+- `self.decoder`: a simple MLP that goes backward from quantized vector up to embedding dimension
+    - In this code, the decoder dims are just the reversed of the encoder dims
+    - So we go from `32 -> 128 -> 256 -> 512 -> 1024`
+- Both encoder and decoder are wrapped in `nn.Sequential`
+- `self.vq_layers` contains the `VectorQuantizer`s
+    - It is an `nn.ModuleList` of `3` `VectorQuantizer`s
+- `forward`: the main magic of this class
+    - First we encode input item embedding `z = self.encode(x)`
+    - Also init `residual = z`
+    - Init `quantized_out = torch.zeros_like(z)`
+        - The quantization output will be the sum of 
+    - Now we run a for loop through the vector quantizer layers:
+        - First we compute the quantization output for this level (which contains the mapped ID for this level etc.)
+            - `vq_output: QuantizationOutput = vq_layer(residual)`
+        - Then we update the residual by subtracting the nearest codebook vector
+            - `residual -= vq_output.quantized.detach()`
+        - We accumulate the codebook vectors (with gradients) into `quantized_out`
+            - `quantized_out += vq_output.quantized_st`
+            - Recall that the final representation passed to the decoder is $\hat{z} = \sum_{l=1}^L e_l$
+        - We also accumulate the loss for each layer
+            - `vq_loss += vq_output.loss`
+            - This is the codebook + commitment loss, reconstruction loss comes later
+    - Finally we get the total loss
+        - Compute the reconstruction loss
+            - `x_recon = self.decode(quantized_out)`
+            - `recon_loss = F.mse_loss(x_recon, x)`
+            - `loss = recon_loss + vq_loss`
+- `encode_to_semantic_ids`: encodes an item embedding `x` to an integer tensor representing its semantic ID
+- `decode_from_semantic_ids`: decodes an integer tensor `semantic_ids` by looking up the codebook, summing up the levels and passing back into the `decoder`
+- `kmeans_init`
+    - Runs kmeans on one batch of embeddings to initialize the codebook vectors
+    - Runs kmeans to get `256` centroid vectors
+    - Copies these vectors into the codebook directly
+    - Process layer by layer
+
+### finetune_qwen3_8b_vocab.py
+
+This script performs <<Stage 1>> of the qwen fine-tuning. It focuses on extending the vocabulary to include new semantic ID tokens and trains embeddings for these new tokens.
 
 
 

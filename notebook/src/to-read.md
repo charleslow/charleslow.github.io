@@ -130,3 +130,4 @@
 - [GEPA](https://arxiv.org/abs/2507.19457)
 - [In Context Learning as Implicit Bayesian Inference](https://arxiv.org/abs/2111.02080)
 - [SPLADE](https://arxiv.org/abs/2107.05720)
+- [Rotation Trick](https://arxiv.org/abs/2410.06424)
