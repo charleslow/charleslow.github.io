@@ -131,3 +131,5 @@
 - [In Context Learning as Implicit Bayesian Inference](https://arxiv.org/abs/2111.02080)
 - [SPLADE](https://arxiv.org/abs/2107.05720)
 - [Rotation Trick](https://arxiv.org/abs/2410.06424)
+- [D3PM](https://arxiv.org/abs/2107.03006)
+- [DiffusionBERT](https://arxiv.org/abs/2211.15029)

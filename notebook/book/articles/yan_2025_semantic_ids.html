@@ -336,6 +336,7 @@
 <p><span style="color:orange">Model</span>: Xbox Racing Legends: Speed &amp; Style Pack</p>
 </blockquote>
 <h2 id="code"><a class="header" href="#code">Code</a></h2>
+<p>Here we deep dive into Eugene's code and how it is implemented. Most of the code is contained in the <a href="https://github.com/eugeneyan/semantic-ids-llm/tree/main/src"><code>/src</code> directory</a>.</p>
 <ul>
 <li><a href="#device_managerpy">device_manager.py</a></li>
 <li><a href="#tokenize_itemspy">tokenize_items.py</a></li>
@@ -347,9 +348,19 @@
 <li><a href="#rqvae">RQVAE</a></li>
 </ul>
 </li>
-<li><a href="#finetune_qwen3_8b_vocabpy">finetune_qwen3_8b_vocab.py</a></li>
+<li><a href="#finetune_qwen3_8b_vocabpy">finetune_qwen3_8b_vocab.py</a>
+<ul>
+<li><a href="#finetuneconfig">FineTuneConfig</a></li>
+<li><a href="#extend_tokenizer">extend_tokenizer</a></li>
+<li><a href="#prepare_model">prepare_model</a></li>
+<li><a href="#load_sid_dataset">load_sid_dataset</a></li>
+<li><a href="#datainspectioncallback">DataInspectionCallback</a></li>
+<li><a href="#embeddingmonitorcallback">EmbeddingMonitorCallback</a></li>
+<li><a href="#semanticidgenerationcallback">SemanticIDGenerationCallback</a></li>
+<li><a href="#train_embeddings">train_embeddings</a></li>
 </ul>
-<p>Here we deep dive into Eugene's code and how it is implemented. Most of the code is contained in the <a href="https://github.com/eugeneyan/semantic-ids-llm/tree/main/src"><code>/src</code> directory</a>.</p>
+</li>
+</ul>
 <h3 id="device_managerpy"><a class="header" href="#device_managerpy">device_manager.py</a></h3>
 <p>The <code>DeviceManager</code> detects the device (<code>cpu</code> or <code>cuda</code> or <code>mps</code>) and is instantiated early in the scripts. The interesting part <code>torch.set_float32_matmul_precision("high")</code> performed when device is <code>cuda</code>. It's supposed to speed up <code>float32</code> operations?</p>
 <h3 id="tokenize_itemspy"><a class="header" href="#tokenize_itemspy">tokenize_items.py</a></h3>
@@ -643,6 +654,159 @@ Query: {original_item_text}
 </ul>
 <h3 id="finetune_qwen3_8b_vocabpy"><a class="header" href="#finetune_qwen3_8b_vocabpy">finetune_qwen3_8b_vocab.py</a></h3>
 <p>This script performs <span style="color:orange">Stage 1</span> of the qwen fine-tuning. It focuses on extending the vocabulary to include new semantic ID tokens and trains embeddings for these new tokens.</p>
+<h4 id="finetuneconfig"><a class="header" href="#finetuneconfig">FineTuneConfig</a></h4>
+<p>Dataclass containing config for the training</p>
+<ul>
+<li><code>model_name</code>: <code>unsloth/Qwen3-8B</code>
+<ul>
+<li><span style="color:orange">Qn:</span> Not instruction fine tuned?</li>
+</ul>
+</li>
+<li><code>load_in_4bit</code>: Set to <code>False</code> for embedding training</li>
+<li><code>load_in_8bit</code>: Set to <code>False</code></li>
+<li><code>num_proc</code>: <code>32</code></li>
+<li><code>enable_thinking</code>: <code>False</code> we don't need thinking mode</li>
+<li><code>extend_vocabulary</code>: <code>True</code></li>
+<li><code>codebook_levels</code>: <code>4</code></li>
+<li><code>codebook_size</code>: <code>256</code></li>
+<li><code>num_semantic_tokens</code>: <code>1024</code></li>
+<li><code>system_prompt</code>: see below</li>
+<li><code>max_training_samples</code>: <code>32000</code> limit for training embedding</li>
+<li><code>learning_rate</code>: <code>1e-3</code></li>
+<li><code>batch_size</code>: <code>32</code></li>
+<li><code>max_steps</code>: <code>1000</code></li>
+</ul>
+<p>The system prompt is as follows:</p>
+<blockquote>
+<p>"You are a helpful AI assistant that understands and works with semantic IDs for product recommendations. Semantic IDs are hierarchical identifiers in the format <code>&lt;|sid_start|&gt;&lt;|sid_105|&gt;&lt;|sid_307|&gt;&lt;|sid_705|&gt;&lt;|sid_769|&gt;&lt;|sid_end|&gt;</code> that encode product relationships and categories. /no_think"</p>
+</blockquote>
+<h4 id="extend_tokenizer"><a class="header" href="#extend_tokenizer">extend_tokenizer</a></h4>
+<p><code>extend_tokenizer(model, tokenizer, config: FineTuneConfig)</code> adds semantic ID tokens to the tokenizer using Unsloth's <code>add_new_tokens</code>.</p>
+<ul>
+<li>Note that the vocab size affects two places:
+<ul>
+<li><code>model.get_input_embeddings().weight</code>: the input embeddings</li>
+<li><code>model.get_output_embeddings().weight</code>: the language model head which predicts the next token</li>
+</ul>
+</li>
+<li>First, we make sure that the vocab size of the tokenizer matches the vocab size of both the input and output embeddings
+<ul>
+<li>We need to call <code>model.resize_token_embeddings</code> to get the model embedding sizes to match the <code>tokenizer</code></li>
+<li>This is because the model embeddings are padded to be multiples of <code>128</code> for CUDA optimization reasons</li>
+</ul>
+</li>
+<li>Next, we add new tokens using <code>unsloth.add_new_tokens</code>:
+<ul>
+<li>Special tokens of <code>&lt;|rec|&gt;</code>, <code>&lt;|sid_start|&gt;</code>, <code>&lt;|sid_end|&gt;</code></li>
+<li>Semantic IDs of <code>&lt;|sid_0|&gt;</code> to <code>&lt;|sid_1023|&gt;</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="prepare_model"><a class="header" href="#prepare_model">prepare_model</a></h4>
+<p>Prepares the model for training with some additional checks:</p>
+<ul>
+<li>Freezes gradients for all parameters</li>
+<li>Unfreezes only the weights for the <code>model.get_input_embeddings()</code> and <code>model.get_output_embeddings()</code></li>
+<li>Checks the trainable parameter %</li>
+</ul>
+<h4 id="load_sid_dataset"><a class="header" href="#load_sid_dataset">load_sid_dataset</a></h4>
+<p>Loads the semantic IDs training dataset:</p>
+<ul>
+<li>Checks if there are texts like <code>&lt;|sid_start|&gt;</code> to make sure processing is correct</li>
+<li>Applies chat template to the rows (but keeps as text)</li>
+</ul>
+<p>There are 5 distinct categories of training data:</p>
+<ul>
+<li><span style="color:orange">SemanticID -&gt; text</span>:
+<ul>
+<li><strong>Input</strong>: "Product <code>&lt;|sid_start|&gt;...&lt;|sid_end|&gt;</code> has title:"</li>
+<li><strong>Output</strong>: "Super Mario Bros"</li>
+<li><strong>Variations</strong>: ID to title, description, category, features or full context</li>
+</ul>
+</li>
+<li><span style="color:orange">Text -&gt; SemanticID</span>:
+<ul>
+<li><strong>Input</strong>: "The product Super Mario Bros has SemanticID:"</li>
+<li><strong>Output</strong>: "<code>&lt;|sid_start|&gt;...&lt;|sid_end|&gt;</code>"</li>
+<li><strong>Variations</strong>: Similar variations to above</li>
+</ul>
+</li>
+<li><span style="color:orange">Sequential Recommendation</span>:
+<ul>
+<li><strong>Input</strong>: "Based on recent purchases etc., next item:"</li>
+<li><strong>Output</strong>: "<code>&lt;|sid_start|&gt;...&lt;|sid_end|&gt;</code>"</li>
+<li><strong>Variations</strong>: Various sequence lengths of 2, 3, or 5 items.</li>
+</ul>
+</li>
+<li><span style="color:orange">Semantic Understanding</span>:
+<ul>
+<li><strong>Input</strong>: "Products starting with <code>&lt;|sid_start|&gt;&lt;|sid_64|&gt; are typically:</code></li>
+<li><strong>Output</strong>: "Nintendo switch games"</li>
+<li><strong>Variations</strong>: Prefix to category, prefix to examples, similar items.</li>
+</ul>
+</li>
+<li><span style="color:orange">Multi-hop Reasoning</span>:
+<ul>
+<li><strong>Input</strong>: "A user who bought <code>&lt;|sid_a|&gt;</code> might also buy:"</li>
+<li><strong>Output</strong>: "<code>&lt;|sid_b|&gt;</code></li>
+<li><strong>Variations</strong>: Co-purchase patterns.</li>
+</ul>
+</li>
+</ul>
+<h4 id="datainspectioncallback"><a class="header" href="#datainspectioncallback">DataInspectionCallback</a></h4>
+<p>Used to inspect training data and tokenization at each training step, by simply logging them to console.</p>
+<p>Patterns:</p>
+<ul>
+<li><code>DataInspectionCallback</code> subclasses <code>transformers.TrainerCallback</code></li>
+<li><code>on_train_begin(self, args, state, control, **kwargs)</code>:
+<ul>
+<li>Checks the first batch of <code>train_dataloader</code></li>
+<li>Checks batch keys</li>
+<li>Check shape of <code>batch['input_ids']</code></li>
+<li>Check shape of <code>batch['attention_mask']</code></li>
+<li>Check tokens and decoded of first row etc.</li>
+</ul>
+</li>
+<li><code>on_log(self, args, state, control, logs=None, **kwargs)</code>:
+<ul>
+<li>Only runs if <code>state.global_step % args.logging_steps == 0</code></li>
+<li>Check number of SID tokens</li>
+<li>Decode first example and check</li>
+</ul>
+</li>
+</ul>
+<h4 id="embeddingmonitorcallback"><a class="header" href="#embeddingmonitorcallback">EmbeddingMonitorCallback</a></h4>
+<p>This callback aims to check how our embeddings are shifting over time.</p>
+<ul>
+<li>At initialization (or <code>on_train_begin</code>), we copy the state of the initial embeddings and clone detach them</li>
+<li>At each step, we compute the mean of the absolute difference between the current embeddings and the initial or state of embeddings from the previous step</li>
+<li>We also compute the per level codebook vector means etc.</li>
+<li>These are all logged to <code>wandb</code></li>
+</ul>
+<h4 id="semanticidgenerationcallback"><a class="header" href="#semanticidgenerationcallback">SemanticIDGenerationCallback</a></h4>
+<p>This is a qualitative check to answer the question "If I ask the model for a recommendation right now, does it use the semantic ID tokens or does it just output plain text?"</p>
+<ul>
+<li>A fixed set of test cases are used</li>
+<li>The test cases are <code>apply_chat_template</code>, then passed into the <code>tokenizer</code>, then <code>model.generate</code> and <code>model.decode</code></li>
+<li>The messages are checked whether successful (SemanticIDs generated) and success rate is tracked</li>
+<li>Actual completion examples are logged into wandb as well</li>
+</ul>
+<h4 id="train_embeddings"><a class="header" href="#train_embeddings">train_embeddings</a></h4>
+<p>The main method. Essentially we are just using unsloth <code>SFTTrainer</code> to do the training.</p>
+<p>First, we set up <code>trl.SFTConfig</code> with a lot of the configuration we previously defined.</p>
+<ul>
+<li>Note that <code>dataset_text_field="text"</code></li>
+<li><code>report_to="wandb"</code></li>
+</ul>
+<p>The trainer <code>trl.SFTTrainer</code> is initialized with the model, tokenizer, datasets, config and callbacks.</p>
+<p>Then, <code>trainer.train()</code> is called.</p>
+<p>Note that the model and tokenizer are initialized using <code>unsloth.FastLanguageModel</code> to use unsloth's optimized triton kernels.</p>
+<h3 id="finetune_qwen3_8b_fullpy"><a class="header" href="#finetune_qwen3_8b_fullpy">finetune_qwen3_8b_full.py</a></h3>
+<p>The code is structurally very similar to the vocab finetuning run. The difference is that we are doing full training, so we unfreeze all parameters. Consequently, the learning rate needs to be much lower at <code>2e-5</code>.</p>
+<ul>
+<li>Load the model from stage 1, namely <code>models/qwen3_8b_vocab_extended/final</code></li>
+<li>A lot of the script focuses on the callbacks to evaluate recommendation quality</li>
+</ul>
 
                     </main>
 
