@@ -133,3 +133,4 @@
 - [Rotation Trick](https://arxiv.org/abs/2410.06424)
 - [D3PM](https://arxiv.org/abs/2107.03006)
 - [DiffusionBERT](https://arxiv.org/abs/2211.15029)
+- [Fast decoding with discrete latents](https://arxiv.org/abs/1803.03382)
