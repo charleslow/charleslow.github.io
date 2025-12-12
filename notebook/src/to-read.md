@@ -134,3 +134,5 @@
 - [D3PM](https://arxiv.org/abs/2107.03006)
 - [DiffusionBERT](https://arxiv.org/abs/2211.15029)
 - [Fast decoding with discrete latents](https://arxiv.org/abs/1803.03382)
+- [Gumbel-softmax](https://arxiv.org/abs/1611.01144)
+- [Parti Model](https://arxiv.org/abs/2206.10789)

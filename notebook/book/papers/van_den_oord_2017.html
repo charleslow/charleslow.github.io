@@ -257,7 +257,7 @@
 <p>Specifically, we encode and quantize our training dataset into grids of <code>32 x 32</code> codebook indices. Then, an autoregressive decoder is trained to predict the codebook indices in a causal autoregressive way. For PixelCNN, it works on the 2D grid of <code>32 x 32</code>, but for transformer we need to linearize it in row-major form before training.</p>
 <p>Now at inference time, we can start with a uniform latent index for the first position, then generate the subsequent positions using the latent decoder. After we have generated a grid of <code>32 x 32</code> latents, we look up embeddings to get <code>32 x 32 x D</code> grid. This is passed to the decoder to get the generated image.</p>
 <ul>
-<li><span style="color:orange">Note</span> that since we are doing autoregressive generation in the compressed latent space, it is a lot faster than autoregressive generation in the original pixel or token space.</li>
+<li><span style="color:orange">Note</span> that since we are doing autoregressive generation in the compressed latent space, it is a lot faster than autoregressive generation in the original pixel or token space. This is the idea used in <a href="https://arxiv.org/abs/1803.03382">Kaiser 2018 - Fast Decoding in Sequence Models using Discrete Latent Variables</a>.</li>
 </ul>
 
                     </main>

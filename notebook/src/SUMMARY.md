@@ -48,6 +48,7 @@
     - [Hamilton 2017 - GraphSAGE](./papers/hamilton_2017.md)
     - [Ma 2018 - Entire Space Multi-Task Model](./papers/ma_2018.md)
     - [Kang 2018 - SASRec](./papers/kang_2018.md)
+    - [Kaiser 2018 - Fast Decoding in Latent Space](./papers/kaiser_2018.md)
     - [Reimers 2019 - Sentence-BERT](./papers/reimers_2019.md)
     - [Yi 2019 - LogQ Correction for In Batch Sampling](./papers/yi_2019.md)
     - [Zhao 2019 - Recommending What to Watch Next](./papers/zhao_2019.md)
