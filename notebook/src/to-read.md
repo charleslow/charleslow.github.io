@@ -137,3 +137,8 @@
 - [Gumbel-softmax](https://arxiv.org/abs/1611.01144)
 - [Parti Model](https://arxiv.org/abs/2206.10789)
 - [MaskGIT](https://arxiv.org/abs/2202.04200)
+- [Scalable Semantic Representation](https://arxiv.org/abs/2410.09560)
+- [SIDE](https://arxiv.org/abs/2506.16698)
+- [RecGPT](https://arxiv.org/abs/2404.08675)
+- [OneRec](https://arxiv.org/abs/2502.18965)
+- [LIGER](https://arxiv.org/abs/2411.18814)
