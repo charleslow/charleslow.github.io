@@ -136,3 +136,4 @@
 - [Fast decoding with discrete latents](https://arxiv.org/abs/1803.03382)
 - [Gumbel-softmax](https://arxiv.org/abs/1611.01144)
 - [Parti Model](https://arxiv.org/abs/2206.10789)
+- [MaskGIT](https://arxiv.org/abs/2202.04200)

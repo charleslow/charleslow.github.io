@@ -179,24 +179,14 @@
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="current-focus"><a class="header" href="#current-focus">Current Focus</a></h1>
 <h2 id="2025-goals"><a class="header" href="#2025-goals">2025 Goals</a></h2>
+<p>Incorporate semantic IDs into a generalizable search and recommender system:</p>
 <ul>
-<li>
-<p>GNN-based approach for search and recommendation</p>
-<ul>
-<li>Use past sequential history of items as user representation</li>
-<li>Transformer-based reranking</li>
-<li>Transformer-based user encoding for ANN retrieval</li>
+<li>Can function well with just a system prompt (guiding the overall goal of the system) and an item catalogue</li>
+<li>Handles a changing catalogue gracefully</li>
+<li>Good search and recommendation latency</li>
+<li>Cheap (runs on a T4 or equivalent)</li>
 </ul>
-</li>
-<li>
-<p>Multi-task, multi-purpose embeddings</p>
-<ul>
-<li>For retrieval and reranking</li>
-<li>Across various services (jobs, courses, skills)</li>
-</ul>
-</li>
-</ul>
-<h2 id="research"><a class="header" href="#research">Research</a></h2>
+<h2 id="research-questions"><a class="header" href="#research-questions">Research Questions</a></h2>
 <ul>
 <li>
 <p>Optimizing LLM explanations based on implicit feedback</p>
@@ -217,8 +207,18 @@
 <ul>
 <li>There is no natural score threshold at which items are deemed irrelevant. Traditionally, classifiers have a <code>0.5</code> score cut-off.</li>
 <li>Embedding retrieval tends to retrieve unrelated items. This is a well documented problem. For example, <code>Nike shoes</code> retrieves <code>Adidas Shoes</code>.</li>
+<li>Can we have embedding models that approximate AND / OR conditions that more naturally fit into the retrieval paradigm?</li>
 </ul>
 </li>
+</ul>
+</li>
+<li>
+<p>Efficient learning of semantic IDs</p>
+<ul>
+<li>LLMs can learn Semantic IDs as part of their language and recommend and reason about items once they learn the "language" using Supervised Fine Tuning</li>
+<li>But the danger is catastrophic forgetting and losing capabilities as they get fine tuned in this way</li>
+<li>Is there a more "natural" way for LLMs to learn such semantic IDs?</li>
+<li>How do we handle a changing catalogue in real-time gracefully?</li>
 </ul>
 </li>
 </ul>
