@@ -110,3 +110,4 @@
     - [Compute Architecture](./pmpp/ch04.md)
     - [Memory Architecture](./pmpp/ch05.md)
     - [Performance Considerations](./pmpp/ch06.md)
+- [Kernel Hacker Roadmap](./kernel_hacker/main.md)
