@@ -142,3 +142,7 @@
 - [RecGPT](https://arxiv.org/abs/2404.08675)
 - [OneRec](https://arxiv.org/abs/2502.18965)
 - [LIGER](https://arxiv.org/abs/2411.18814)
+- [Ultron](https://arxiv.org/abs/2208.09257)
+- [Understanding DSI](https://arxiv.org/abs/2305.02073)
+- [Barlow Twins](https://arxiv.org/abs/2103.03230)
+- [Agentic context engineering](https://arxiv.org/abs/2510.04618)

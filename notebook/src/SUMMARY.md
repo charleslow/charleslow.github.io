@@ -89,6 +89,8 @@
     - [Hameed 2025 - 360Brew](./talks/hameed_2025_360brew.md)
     - [Han 2025 - GRPO Example](./talks/han_2025_grpo.md)
     - [Yan 2025 - Semantic IDs](./articles/yan_2025_semantic_ids.md)
+- [Experiments](experiments/main.md)
+    - [RQ-VAE Fast Decoding](experiments/rq_vae.md)
 - [NLP Course](./nlp_course/intro.md)
 - [Database Course](./database_course/intro.md)
     - [Lecture 1](./database_course/lecture01.md)

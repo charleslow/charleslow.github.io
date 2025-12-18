@@ -1,0 +1,494 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>RQ-VAE Fast Decoding - Chux&#x27;s Notebook</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../katex.min.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Chux&#x27;s Notebook</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="rq-vae-fast-decoding"><a class="header" href="#rq-vae-fast-decoding">RQ-VAE Fast Decoding</a></h1>
+<p><a href="https://github.com/charleslow/rq_vae">Github Repo: rq_vae</a></p>
+<p>Experiments on applying RQ-VAE to fast text decoding in latent space.</p>
+<h2 id="main-idea"><a class="header" href="#main-idea">Main Idea</a></h2>
+<p>We use ideas from two papers:</p>
+<ul>
+<li><a href="https://charleslow.github.io/notebook/book/papers/kaiser_2018.html">Kaiser 2018: Fast Decoding in Sequence Models using Discrete Latent Variables</a>
+<ul>
+<li>Applies the idea of representing tokens in a shorter latent space, and then doing autoregressive text translation in the latent space, then upsample back to token space</li>
+<li>Still uses old VQ-VAE discretization which has issues</li>
+</ul>
+</li>
+<li><a href="https://charleslow.github.io/notebook/book/papers/lee_2022.html">Lee 2022: Autoregressive Image Generation using Residual Quantization</a>
+<ul>
+<li>Better way of doing discretization, using a codebook with multiple levels instead of a flat codebook</li>
+<li>Some tricks of using a specialized transformer for decoding that is faster</li>
+</ul>
+</li>
+</ul>
+<h2 id="experiment-goal"><a class="header" href="#experiment-goal">Experiment Goal</a></h2>
+<p>Verify if we can achieve significant speedup by decoding in latent space without losing accuracy</p>
+<ul>
+<li>Check perplexity on held out data</li>
+<li>Check codebook usage</li>
+<li>Compare against various base models (including qwen0.6B) on standard LLM tasks</li>
+</ul>
+<p>Other goals:</p>
+<ul>
+<li>Test if RQ-transformer matches standard transformer decoding for the same compute</li>
+<li>Test if using a pretrained decoder backbone is necessary</li>
+<li>Test performance - inference speed trade-off as we increase compression factor</li>
+<li>Test codebook vocabulary size to codebook depth tradeoff</li>
+<li>Test if unsloth speeds up inference significantly</li>
+<li>Test if we can scale to 8B models</li>
+</ul>
+<h2 id="overall-flow"><a class="header" href="#overall-flow">Overall Flow</a></h2>
+<ul>
+<li>Start with text input (e.g. <code>fineweb</code>)</li>
+<li>Encode into a latent representation that is a shorter sequence
+<ul>
+<li>Run through pretrained backbone (e.g. <code>qwen0.6B</code>)</li>
+<li>Downsample using convolutions</li>
+</ul>
+</li>
+<li>Run RQ-VAE on the latent representation to discretize into latent tokens
+<ul>
+<li>This is the <span style="color:orange">fast decoding</span> part</li>
+</ul>
+</li>
+<li>Decode latent tokens back into original textual space
+<ul>
+<li>Upsample using de-convolutions</li>
+<li>Run through pretrained backbone (e.g. <code>qwen0.6B</code>)</li>
+</ul>
+</li>
+</ul>
+<h2 id="training-sequence"><a class="header" href="#training-sequence">Training Sequence</a></h2>
+<p>The trainable components are encoder, RQ-codebook, decoder for the RQ-VAE portion, and also the RQ-transformer for the latent decoding.</p>
+<ul>
+<li>Train the RQ-VAE jointly
+<ul>
+<li>Freeze pretrained qwen backbone for warmup</li>
+<li>Then unfreeze for full training</li>
+</ul>
+</li>
+<li>Train the RQ-transformer on latent sequences</li>
+</ul>
+<h2 id="inference-sequence"><a class="header" href="#inference-sequence">Inference Sequence</a></h2>
+<p>At inference time, the goal is to do autoregressive text completion (like normal LLMs):</p>
+<ul>
+<li>Given input text</li>
+<li>Use encoder to encode into latent space</li>
+<li>Use RQ-transformer to auto-regressively predict full latent sequence</li>
+<li>Use decoder to decode back into textual space</li>
+</ul>
+<h2 id="code-deep-dive"><a class="header" href="#code-deep-dive">Code Deep Dive</a></h2>
+<p>Here we dive into dissecting the code in detail. The code structure is:</p>
+<pre><code>│  model/                                                                  
+│  ├── rq_vae.py
+│  │   └── RQVAE ─────────────┬─► TextEncoder                              
+│  │                          ├─► ResidualQuantizer                        
+│  │                          └─► TextDecoder                              
+│  ├── encoder.py 
+│  ├── decoder.py 
+│  ├── quantizer.py
+│  ├── rq_transformer.py
+│  │   ├── SpatialTransformer
+│  │   ├── DepthTransformer
+│  │   ├── RoPEAttention
+│  │   └── TransformerBlock
+│  └── layers.py
+│      └── SwiGLUTransformerLayer                                          
+│  train_vae.py
+│  │   ├── RQVAELightningModule                                            
+│  │   └── RQVAEDataModule                                                 
+│  train_transformer.py
+│      ├── RQTransformerLightningModule                                    
+│      └── RQTransformerDataModule                   
+</code></pre>
+<h3 id="encoderpy"><a class="header" href="#encoderpy">encoder.py</a></h3>
+<p>Implements <code>TextEncoder</code> which encodes an input text into latent embeddings representation (shorter sequence). We focus on the forward pass:</p>
+<ul>
+<li>Input text sequence: <code>batch_size, seq_len</code></li>
+<li>Encode using pretrained <code>qwen</code> backbone: <code>batch_size, seq_len, hidden_size</code></li>
+<li>Downsample into shorter latent sequence: <code>batch_size, compressed_len, hidden_size</code>
+<ul>
+<li>Use strided convolutions to downsample the sequence length (halves length each step)</li>
+<li>More details below</li>
+</ul>
+</li>
+<li>Linear projection into <code>batch_size, seq_len, latent_dim</code>
+<ul>
+<li>The <code>latent_dim</code> is the dimension of our RQ-VAE codebook</li>
+</ul>
+</li>
+<li>Refine latents using self-attention: <code>batch_size, seq_len, latent_dim</code>
+<ul>
+<li>Do it with <code>SwiGLUTransformerLayer</code> for <code>num_latent_layers</code> times</li>
+</ul>
+</li>
+<li>Output the latent representation</li>
+</ul>
+<blockquote>
+<p><span style="color:orange">Question</span>: How much information do we lose in the convolutional downsampling? How can we encourage the latent space to store more information?</p>
+</blockquote>
+<p>Diving a bit more into the convolutional downsampling process:</p>
+<ul>
+<li><code>nn.Conv1d</code> applies a convolutional filter which takes a weighted sum of the input values within the window
+<ul>
+<li><code>kernel_size</code> is the size of the convolution window / filter. Larger value means we average more values together.</li>
+<li><code>stride</code> is how many steps we move when sliding the window. <code>stride=2</code> approximately halves the sequence length.</li>
+<li><code>padding</code> is the number of zero-padded cells we add to each side of the input</li>
+</ul>
+</li>
+<li>For an input sequence of <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">in</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>, padding <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">p</span></span></span></span>, kernel_size <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span>, and stride <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">s</span></span></span></span>, the output length is:
+<span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.4em;vertical-align:-0.95em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size3">⌊</span></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3714em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">s</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">in</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">2</span><span class="mord mathnormal">p</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">1</span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size3">⌋</span></span></span></span></span></span></span></li>
+<li>The way to think about the formula is that we start with the first window (hence <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">+</span><span class="mord">1</span></span></span></span> at the end) and then count the number of strides to take
+<ul>
+<li>First we add padding <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">2</span><span class="mord mathnormal">p</span></span></span></span> to pad the input size</li>
+<li>Subtract <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span> because we already "occupy" the first kernel width</li>
+<li>Add a <code>floor</code> operator to account for partial strides which we discard</li>
+</ul>
+</li>
+<li>Can use the <a href="./conv_viz.html">interactive convolution explorer</a> to visualize the convolution window</li>
+</ul>
+<h3 id="decoderpy"><a class="header" href="#decoderpy">decoder.py</a></h3>
+<p>The decoder <code>TextDecoder</code> is very similar to the encoder, except we go in the other direction. From a latent sequence, we upsample using de-convolutions to return to the textual space. Again we focus on the forward pass:</p>
+<ul>
+<li>Input is a sequence of compressed latents: <code>batch_size, compressed_len, latent_dim</code></li>
+<li>Refine latents with self-attention: <code>batch_size, compressed_len, latent_dim</code></li>
+<li>Linear projection to hidden size: <code>batch_size, compressed_len, hidden_size</code></li>
+<li>Upsample via transposed convolutions: <code>batch_size, seq_len, hidden_size</code></li>
+<li>Each layer 2x expands sequence length</li>
+<li>Process through Qwen3 backbone (one-shot, not autoregressive): <code>batch_size, seq_len, hidden_size</code></li>
+<li>Linear projection to vocabulary logits: <code>batch_size, seq_len, vocab_size</code></li>
+</ul>
+<h3 id="quantizerpy"><a class="header" href="#quantizerpy">quantizer.py</a></h3>
+<p>Now we dive into the residual quantization portion.</p>
+<p>The <span style="color:orange">Quantizer</span> class represents one level of the codebook. It is initialized with parameters:</p>
+<ul>
+<li><code>dim</code>: latent dimension of codebook vectors</li>
+<li><code>codebook_size</code>: number of vectors for this level of the codebook</li>
+<li><code>ema_decay</code>: the rate of updating codebook vectors (analogous to <code>1 - learning_rate</code>)</li>
+<li><code>threshold_ema_dead_code</code>: number of dead codes we allow before we re-assign these codebook vectors</li>
+</ul>
+<p>We register these buffers at init:</p>
+<ul>
+<li><code>ema_cluster_size</code>: <code>torch.zeros(codebook_size)</code>
+<ul>
+<li>Tracks the number of times each codebook vector is used in an exponential moving average</li>
+</ul>
+</li>
+<li><code>ema_embed_sum</code>: <code>torch.zeros(codebook_size, dim)</code>
+<ul>
+<li>Tracks the sum of encoder embeddings assigned in an exponential moving average</li>
+</ul>
+</li>
+</ul>
+<p>The <code>quantize</code> method assigns an input encoder embedding <code>x</code> to the nearest codebook vector. Note that <code>x</code> would represent a <code>residual</code> vector (depending on the level we are at in the codebook) in the RQ-VAE architecture.</p>
+<ul>
+<li>First we use <code>torch.cdist</code> to find distances to all the codebook vectors</li>
+<li>Then we use <code>torch.argmin</code> to get the index of the nearest codebook vector</li>
+<li>Then we retrieve the codebook embedding corresponding to this index</li>
+<li>We return a tuple <code>(quantized, indices)</code></li>
+</ul>
+<p>The <code>update_codebook_ema</code> acts like a gradient update to the codebook vectors (following <a href="../papers/van_den_oord_2017.html">Oord 2017</a>).</p>
+<ul>
+<li><code>one_hot: batch_size, codebook_size = F.one_hot(indices, codebook_size)</code>
+<ul>
+<li>After we run <code>quantize</code> we convert the nearest neighbour <code>indices</code> into a one-hot matrix</li>
+</ul>
+</li>
+<li><code>cluster_size = one_hot.sum(dim=0)</code>
+<ul>
+<li>The one-hot matrix  is summed on dimension <code>0</code> to give the number of counts per cluster</li>
+<li>Shape is <code>codebook_size</code></li>
+</ul>
+</li>
+<li><code>embed_sum = one_hot.t() @ x</code>
+<ul>
+<li>This is the sum of encoder embeddings based on assignment to clusters</li>
+<li>Shape is <code>codebook_size, latent_dim</code></li>
+</ul>
+</li>
+<li>The exponential moving average of <code>cluster_size</code> and <code>embed_sum</code> are taken and assigned to <code>self.ema_cluster_size</code> and <code>self.ema_embed_sum</code> respectively
+<ul>
+<li>The codebook vectors are updated as <code>self.ema_embed_sum / self.ema_cluster_size</code></li>
+</ul>
+</li>
+<li>Dead code checking to avoid codebook collapse
+<ul>
+<li>Codebook collapse is the case where some codebook vectors are so far away from the encoder distribution that they never get used</li>
+<li>We detect these codes by tracking their exponential moving average of counts</li>
+<li>If the average assignment falls below a certain threshold, we delete these codebook vectors and re-initialize them to an average of a few random encoder embeddings in the batch</li>
+</ul>
+</li>
+</ul>
+<p>There is also <code>compute_perplexity</code>, which is used to measure the distribution of codebook utilisation using <span style="color:orange">perplexity</span></p>
+<ul>
+<li>Perplexity is defined as <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop">exp</span><span class="mopen">(</span><span class="mord text"><span class="mord">entropy</span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.2809em;vertical-align:-0.2997em;"></span><span class="mop">exp</span><span class="mopen">(</span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9812em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.2029em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.07153em;">K</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2997em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">−</span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span> of a categorical distribution with <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span></span></span></span> categories</li>
+<li>We know that entropy ranges from <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span> to <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span></span></span></span></li>
+<li>So perplexity ranges from <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> to <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span></span></span></span></li>
+<li>We want the perplexity to be close to <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span></span></span></span>, showing that codebook utilisation is close to uniform</li>
+</ul>
+<blockquote>
+<p><span style="color:orange">Question:</span></p>
+<ul>
+<li>Is uniform codebook utilisation optimal, or is there some way to reason about the ideal distribution of codebook utilisation?</li>
+<li>There seems to be some reason to reduce the codebook size as we go into deeper levels, since the variance decreases and there is higher risk of modelling noise. Is there some information theoretic way to <span style="color:orange">dynamically adjust the codebook size</span> based on the amount of information gain from that codebook level?</li>
+</ul>
+</blockquote>
+<p>The <span style="color:orange">ResidualQuantizer</span> class is a stack of <span style="color:orange">Quantizer</span>s based on the desired number of <code>codebook_levels</code>.</p>
+<p>The <code>forward</code> pass is where most of the logic resides:</p>
+<ul>
+<li>We receive an input tensor <code>x</code> with shape <code>batch_size, seq_len, latent_dim</code></li>
+<li>We run a for loop through all the <code>codebook_levels</code>:
+<ul>
+<li><code>quantized, indices = quantizer.quantize(residual)</code>
+<ul>
+<li>Run the quantizer to get the assigned codebook vector and indices</li>
+</ul>
+</li>
+<li>Update the exponential moving average for the quantizer</li>
+<li><code>commitment_loss = F.mse_loss(residual, quantized.detach())</code>
+<ul>
+<li>Compute the commitment loss that pushes encoder output to be near codebook vectors</li>
+<li>Notice the stop gradient on the codebook vectors</li>
+</ul>
+</li>
+<li>Compute perplexity and keep track</li>
+<li>Accumulate <code>quantized</code> into <code>quantized_out</code>
+<ul>
+<li>Recall that RQ-VAE represents each token as a sum of the codebook vectors across all levels</li>
+<li>Hence we sum <code>quantized</code> at each level to get our final representation</li>
+<li>The straight-through estimator is applied to <code>quantized_out</code> to get gradients flowing back to the encoder</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../experiments/main.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../nlp_course/intro.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../experiments/main.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../nlp_course/intro.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convolution Visualizer</title>
+    <style>
+        body { font-family: -apple-system, sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background: #f4f7f6; }
+        .container { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 30px; background: #f9f9f9; padding: 15px; border-radius: 8px; }
+        .viz-area { display: flex; justify-content: space-around; align-items: flex-start; gap: 20px; flex-wrap: wrap; }
+        .grid-container { display: flex; flex-direction: column; align-items: center; }
+        .grid { display: grid; border: 2px solid #34495e; background: #fff; }
+        .cell { width: 35px; height: 35px; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all 0.2s; position: relative; }
+        .input-cell.active { background-color: #3498db !important; color: white; transform: scale(1.1); z-index: 2; border-color: #2980b9; }
+        .output-cell { cursor: pointer; background: #fdfdfd; }
+        .output-cell:hover { background-color: #2ecc71; color: white; }
+        .label { margin-bottom: 10px; font-weight: bold; color: #7f8c8d; text-transform: uppercase; letter-spacing: 1px; }
+        .explanation { margin-top: 30px; background: #e8f4fd; padding: 20px; border-radius: 8px; border-left: 5px solid #3498db; }
+        code { background: #eee; padding: 2px 5px; border-radius: 4px; font-family: monospace; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Interactive Convolution Visualizer</h2>
+    
+    <div class="controls">
+        <div>
+            <label>Stride: <span id="strideVal">1</span></label><br>
+            <input type="range" id="stride" min="1" max="3" value="1">
+        </div>
+        <div>
+            <label>Kernel Size: <span id="kernelVal">3</span></label><br>
+            <input type="range" id="kernel" min="2" max="4" value="3">
+        </div>
+        <div>
+            <label>Padding: <span id="paddingVal">0</span></label><br>
+            <input type="range" id="padding" min="0" max="2" value="0">
+        </div>
+    </div>
+
+    <div class="viz-area">
+        <div class="grid-container">
+            <div class="label">Input (Blue = Kernel Area)</div>
+            <div id="inputGrid" class="grid"></div>
+        </div>
+        <div class="grid-container">
+            <div class="label">Output (Hover Me)</div>
+            <div id="outputGrid" class="grid"></div>
+        </div>
+    </div>
+
+    <div class="explanation">
+        <h3>How it works:</h3>
+        <p>A <b>Convolution</b> is a sliding window operation. In the code you provided:</p>
+        <ul>
+            <li><b>Kernel Size (3):</b> The size of the "window" looking at the data.</li>
+            <li><b>Stride (2):</b> How many steps the window jumps. A stride of 2 skips every other position, which <b>downsamples</b> (shrinks) the output.</li>
+            <li><b>Padding (1):</b> Adding "fake" zeros around the edges to allow the kernel to center on edge pixels.</li>
+        </ul>
+        <p><i>Hover over the green Output cells to see which Input pixels the kernel is currently "looking at."</i></p>
+    </div>
+</div>
+
+<script>
+    const inputSize = 10;
+    const inputGrid = document.getElementById('inputGrid');
+    const outputGrid = document.getElementById('outputGrid');
+    
+    function render() {
+        const stride = parseInt(document.getElementById('stride').value);
+        const kernel = parseInt(document.getElementById('kernel').value);
+        const padding = parseInt(document.getElementById('padding').value);
+        
+        document.getElementById('strideVal').innerText = stride;
+        document.getElementById('kernelVal').innerText = kernel;
+        document.getElementById('paddingVal').innerText = padding;
+
+        const effectiveInputSize = inputSize + (padding * 2);
+        const outSize = Math.floor((inputSize + 2 * padding - kernel) / stride) + 1;
+
+        // Clear grids
+        inputGrid.innerHTML = '';
+        outputGrid.innerHTML = '';
+
+        // Style grids
+        inputGrid.style.gridTemplateColumns = `repeat(${inputSize}, 35px)`;
+        outputGrid.style.gridTemplateColumns = `repeat(${outSize}, 35px)`;
+
+        // Create Input
+        for (let i = 0; i < inputSize * inputSize; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell input-cell';
+            cell.id = `in-${i}`;
+            cell.innerText = Math.floor(Math.random() * 10);
+            inputGrid.appendChild(cell);
+        }
+
+        // Create Output
+        for (let r = 0; r < outSize; r++) {
+            for (let c = 0; c < outSize; c++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell output-cell';
+                cell.innerText = '?';
+                
+                cell.onmouseover = () => highlight(r, c, stride, kernel, padding);
+                cell.onmouseout = clearHighlight;
+                
+                outputGrid.appendChild(cell);
+            }
+        }
+    }
+
+    function highlight(outR, outC, stride, kernel, padding) {
+        clearHighlight();
+        const startR = outR * stride - padding;
+        const startC = outC * stride - padding;
+
+        for (let r = 0; r < kernel; r++) {
+            for (let c = 0; c < kernel; c++) {
+                const targetR = startR + r;
+                const targetC = startC + c;
+
+                if (targetR >= 0 && targetR < inputSize && targetC >= 0 && targetC < inputSize) {
+                    const idx = targetR * inputSize + targetC;
+                    const el = document.getElementById(`in-${idx}`);
+                    if (el) el.classList.add('active');
+                }
+            }
+        }
+    }
+
+    function clearHighlight() {
+        document.querySelectorAll('.input-cell').forEach(el => el.classList.remove('active'));
+    }
+
+    document.querySelectorAll('input').forEach(i => i.oninput = render);
+    render();
+</script>
+
+</body>
+</html>
