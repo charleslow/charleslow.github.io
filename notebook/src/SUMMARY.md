@@ -83,6 +83,7 @@
     - [Sanjabi 2025 - 360Brew](./papers/sanjabi_2025.md)
     - [Zhang 2025 - Qwen3 Embedding](./papers/zhang_2025.md)
     - [Chlon 2025 - LLMs are Bayesian in Expectation](./papers/chlon_2025_a.md)
+    - [Huang 2025 - LLM-JEPA](./papers/huang_2025.md)
 - [Talks / Articles]()
     - [Yan 2025 - LLM for Recsys](./talks/yan_2025_ai_engineer.md)
     - [Tandon 2025 - Gemini for YouTube](./talks/tandon_2025_gemini_youtube.md)

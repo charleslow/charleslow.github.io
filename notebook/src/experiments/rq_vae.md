@@ -198,4 +198,28 @@ The `forward` pass is where most of the logic resides:
         - Hence we sum `quantized` at each level to get our final representation
         - The straight-through estimator is applied to `quantized_out` to get gradients flowing back to the encoder 
 
+### rqvae.py
+
+This script combines the encoder, decoder and residual quantizer into one module for joint training. 
+
+The main method is `forward`, which does the `encode -> quantize -> decode` pass and then computes loss to train all its components.
+- Firstly we receive `input_ids` and `attention_mask` with shape `batch_size, seq_len` from the tokenizer
+- We call `self.encode` which does two things and returns a `dict`:
+    - `latent = self.encoder(input_ids, attention_mask)`
+    - `quant_out = self.quantizer(latent)`
+    - Returns:
+        - `latent`: the encoder representation in latent space
+        - `quantized`: the quantized representation (sum of codebook vectors for each position)
+        - `indices`: the latent token sequence
+        - `commitment_loss`
+        - `perplexities`: for tracking purpose
+        - `dead_code_replacements`: for tracking purpose
+
+- `logits = self.decoder(quantized, seq_len)`
+    - This decodes the quantized representation back into logits for each position
+    - The logits represent our predictions for each token probability for each position
+- The logits are used to compute the `reconstruction_loss`
+    - The `reconstruction_loss` is the cross entropy between predicted logits and actual labels
+    - The actual labels default to `input_ids` if labels are not explicitly provided
+- The total loss is computed as `reconstruction_loss + commitment_loss`
 

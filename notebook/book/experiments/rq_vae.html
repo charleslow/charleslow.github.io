@@ -437,6 +437,48 @@
 </ul>
 </li>
 </ul>
+<h3 id="rqvaepy"><a class="header" href="#rqvaepy">rqvae.py</a></h3>
+<p>This script combines the encoder, decoder and residual quantizer into one module for joint training.</p>
+<p>The main method is <code>forward</code>, which does the <code>encode -&gt; quantize -&gt; decode</code> pass and then computes loss to train all its components.</p>
+<ul>
+<li>
+<p>Firstly we receive <code>input_ids</code> and <code>attention_mask</code> with shape <code>batch_size, seq_len</code> from the tokenizer</p>
+</li>
+<li>
+<p>We call <code>self.encode</code> which does two things and returns a <code>dict</code>:</p>
+<ul>
+<li><code>latent = self.encoder(input_ids, attention_mask)</code></li>
+<li><code>quant_out = self.quantizer(latent)</code></li>
+<li>Returns:
+<ul>
+<li><code>latent</code>: the encoder representation in latent space</li>
+<li><code>quantized</code>: the quantized representation (sum of codebook vectors for each position)</li>
+<li><code>indices</code>: the latent token sequence</li>
+<li><code>commitment_loss</code></li>
+<li><code>perplexities</code>: for tracking purpose</li>
+<li><code>dead_code_replacements</code>: for tracking purpose</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><code>logits = self.decoder(quantized, seq_len)</code></p>
+<ul>
+<li>This decodes the quantized representation back into logits for each position</li>
+<li>The logits represent our predictions for each token probability for each position</li>
+</ul>
+</li>
+<li>
+<p>The logits are used to compute the <code>reconstruction_loss</code></p>
+<ul>
+<li>The <code>reconstruction_loss</code> is the cross entropy between predicted logits and actual labels</li>
+<li>The actual labels default to <code>input_ids</code> if labels are not explicitly provided</li>
+</ul>
+</li>
+<li>
+<p>The total loss is computed as <code>reconstruction_loss + commitment_loss</code></p>
+</li>
+</ul>
 
                     </main>
 
