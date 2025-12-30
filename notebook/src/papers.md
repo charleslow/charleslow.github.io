@@ -25,3 +25,33 @@ The tasks proposed are:
 - <<Direct recommedation>>: Pick the most suitable item from the following list to recommend to `user_123`: `item_123, item_456, ...`. `item123`
 
 These tasks are mixed together and then used to pretrain an encoder-decoder model from scratch, and then used for various recommendation tasks.
+
+### [Tang 2023 - SE-DSI](https://arxiv.org/abs/2305.15115)
+
+This is an expansion of the [Differentiable Search Index](./papers/tay_2022.md) paper. The argument is that teaching an LLM to learn arbitrary document ids is not semantic. Hence we should represent documents as semantic words to aid learning.
+
+Specifically:
+- <<Docid Representation>>. For each document, use a T5 model to generate a query to serve as document identifier (5% collision).
+- <<Input features>>. Use 3 types of input features to predict the "query docid":
+    - Whole document
+    - Key passages identified using textrank
+    - Key sentenes identified using textrank
+
+This approach beats vanilla DSI, as we use semantic information as document representation. Note that evaluation task is Q&A.
+
+### [Chen 2023 - Understanding DSI for Text Retrieval](https://arxiv.org/abs/2305.02073)
+
+Analyzes the shortcomings of DSI through 3 metrics:
+- <<Exclusivity>>: There should be a one-to-one mapping between document contents and semantic ID.
+    - `Task`: Given first N tokens of document, can we retrieve the correct ID
+- <<Completeness>>: The LLM should remember as much information about each document as possible.
+    - `Task`: Use BERT model to find important chunks in document, then use these chunks as query to see if we can retrieve the correct ID.
+- <<Relevance>>: Can the LLM rank documents in relevance order to a query.
+    - `Task`: For a given query, check the document at position `k` of the LLM's recommendation order to see how relevant it is. Specifically, measure the cross encoder score of document $d_k$ against the query and compare to score of a random document $d_r$. Lower score is considered a failure
+    - Found that DSI only generates relevant documents at position `1`, and then becomes highly irrelevant thereafter.
+
+Proposed improvements:
+- <<Data Filtering>>: Break each document into chunks and use a teacher model `TCT-Colbert` to perform retrieval using that chunk as query. Only successful retrievals that get the document back are considered useful content used for LLM fine-tuning.
+- <<Multi-task learning>>: Normal DSI indexing task only seeks to predict one document ID given its contents or a query. They propose to add an additional task where we get LLM to learn to predict a list of relevant document IDs.
+    - The list of relevant document IDs are generated using a teacher model (`TCT-Colbert` again).
+

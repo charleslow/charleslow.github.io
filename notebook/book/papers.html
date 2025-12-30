@@ -199,6 +199,49 @@
 <li><span style="color:orange">Direct recommedation</span>: Pick the most suitable item from the following list to recommend to <code>user_123</code>: <code>item_123, item_456, ...</code>. <code>item123</code></li>
 </ul>
 <p>These tasks are mixed together and then used to pretrain an encoder-decoder model from scratch, and then used for various recommendation tasks.</p>
+<h3 id="tang-2023---se-dsi"><a class="header" href="#tang-2023---se-dsi"><a href="https://arxiv.org/abs/2305.15115">Tang 2023 - SE-DSI</a></a></h3>
+<p>This is an expansion of the <a href="./papers/tay_2022.html">Differentiable Search Index</a> paper. The argument is that teaching an LLM to learn arbitrary document ids is not semantic. Hence we should represent documents as semantic words to aid learning.</p>
+<p>Specifically:</p>
+<ul>
+<li><span style="color:orange">Docid Representation</span>. For each document, use a T5 model to generate a query to serve as document identifier (5% collision).</li>
+<li><span style="color:orange">Input features</span>. Use 3 types of input features to predict the "query docid":
+<ul>
+<li>Whole document</li>
+<li>Key passages identified using textrank</li>
+<li>Key sentenes identified using textrank</li>
+</ul>
+</li>
+</ul>
+<p>This approach beats vanilla DSI, as we use semantic information as document representation. Note that evaluation task is Q&amp;A.</p>
+<h3 id="chen-2023---understanding-dsi-for-text-retrieval"><a class="header" href="#chen-2023---understanding-dsi-for-text-retrieval"><a href="https://arxiv.org/abs/2305.02073">Chen 2023 - Understanding DSI for Text Retrieval</a></a></h3>
+<p>Analyzes the shortcomings of DSI through 3 metrics:</p>
+<ul>
+<li><span style="color:orange">Exclusivity</span>: There should be a one-to-one mapping between document contents and semantic ID.
+<ul>
+<li><code>Task</code>: Given first N tokens of document, can we retrieve the correct ID</li>
+</ul>
+</li>
+<li><span style="color:orange">Completeness</span>: The LLM should remember as much information about each document as possible.
+<ul>
+<li><code>Task</code>: Use BERT model to find important chunks in document, then use these chunks as query to see if we can retrieve the correct ID.</li>
+</ul>
+</li>
+<li><span style="color:orange">Relevance</span>: Can the LLM rank documents in relevance order to a query.
+<ul>
+<li><code>Task</code>: For a given query, check the document at position <code>k</code> of the LLM's recommendation order to see how relevant it is. Specifically, measure the cross encoder score of document <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> against the query and compare to score of a random document <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>. Lower score is considered a failure</li>
+<li>Found that DSI only generates relevant documents at position <code>1</code>, and then becomes highly irrelevant thereafter.</li>
+</ul>
+</li>
+</ul>
+<p>Proposed improvements:</p>
+<ul>
+<li><span style="color:orange">Data Filtering</span>: Break each document into chunks and use a teacher model <code>TCT-Colbert</code> to perform retrieval using that chunk as query. Only successful retrievals that get the document back are considered useful content used for LLM fine-tuning.</li>
+<li><span style="color:orange">Multi-task learning</span>: Normal DSI indexing task only seeks to predict one document ID given its contents or a query. They propose to add an additional task where we get LLM to learn to predict a list of relevant document IDs.
+<ul>
+<li>The list of relevant document IDs are generated using a teacher model (<code>TCT-Colbert</code> again).</li>
+</ul>
+</li>
+</ul>
 
                     </main>
 
@@ -229,22 +272,6 @@
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 
