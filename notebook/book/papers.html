@@ -242,6 +242,34 @@
 </ul>
 </li>
 </ul>
+<h3 id="ju-2025---grid"><a class="header" href="#ju-2025---grid"><a href="https://arxiv.org/abs/2507.22224">Ju 2025 - GRID</a></a></h3>
+<p>Snap's GRID repository which is a modular repo for semantic ID based generative retrieval to facilitate architecture comparison. A generative retrieval system has the following components:</p>
+<ul>
+<li><span style="color:orange">Semantic ID Tokenization</span>:
+<ul>
+<li>Convert item description to embedding</li>
+<li>Quantize embedding to tokens (K-means, VQ-VAE, RQ-VAE)</li>
+</ul>
+</li>
+<li><span style="color:orange">Sequential Recommender</span>:
+<ul>
+<li>Whether to use user token</li>
+<li>Data augmentation using sliding windows</li>
+<li>Architecture: Encoder-decoder vs decoder only</li>
+<li>Beam search</li>
+</ul>
+</li>
+</ul>
+<p><span style="color:orange">Note:</span> this system only considers the case where each user is represented as a sequence of items, and the LLM is trained from scratch (not finetuned from pretrained).</p>
+<p>Their experiments are interesting:</p>
+<ul>
+<li><span style="color:orange">Residual K-means tokenization is best</span>, compared to VQ-VAE and RQ-VAE. This is quite surprising and I'm not 100% convinced.</li>
+<li><span style="color:orange">Larger OTS embedding models are better</span>, no surprise.</li>
+<li><span style="color:orange">Encoder-decoder sequential recommender is clearly better</span>. Somewhat surprising, I guess there is some inductive bias that is useful in this setting to have full attention over the user sequence.</li>
+<li><span style="color:orange">Sliding window is better</span>. Sliding window means that given a training data sequence of a user represented by item interactions, we generate all possible contiguous sequences to augment our dataset. Not surprising.</li>
+<li><span style="color:orange">SID de-duplication is unnecessary</span>. Between appending an arbitrary token to deduplicate SIDs or just randomly selecting from SIDs with multiple items hashed to it, the performance difference is negligible. This is assuring that we don't need to further complicate the system.</li>
+<li><span style="color:orange">Constrained beam search is unnecessary</span>. Constrained beam search means that we maintain a trie to only generate tokens leading to a valid SID. The results show that this has negligible performance difference to unconstrained beam search, which has much better efficiency. This is assuring that we can just use uncontrained beam search.</li>
+</ul>
 
                     </main>
 

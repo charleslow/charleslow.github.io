@@ -55,3 +55,25 @@ Proposed improvements:
 - <<Multi-task learning>>: Normal DSI indexing task only seeks to predict one document ID given its contents or a query. They propose to add an additional task where we get LLM to learn to predict a list of relevant document IDs.
     - The list of relevant document IDs are generated using a teacher model (`TCT-Colbert` again).
 
+### [Ju 2025 - GRID](https://arxiv.org/abs/2507.22224)
+
+Snap's GRID repository which is a modular repo for semantic ID based generative retrieval to facilitate architecture comparison. A generative retrieval system has the following components:
+- <<Semantic ID Tokenization>>:
+     - Convert item description to embedding
+     - Quantize embedding to tokens (K-means, VQ-VAE, RQ-VAE)
+- <<Sequential Recommender>>:
+    - Whether to use user token
+    - Data augmentation using sliding windows
+    - Architecture: Encoder-decoder vs decoder only
+    - Beam search
+
+<<Note:>> this system only considers the case where each user is represented as a sequence of items, and the LLM is trained from scratch (not finetuned from pretrained).
+
+Their experiments are interesting:
+- <<Residual K-means tokenization is best>>, compared to VQ-VAE and RQ-VAE. This is quite surprising and I'm not 100% convinced.
+- <<Larger OTS embedding models are better>>, no surprise.
+- <<Encoder-decoder sequential recommender is clearly better>>. Somewhat surprising, I guess there is some inductive bias that is useful in this setting to have full attention over the user sequence.
+- <<Sliding window is better>>. Sliding window means that given a training data sequence of a user represented by item interactions, we generate all possible contiguous sequences to augment our dataset. Not surprising.
+- <<SID de-duplication is unnecessary>>. Between appending an arbitrary token to deduplicate SIDs or just randomly selecting from SIDs with multiple items hashed to it, the performance difference is negligible. This is assuring that we don't need to further complicate the system.
+- <<Constrained beam search is unnecessary>>. Constrained beam search means that we maintain a trie to only generate tokens leading to a valid SID. The results show that this has negligible performance difference to unconstrained beam search, which has much better efficiency. This is assuring that we can just use uncontrained beam search.
+
