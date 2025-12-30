@@ -312,14 +312,10 @@
 <li><a href="https://arxiv.org/abs/2410.06424">Rotation Trick</a></li>
 <li><a href="https://arxiv.org/abs/2107.03006">D3PM</a></li>
 <li><a href="https://arxiv.org/abs/2211.15029">DiffusionBERT</a></li>
-<li><a href="https://arxiv.org/abs/1803.03382">Fast decoding with discrete latents</a></li>
 <li><a href="https://arxiv.org/abs/1611.01144">Gumbel-softmax</a></li>
 <li><a href="https://arxiv.org/abs/2206.10789">Parti Model</a></li>
 <li><a href="https://arxiv.org/abs/2202.04200">MaskGIT</a></li>
-<li><a href="https://arxiv.org/abs/2410.09560">Scalable Semantic Representation</a></li>
 <li><a href="https://arxiv.org/abs/2506.16698">SIDE</a></li>
-<li><a href="https://arxiv.org/abs/2404.08675">RecGPT</a></li>
-<li><a href="https://arxiv.org/abs/2502.18965">OneRec</a></li>
 <li><a href="https://arxiv.org/abs/2411.18814">LIGER</a></li>
 <li><a href="https://arxiv.org/abs/2208.09257">Ultron</a></li>
 <li><a href="https://arxiv.org/abs/2305.02073">Understanding DSI</a></li>
@@ -331,7 +327,35 @@
 <li><a href="https://arxiv.org/abs/2301.08243">I-JEPA</a></li>
 <li><a href="https://arxiv.org/abs/2505.17169">NTPS</a></li>
 <li><a href="https://arxiv.org/abs/2511.05963">Next latent prediction</a></li>
+</ul>
+<h1 id="rqvae"><a class="header" href="#rqvae">RQVAE</a></h1>
+<ul>
+<li><a href="https://arxiv.org/abs/2107.03312">Soundstream</a></li>
+<li><a href="https://arxiv.org/abs/1803.03382">Fast decoding with discrete latents</a></li>
+</ul>
+<h1 id="semantic-ids-for-rec"><a class="header" href="#semantic-ids-for-rec">Semantic IDs for Rec</a></h1>
+<ul>
+<li><a href="https://arxiv.org/abs/2508.10584">DAS: Dual-Aligned Semantic IDs Empowered Industrial Recommender System</a></li>
+<li><a href="https://arxiv.org/abs/2410.09560">Scalable Semantic Representation</a></li>
+<li><a href="https://arxiv.org/abs/2406.10450">TokenRec</a></li>
+<li><a href="https://arxiv.org/abs/2304.04171">GenRet</a></li>
+<li><a href="https://arxiv.org/abs/2502.18965">OneRec</a></li>
+<li><a href="https://arxiv.org/abs/2506.13695">OneRec Technical Report</a></li>
 <li><a href="https://arxiv.org/abs/2203.13366">P5</a></li>
+<li><a href="https://arxiv.org/abs/2210.12316">VQRec</a></li>
+<li><a href="https://arxiv.org/abs/2305.15115">Semantic DSI</a></li>
+<li><a href="https://arxiv.org/abs/2404.08675">RecGPT</a></li>
+<li><a href="https://arxiv.org/abs/2502.18965">OneRec</a></li>
+<li><a href="https://arxiv.org/abs/2507.22224v1">SNAP GRID</a></li>
+<li><a href="https://arxiv.org/abs/2405.07314">Learnable item tokenization</a></li>
+<li><a href="https://arxiv.org/abs/2504.02137">Enhancing Embedding Representation Stability in Recommendation Systems with Semantic ID</a></li>
+<li><a href="https://arxiv.org/abs/2507.18800">Semantic IDs for Music Recommendation</a></li>
+<li><a href="https://arxiv.org/abs/2507.22224">Generative Recommendation with Semantic IDs: A Practitioner's Handbook</a></li>
+<li><a href="https://arxiv.org/abs/2310.19488">CoLLM: Integrating Collaborative Embeddings into Large Language Models for Recommendation</a></li>
+<li><a href="https://arxiv.org/abs/2311.09049">Adapting Large Language Models by Integrating Collaborative Semantics for Recommendation</a></li>
+<li><a href="https://arxiv.org/abs/2411.18814">Unifying Generative and Dense Retrieval for Sequential Recommendation</a></li>
+<li><a href="https://arxiv.org/abs/2305.06569">How to Index Item IDs for Recommendation Foundation Models</a></li>
+<li><a href="https://arxiv.org/abs/2008.07873">S^3-Rec: Self-Supervised Learning for Sequential Recommendation with Mutual Information Maximization</a></li>
 </ul>
 
                     </main>
@@ -363,6 +387,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

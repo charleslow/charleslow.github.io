@@ -180,13 +180,25 @@
 <p>Summaries of individual papers that I have taken a deeper look into.</p>
 <h1 id="quick-reads"><a class="header" href="#quick-reads">Quick Reads</a></h1>
 <p>Here I put down quick summaries of papers I read quickly. May possible revisit these with its own page if a deep dive is warranted.</p>
-<h2 id="assran-2023---self-supervised-learning-from-images-with-a-joint-embedding-predictive-architecture"><a class="header" href="#assran-2023---self-supervised-learning-from-images-with-a-joint-embedding-predictive-architecture"><a href="https://arxiv.org/abs/2301.08243">Assran 2023 - Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture</a></a></h2>
+<h2 id="jepa"><a class="header" href="#jepa">JEPA</a></h2>
+<h3 id="assran-2023---self-supervised-learning-from-images-with-a-joint-embedding-predictive-architecture"><a class="header" href="#assran-2023---self-supervised-learning-from-images-with-a-joint-embedding-predictive-architecture"><a href="https://arxiv.org/abs/2301.08243">Assran 2023 - Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture</a></a></h3>
 <p>This is the I-JEPA paper. This paper aims to perform JEPA-style self-supervised learning for vision transformers without using image augmentations (like rotation, shear etc.). The main idea is to take a random image patch as <span style="color:orange">context</span> and aim to predict multiple other image patches as <span style="color:orange">target</span>. Importantly:</p>
 <ul>
 <li>The loss is to minimize l2-distance between the <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">Predictor</span></span><span class="mopen">(</span><span class="mord text"><span class="mord">Context Encoding</span></span><span class="mclose">)</span></span></span></span> and <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord text"><span class="mord">Target Encoding</span></span></span></span></span> in latent space</li>
 <li>To avoid representation collapse in latent space, the target encoder is updated as a trailing exponential moving average of the Context Encoder</li>
 <li>This approach is simple and scalable and matches performance of SOTA methods using image augmentations</li>
 </ul>
+<h3 id="geng-2022---recommendation-as-language-processing-rlp-a-unified-pretrain-personalized-prompt--predict-paradigm-p5"><a class="header" href="#geng-2022---recommendation-as-language-processing-rlp-a-unified-pretrain-personalized-prompt--predict-paradigm-p5"><a href="https://arxiv.org/abs/2203.13366">Geng 2022 - Recommendation as Language Processing (RLP): A Unified Pretrain, Personalized Prompt &amp; Predict Paradigm (P5)</a></a></h3>
+<p>This is one of the earliest papers to reframe recommendation task as a language modelling task. The idea is to represent user-item interaction data and other metadata in recommendation tasks as an <code>input</code> to <code>response</code> task for supervised fine-tuning (or pre-training). Then we can have a unified language model to perform various tasks in a recommendation system.</p>
+<p>The tasks proposed are:</p>
+<ul>
+<li><span style="color:orange">Sequential Recommendation</span>: Given purchase history <code>item_123, item_456</code>, what is the next item? <code>1581</code></li>
+<li><span style="color:orange">Rating Prediction</span>: What star rating would <code>user_123</code> give to <code>item_456</code>? 5.0</li>
+<li><span style="color:orange">Explanation Generation</span>: What explanation or review would <code>user_123</code> give to <code>item_456</code> (iphone case)? You can use it to protect your phone</li>
+<li><span style="color:orange">Review Summarization</span>: Give a short sentence summarizing this review <code>&lt;insert review&gt;</code>. <code>&lt;insert summary&gt;</code></li>
+<li><span style="color:orange">Direct recommedation</span>: Pick the most suitable item from the following list to recommend to <code>user_123</code>: <code>item_123, item_456, ...</code>. <code>item123</code></li>
+</ul>
+<p>These tasks are mixed together and then used to pretrain an encoder-decoder model from scratch, and then used for various recommendation tasks.</p>
 
                     </main>
 
@@ -217,6 +229,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

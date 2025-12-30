@@ -1,0 +1,14 @@
+/home/charles/charleslow.github.io/notebook/format/target/release/deps/serde-8a093ddf87bb2520.d: /home/charles/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /home/charles/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /home/charles/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /home/charles/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /home/charles/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /home/charles/charleslow.github.io/notebook/format/target/release/build/serde-cfe125327cacaf16/out/private.rs
+
+/home/charles/charleslow.github.io/notebook/format/target/release/deps/libserde-8a093ddf87bb2520.rlib: /home/charles/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /home/charles/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /home/charles/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /home/charles/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /home/charles/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /home/charles/charleslow.github.io/notebook/format/target/release/build/serde-cfe125327cacaf16/out/private.rs
+
+/home/charles/charleslow.github.io/notebook/format/target/release/deps/libserde-8a093ddf87bb2520.rmeta: /home/charles/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /home/charles/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /home/charles/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /home/charles/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /home/charles/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /home/charles/charleslow.github.io/notebook/format/target/release/build/serde-cfe125327cacaf16/out/private.rs
+
+/home/charles/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs:
+/home/charles/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs:
+/home/charles/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs:
+/home/charles/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs:
+/home/charles/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs:
+/home/charles/charleslow.github.io/notebook/format/target/release/build/serde-cfe125327cacaf16/out/private.rs:
+
+# env-dep:OUT_DIR=/home/charles/charleslow.github.io/notebook/format/target/release/build/serde-cfe125327cacaf16/out

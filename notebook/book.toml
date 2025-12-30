@@ -19,7 +19,7 @@ after = ["links"]
 macros = "src/macros.txt"
 
 [preprocessor.format]
-command = "python3 format.py"
+command = "./format/target/release/format"
 
 [preprocessor.mermaid]
 command = "mdbook-mermaid"
