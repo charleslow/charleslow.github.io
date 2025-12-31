@@ -77,3 +77,5 @@ Their experiments are interesting:
 - <<SID de-duplication is unnecessary>>. Between appending an arbitrary token to deduplicate SIDs or just randomly selecting from SIDs with multiple items hashed to it, the performance difference is negligible. This is assuring that we don't need to further complicate the system.
 - <<Constrained beam search is unnecessary>>. Constrained beam search means that we maintain a trie to only generate tokens leading to a valid SID. The results show that this has negligible performance difference to unconstrained beam search, which has much better efficiency. This is assuring that we can just use uncontrained beam search.
 
+
+

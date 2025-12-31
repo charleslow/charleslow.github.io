@@ -15,6 +15,7 @@
     - [Examples](./ab_test/examples.md)
     - [Power Analysis](./ab_test/power_analysis.md)
 - [LLMs](./llm/llm.md)
+    - [KV-Cache](./llm/kv_cache.md)
     - [Auto Prompt Optimization](./llm/prompt_optimization.md)
     - [Fine-tuning](./llm/fine_tuning.md)
     - [Useful Models](./llm/useful_models.md)

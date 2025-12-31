@@ -153,6 +153,13 @@
 
 - [Soundstream](https://arxiv.org/abs/2107.03312)
 - [Fast decoding with discrete latents](https://arxiv.org/abs/1803.03382)
+- [Finite Scalar Quantization](https://arxiv.org/abs/2309.15505)
+- [QINCo](https://arxiv.org/abs/2401.14732)
+- [QINCo2](https://arxiv.org/abs/2501.03078)
+- [Latent Quantize](https://arxiv.org/abs/2305.18378)
+- [DiVeQ](https://arxiv.org/abs/2509.26469)
+- [VQ-VAE2](https://arxiv.org/abs/1906.00446)
+
 
 # Semantic IDs for Rec
 
