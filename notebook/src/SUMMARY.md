@@ -114,5 +114,7 @@
     - [Compute Architecture](./pmpp/ch04.md)
     - [Memory Architecture](./pmpp/ch05.md)
     - [Performance Considerations](./pmpp/ch06.md)
+- [Mackay - info theory](./mackay/main.md)
+    - [Preface](./mackay/preface.md)
 - [Kernel Hacker Roadmap](./kernel_hacker/main.md)
 - [Information Theory Roadmap](./info_theory/roadmap.md)
