@@ -342,3 +342,16 @@ On the special characters:
 - `#` is a special case for Day of the Week. Basically, `MON#1` means the 1st occurrence of a Monday of the given month
 
 That's about it! Or we can just use an LLM to generate the expression we need.
+
+## Wayland in Devcontainer
+
+Sometimes we may encounter this error when trying to use vscode to setup a devcontainer:
+```
+Error response from daemon: invalid mount config for type "bind": bind source path does not exist: /run/user/1000/wayland-0
+```
+
+This happens because VS Code is trying to share the graphics connection with the container, which is not needed in most cases. Here is how to disable it:
+- Open VS Code Settings `(Ctrl + ,)`
+- Search for "Mount Wayland Socket"
+- Uncheck the box for Dev > Containers: Mount Wayland Socket
+- Rebuild your container (Ctrl + Shift + P -> "Rebuild Container").
