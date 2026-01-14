@@ -9,6 +9,7 @@ use std::process;
 
 #[derive(Debug, Deserialize, Serialize)]
 struct Book {
+    #[serde(alias = "items")]
     sections: Vec<BookItem>,
     #[serde(flatten)]
     other: serde_json::Map<String, Value>,
@@ -130,6 +131,7 @@ fn main() -> io::Result<()> {
         writeln!(file, "{}", url)?;
     }
     
+    // Output modified book to stdout - preserve the wrapper structure if present
     // Output modified book to stdout
     let output = serde_json::to_string(&book)
         .expect("Failed to serialize book");

@@ -33,3 +33,15 @@ One challenge in WSL is to forward the ssh-agent from WSL into the devcontainer.
 }
 ```
 
+## Configure Blackout
+
+It's useful to have a screen blackout command to keep jobs running but not show our screen when leaving the desk.
+
+Click `New` and create a shortcut, paste the following command:
+
+```powershell
+powershell.exe -Command "(Add-Type '[DllImport(\"user32.dll\")]public static extern int SendMessage(int hWnd, int hMsg, int wParam, int lParam);' -Name a -Pas)::SendMessage(-1,0x0112,0xF170,2)"
+```
+
+Set the shortcut name (e.g. `blackout`). Finally, add a keyboard shortcut to it (e.g. `Ctrl + Alt + B`).
+

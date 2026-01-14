@@ -1,7 +1,8 @@
 [book]
 authors = ["Charles Low"]
+description = ""
 language = "en"
-multilingual = false
+text-direction = "ltr"
 src = "src"
 title = "Chux's Notebook"
 
