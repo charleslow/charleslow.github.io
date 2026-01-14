@@ -91,6 +91,7 @@
     - [Hameed 2025 - 360Brew](./talks/hameed_2025_360brew.md)
     - [Han 2025 - GRPO Example](./talks/han_2025_grpo.md)
     - [Yan 2025 - Semantic IDs](./articles/yan_2025_semantic_ids.md)
+    - [Cherny 2025 - Vibe Coding](./articles/cherny_2025_vibe_coding.md)
 - [Experiments](experiments/main.md)
     - [RQ-VAE Fast Decoding](experiments/rq_vae.md)
 - [NLP Course](./nlp_course/intro.md)
