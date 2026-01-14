@@ -189,6 +189,25 @@
 <h1 id="3-use-opus-45-w-thinking-all-the-time"><a class="header" href="#3-use-opus-45-w-thinking-all-the-time">3. Use Opus 4.5 w/ Thinking all the time</a></h1>
 <p>Basically, use the biggest and slowest model all the time. Although it runs slower, it will complete things more reliably and with things running async, the reliability wins out in the end.</p>
 <h1 id="4-use-a-claudemd"><a class="header" href="#4-use-a-claudemd">4. Use a CLAUDE.md</a></h1>
+<p>The claude code repo has a single <code>CLAUDE.md</code> that is checked into git and everyone contributes to. Everytime claude fails on a task, or does something in a slightly undesirable way (think of all the <code>nit</code> comments), we can add a line to <code>CLAUDE.md</code> so that it does not do that again.</p>
+<h1 id="5-use-claude-to-add-stuff-to-claudemd"><a class="header" href="#5-use-claude-to-add-stuff-to-claudemd">5. Use <code>@.claude</code> to add stuff to CLAUDE.md</a></h1>
+<p>Using the claude code github action <code>/install-github-action</code>, tagging @.claude in PR comments we can instruct claude to add stuff to CLAUDE.md. e.g. <code>@.claude add to CLAUDE.md to always use string literals instead of enums</code>.</p>
+<h1 id="6-start-sessions-in-plan-mode"><a class="header" href="#6-start-sessions-in-plan-mode">6. Start sessions in plan mode</a></h1>
+<p>Start in plan mode <code>shift+tab twice</code>, and go back and forth. Once the plan is good, switch to auto accept edits and Claude usually 1-shots the task. A good plan is <strong>super</strong> important.</p>
+<h1 id="7-use-slash-commands-for-frequent-workflows"><a class="header" href="#7-use-slash-commands-for-frequent-workflows">7. Use slash commands for frequent workflows</a></h1>
+<p>Commands are commonly executed workflows that live inside <code>.claude/commands/</code>. These can be invoked in claude chat e.g. <code>/commit-push-pr</code>. This command computes git status, and some other info before getting claude to summarize and create a PR. More details at <a href="https://code.claude.com/docs/en/slash-commands#bash-command-execution">https://code.claude.com/docs/en/slash-commands#bash-command-execution</a>. The <code>/commit-push-pr</code> command may be viewed <a href="https://github.com/anthropics/claude-code/blob/main/.claude/commands/commit-push-pr.md">here</a></p>
+<h1 id="8-use-sub-agents-for-more-involved-workflows"><a class="header" href="#8-use-sub-agents-for-more-involved-workflows">8. Use sub-agents for more involved workflows</a></h1>
+<p>Slash commands are for short, simple workflows. Sub agents (living in <code>.claude/agents</code>) are also frequent workflows but more involved. For e.g., code simplification to simplify code after claude is done working. The code simplifier agent may be viewed <a href="https://github.com/anthropics/claude-plugins-official/blob/main/plugins/code-simplifier/agents/code-simplifier.md">here</a></p>
+<h1 id="9-use-a-posttooluse-hook"><a class="header" href="#9-use-a-posttooluse-hook">9. Use a PostToolUse hook</a></h1>
+<p>Use a <code>PostToolUse</code> hook to format code after claude is done. Basically just <code>bun format</code>. We can also do <code>ruff format</code> etc. depending on the language.</p>
+<h1 id="10-configure-permissions"><a class="header" href="#10-configure-permissions">10. Configure permissions</a></h1>
+<p>Do not use <code>--dangerously-skip-permissions</code>. Instead use <code>/permissions</code> and add commands that we know are safe in our environment.</p>
+<h1 id="11-tool-use"><a class="header" href="#11-tool-use">11. Tool Use</a></h1>
+<p>Use <code>.mcp.json</code> to specify the MCP servers we allow claude to connect to and use tools.</p>
+<h1 id="12-long-running-tasks"><a class="header" href="#12-long-running-tasks">12. Long Running Tasks</a></h1>
+<p>Use <code>--permission-mode=dontAsk</code> or <code>--dangerously-skip-permissions</code> so that claude will not get stuck. Also use hooks to ask the agent to periodically verify what is going on for monitoring.</p>
+<h1 id="13-invest-in-the-verification-loop"><a class="header" href="#13-invest-in-the-verification-loop">13. Invest in the Verification Loop</a></h1>
+<p>This is the most important step. Claude needs a way to verify its work, whether it is through some unit tests, integration tests or browser usage etc. Having a verification feedback loop will 2x or 3x the quality.</p>
 
                     </main>
 
