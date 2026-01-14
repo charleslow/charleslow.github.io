@@ -64,7 +64,7 @@ $$
 
 For large $\lambda$, the poisson distribution is well approximated in the vicinity of $r \approx \lambda$ by a gaussian distribution with mean $\lambda$ and variance $\lambda$:
 $$
-    e^{-\lambda} \frac{\lambda^r}{r!} \approx \frac{1}{\sqrt{2 \pi \lambda}} e^{-\frac{{r-\lambda}^2}{2 \lambda}}
+    e^{-\lambda} \frac{\lambda^r}{r!} \approx \frac{1}{\sqrt{2 \pi \lambda}} e^{-\frac{(r-\lambda)^2}{2 \lambda}}
 $$
 
 Plugging $r = \lambda$, we get:
