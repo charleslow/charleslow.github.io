@@ -114,3 +114,20 @@ $$
 
 > Note that the binary entropy function is just the special case of the general shannon entropy when we have only two possible outcomes, assuming $x$ represents a probability.
 
+Let us rewrite $\log \binom{N}{r}$ using the binary entropy function:
+$$
+\begin{align*}
+    \log \binom{N}{R} 
+    &\approx N H_2(r / N)\\
+    &= N \left( \frac{r}{N} \log \frac{N}{r} + \frac{N-r}{N} \log \frac{N}{N-r} \right)\\
+    &= (N-r) \log \frac{N}{N-r} + r \log \frac{N}{r}
+\end{align*}
+$$
+
+Or equivalently,
+$$
+    \binom{N}{r} \approx 2^{N H_2(r / N)}
+$$
+
+So we see that the binary entropy function nicely describes the combinatorial explosion of the binomial function. We can observe that since the binary entropy function is maximized when $\frac{r}{N} = 1/2$, the binomial combination is maximized likewise.
+

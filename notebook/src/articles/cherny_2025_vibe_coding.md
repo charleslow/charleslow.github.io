@@ -54,3 +54,4 @@ Use `--permission-mode=dontAsk` or `--dangerously-skip-permissions` so that clau
 # 13. Invest in the Verification Loop
 
 This is the most important step. Claude needs a way to verify its work, whether it is through some unit tests, integration tests or browser usage etc. Having a verification feedback loop will 2x or 3x the quality.
+

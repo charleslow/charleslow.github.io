@@ -1,0 +1,13 @@
+{
+  "LaTeX Align Environment": {
+    "prefix": "align",
+    "body": [
+      "$$",
+      "\\begin{align*}",
+      "    $0",
+      "\\end{align*}",
+      "$$"
+    ],
+    "description": "Insert LaTeX align* environment"
+  }
+}

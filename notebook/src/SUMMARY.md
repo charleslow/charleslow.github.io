@@ -117,5 +117,6 @@
     - [Performance Considerations](./pmpp/ch06.md)
 - [Mackay - info theory](./mackay/main.md)
     - [Preface](./mackay/preface.md)
+    - [Intro](./mackay/ch01.md)
 - [Kernel Hacker Roadmap](./kernel_hacker/main.md)
 - [Information Theory Roadmap](./info_theory/roadmap.md)
