@@ -183,7 +183,7 @@
 <ul>
 <li>Forces one to understand and implement the methods in the paper, no shortcuts</li>
 <li>Helps one understand how sensitive the results are to hyperparameters, data settings etc.</li>
-<li>Allows one to test out new methods or variations on the same task for an apples to apples comparison</li>
+<li>Allows one to test out new methods or variations on the same task for an apples-to-apples comparison</li>
 </ul>
 <p>Traditionally, this takes some time for each paper (days to weeks) depending on the complexity of the method, the compute cost, the expertise of the researcher who is performing the replication etc. There is also significant ambiguity in what defines a successful replication, since the paper may have inadvertently left out some implementation details, and the results might not be exactly replicable.</p>
 <p>LLMs can make this process a lot faster, by:</p>
@@ -217,7 +217,7 @@
 <p>I could not get <span style="color:orange">approach 3</span> to work. I tried running Claude Code in <code>--dangerously-allow-permissions</code> mode on runpod, and give it almost full autonomy in implementing and running the code. Some frustrating points:</p>
 <ul>
 <li><span style="color:orange">LLM kept using synthetic data</span> even for the full run, even when explicitly spelled out that synthetic data is only for dev runs. When asked why it was using synthetic data, it said it failed to download the data. But managed to download the data on the very next instruction.</li>
-<li><span style="color:orange">LLM has no common sense</span>. The paper detailed its method of generating synthetic queries on movielens using an LLM (since movielens only has interaction data) to train a search biencoder. Claude decided to generate synthetic queries of the form "What movie is <title>?", despite being told to use an LLM to generate from the movie text. Such hard coded queries obviously led to very high accuracies of <code>&gt; 99%</code>, but Claude did not know to terminate and investigate.</li>
+<li><span style="color:orange">LLM has no common sense</span>. The paper detailed its method of generating synthetic queries on movielens using an LLM (since movielens only has interaction data) to train a search biencoder. Claude decided to generate synthetic queries of the form "What movie is <title>?", despite being told to use an LLM to generate from the movie text. Such hard-coded queries obviously led to very high accuracies of <code>&gt; 99%</code>, but Claude did not know to terminate and investigate.</li>
 <li><span style="color:orange">LLM did not create meaningful evals</span>. It mostly monitored train and validation loss, and even these were not very meaningful (it decided to sample only <code>500</code> points for validation). The researcher needs to be explicit about specifying these.</li>
 </ul>
 <p>Some reflections on testing out <span style="color:orange">approach 3</span>:</p>
@@ -227,7 +227,13 @@
 <li><span style="color:orange">Unpleasant to understand code</span>. Giving LLM full autonomy produces a lot of code that is intimidating to try to grok. I can probably do it with LLM assistance, but it produces the same daunting feeling as reviewing a large pull request. It also feels like unnecessary work as it entails spending time trying to understand lots of glue code.</li>
 </ul>
 <p>Which leads me to <span style="color:orange">approach 2</span>. This is the approach I am currently testing out. The hope is that <span style="color:orange">spec-driven development is a good middle ground</span>. The researcher gets to use the specification to determine how far we want the LLM to sprint in each run, before we apply manual verification and understanding. This minimizes the chance of LLMs running completely off point and also makes it more palatable to understand a small piece of code each time.</p>
-<p>Front-loading the development of specifications also forces the researcher to adopt systems-level thinking and design.</p>
+<p>Front-loading the development of specifications also forces the researcher to adopt systems-level thinking and design for the whole experiment. This hopefully helps us move up a level of abstraction and move along faster.</p>
+<p>The main difficulties of <span style="color:orange">approach 2</span> a-priori to me are:</p>
+<ul>
+<li>Designing the right places to pause for manual verification and understanding</li>
+<li>Getting the LLM to follow our specs closely and stop at the correct checkpoints</li>
+</ul>
+<p>Will test it out and see how it goes!</p>
 
                     </main>
 
