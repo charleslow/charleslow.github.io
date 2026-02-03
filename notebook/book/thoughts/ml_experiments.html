@@ -1,0 +1,285 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>On ML Experiments - Chux&#x27;s Notebook</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../katex.min.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Chux&#x27;s Notebook</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="on-ml-experiments"><a class="header" href="#on-ml-experiments">On ML Experiments</a></h1>
+<p>On using LLMs (e.g. Claude Code) to assist with ML experiments, especially on replicating existing results from papers.</p>
+<p>There is much value in replicating ML experiment results from papers.</p>
+<ul>
+<li>Forces one to understand and implement the methods in the paper, no shortcuts</li>
+<li>Helps one understand how sensitive the results are to hyperparameters, data settings etc.</li>
+<li>Allows one to test out new methods or variations on the same task for an apples to apples comparison</li>
+</ul>
+<p>Traditionally, this takes some time for each paper (days to weeks) depending on the complexity of the method, the compute cost, the expertise of the researcher who is performing the replication etc. There is also significant ambiguity in what defines a successful replication, since the paper may have inadvertently left out some implementation details, and the results might not be exactly replicable.</p>
+<p>LLMs can make this process a lot faster, by:</p>
+<ul>
+<li>Performing requisite data cleaning</li>
+<li>Implementing the methods</li>
+<li>Monitoring the training and validation runs and fixing bugs along the way</li>
+</ul>
+<p>This raises the question: what are the respective roles of the LLM and researcher in such a process? From my experience, I have tested out these loosely described paradigms:</p>
+<ol>
+<li><span style="color:orange">Iterative LLM-assisted coding</span>
+<ul>
+<li>Basically not too different from development <em>before LLMs</em> - the researcher codes from scratch and gets LLM to assist with each function, testing small pieces as we go along</li>
+</ul>
+</li>
+<li><span style="color:orange">Spec-driven LLM development + post-hoc checking</span>
+<ul>
+<li>Researcher starts with detailed specifications file, detailing as much as possible about the data, method, hyperparameters, implementation process, evaluation criteria etc.</li>
+<li>LLM implements semi-autonomously, checking against the specifications</li>
+<li>After each phase, researcher reviews the code to understand it, refactor it, simplify it etc.</li>
+</ul>
+</li>
+<li><span style="color:orange">Fully autonomous LLM</span>
+<ul>
+<li>Researcher provides the full paper to the LLM and high level specifications</li>
+<li>LLM implements end to end and submits results</li>
+</ul>
+</li>
+</ol>
+<p>I find that <span style="color:orange">approach 1</span> produces the cleanest repo and understanding for the researcher. But it is also the slowest - significant time is spent debugging and doing the <code>code edit -&gt; run code</code> loop manually. It's probably the approach that most researchers are using currently, to varying degrees of autonomy given to the LLM.</p>
+<p>I could not get <span style="color:orange">approach 3</span> to work. I tried running Claude Code in <code>--dangerously-allow-permissions</code> mode on runpod, and give it almost full autonomy in implementing and running the code. Some frustrating points:</p>
+<ul>
+<li><span style="color:orange">LLM kept using synthetic data</span> even for the full run, even when explicitly spelled out that synthetic data is only for dev runs. When asked why it was using synthetic data, it said it failed to download the data. But managed to download the data on the very next instruction.</li>
+<li><span style="color:orange">LLM has no common sense</span>. The paper detailed its method of generating synthetic queries on movielens using an LLM (since movielens only has interaction data) to train a search biencoder. Claude decided to generate synthetic queries of the form "What movie is <title>?", despite being told to use an LLM to generate from the movie text. Such hard coded queries obviously led to very high accuracies of <code>&gt; 99%</code>, but Claude did not know to terminate and investigate.</li>
+<li><span style="color:orange">LLM did not create meaningful evals</span>. It mostly monitored train and validation loss, and even these were not very meaningful (it decided to sample only <code>500</code> points for validation). The researcher needs to be explicit about specifying these.</li>
+</ul>
+<p>Some reflections on testing out <span style="color:orange">approach 3</span>:</p>
+<ul>
+<li><span style="color:orange">Verification is hard in ML tasks</span>. I tried providing the accuracy results from the paper to the LLM, asking it to benchmark against those figures to see if it is on the right track. The LLM was way off but did not know how to troubleshoot such problems. Normal test driven development also does not work for ML Tasks.</li>
+<li><span style="color:orange">Difficult to debug in fully autonomous setting</span>. ML tasks are very sensitive to how the data is processed, hyperparameters etc. Even a small decision like left or right padding can significantly change results. Without diving into the code, I had no means of forming hypotheses about what was messing up the performance. LLMs are not well trained in this task of playing detective, and interrogating it did not yield much fruit.</li>
+<li><span style="color:orange">Unpleasant to understand code</span>. Giving LLM full autonomy produces a lot of code that is intimidating to try to grok. I can probably do it with LLM assistance, but it produces the same daunting feeling as reviewing a large pull request. It also feels like unnecessary work as it entails spending time trying to understand lots of glue code.</li>
+</ul>
+<p>Which leads me to <span style="color:orange">approach 2</span>. This is the approach I am currently testing out. The hope is that <span style="color:orange">spec-driven development is a good middle ground</span>. The researcher gets to use the specification to determine how far we want the LLM to sprint in each run, before we apply manual verification and understanding. This minimizes the chance of LLMs running completely off point and also makes it more palatable to understand a small piece of code each time.</p>
+<p>Front-loading the development of specifications also forces the researcher to adopt systems-level thinking and design.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../thoughts/main.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../recsys/recent_trends.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../thoughts/main.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../recsys/recent_trends.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
