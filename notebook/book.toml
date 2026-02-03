@@ -9,7 +9,7 @@ title = "Chux's Notebook"
 [output.html]
 copy-fonts = true
 default_theme = "navy"
-additional-css = ["katex.min.css"]
+additional-css = ["katex.min.css", "styles.css"]
 additional-js = ["mermaid.min.js", "mermaid-init.js"]
 
 [output.html.playground]

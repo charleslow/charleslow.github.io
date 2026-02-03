@@ -30,6 +30,7 @@
 
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="../katex.min.css">
+        <link rel="stylesheet" href="../styles.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -194,19 +195,19 @@
 </ul>
 <p>This raises the question: what are the respective roles of the LLM and researcher in such a process? From my experience, I have tested out these loosely described paradigms:</p>
 <ol>
-<li><span style="color:orange">Iterative LLM-assisted coding</span>
+<li><strong>Iterative LLM-assisted coding</strong>
 <ul>
 <li>Basically not too different from development <em>before LLMs</em> - the researcher codes from scratch and gets LLM to assist with each function, testing small pieces as we go along</li>
 </ul>
 </li>
-<li><span style="color:orange">Spec-driven LLM development + post-hoc checking</span>
+<li><strong>Spec-driven LLM development + post-hoc checking</strong>
 <ul>
 <li>Researcher starts with detailed specifications file, detailing as much as possible about the data, method, hyperparameters, implementation process, evaluation criteria etc.</li>
 <li>LLM implements semi-autonomously, checking against the specifications</li>
 <li>After each phase, researcher reviews the code to understand it, refactor it, simplify it etc.</li>
 </ul>
 </li>
-<li><span style="color:orange">Fully autonomous LLM</span>
+<li><strong>Fully autonomous LLM</strong>
 <ul>
 <li>Researcher provides the full paper to the LLM and high level specifications</li>
 <li>LLM implements end to end and submits results</li>
@@ -216,15 +217,15 @@
 <p>I find that <span style="color:orange">approach 1</span> produces the cleanest repo and understanding for the researcher. But it is also the slowest - significant time is spent debugging and doing the <code>code edit -&gt; run code</code> loop manually. It's probably the approach that most researchers are using currently, to varying degrees of autonomy given to the LLM.</p>
 <p>I could not get <span style="color:orange">approach 3</span> to work. I tried running Claude Code in <code>--dangerously-allow-permissions</code> mode on runpod, and give it almost full autonomy in implementing and running the code. Some frustrating points:</p>
 <ul>
-<li><span style="color:orange">LLM kept using synthetic data</span> even for the full run, even when explicitly spelled out that synthetic data is only for dev runs. When asked why it was using synthetic data, it said it failed to download the data. But managed to download the data on the very next instruction.</li>
-<li><span style="color:orange">LLM has no common sense</span>. The paper detailed its method of generating synthetic queries on movielens using an LLM (since movielens only has interaction data) to train a search biencoder. Claude decided to generate synthetic queries of the form "What movie is <title>?", despite being told to use an LLM to generate from the movie text. Such hard-coded queries obviously led to very high accuracies of <code>&gt; 99%</code>, but Claude did not know to terminate and investigate.</li>
-<li><span style="color:orange">LLM did not create meaningful evals</span>. It mostly monitored train and validation loss, and even these were not very meaningful (it decided to sample only <code>500</code> points for validation). The researcher needs to be explicit about specifying these.</li>
+<li><strong>LLM kept using synthetic data</strong> even for the full run, even when explicitly spelled out that synthetic data is only for dev runs. When asked why it was using synthetic data, it said it failed to download the data. But managed to download the data on the very next instruction.</li>
+<li><strong>LLM has no common sense</strong>. The paper detailed its method of generating synthetic queries on movielens using an LLM (since movielens only has interaction data) to train a search biencoder. Claude decided to generate synthetic queries of the form "What movie is <code>&lt;title&gt;</code>?", despite being told to use an LLM to generate from the movie text. Such hard-coded queries obviously led to very high accuracies of <code>&gt; 99%</code>, but Claude did not know to terminate and investigate.</li>
+<li><strong>LLM did not create meaningful evals</strong>. It mostly monitored train and validation loss, and even these were not very meaningful (it decided to sample only <code>500</code> points for validation). The researcher needs to be explicit about specifying these.</li>
 </ul>
 <p>Some reflections on testing out <span style="color:orange">approach 3</span>:</p>
 <ul>
-<li><span style="color:orange">Verification is hard in ML tasks</span>. I tried providing the accuracy results from the paper to the LLM, asking it to benchmark against those figures to see if it is on the right track. The LLM was way off but did not know how to troubleshoot such problems. Normal test driven development also does not work for ML Tasks.</li>
-<li><span style="color:orange">Difficult to debug in fully autonomous setting</span>. ML tasks are very sensitive to how the data is processed, hyperparameters etc. Even a small decision like left or right padding can significantly change results. Without diving into the code, I had no means of forming hypotheses about what was messing up the performance. LLMs are not well trained in this task of playing detective, and interrogating it did not yield much fruit.</li>
-<li><span style="color:orange">Unpleasant to understand code</span>. Giving LLM full autonomy produces a lot of code that is intimidating to try to grok. I can probably do it with LLM assistance, but it produces the same daunting feeling as reviewing a large pull request. It also feels like unnecessary work as it entails spending time trying to understand lots of glue code.</li>
+<li><strong>Verification is hard in ML tasks</strong>. I tried providing the accuracy results from the paper to the LLM, asking it to benchmark against those figures to see if it is on the right track. The LLM was way off but did not know how to troubleshoot such problems. Normal test driven development also does not work for ML Tasks.</li>
+<li><strong>Difficult to debug in fully autonomous setting</strong>. ML tasks are very sensitive to how the data is processed, hyperparameters etc. Even a small decision like left or right padding can significantly change results. Without diving into the code, I had no means of forming hypotheses about what was messing up the performance. LLMs are not well trained in this task of playing detective, and interrogating it did not yield much fruit.</li>
+<li><strong>Unpleasant to understand code</strong>. Giving LLM full autonomy produces a lot of code that is intimidating to try to grok. I can probably do it with LLM assistance, but it produces the same daunting feeling as reviewing a large pull request. It also feels like unnecessary work as it entails spending time trying to understand lots of glue code.</li>
 </ul>
 <p>Which leads me to <span style="color:orange">approach 2</span>. This is the approach I am currently testing out. The hope is that <span style="color:orange">spec-driven development is a good middle ground</span>. The researcher gets to use the specification to determine how far we want the LLM to sprint in each run, before we apply manual verification and understanding. This minimizes the chance of LLMs running completely off point and also makes it more palatable to understand a small piece of code each time.</p>
 <p>Front-loading the development of specifications also forces the researcher to adopt systems-level thinking and design for the whole experiment. This hopefully helps us move up a level of abstraction and move along faster.</p>
