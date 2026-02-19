@@ -121,5 +121,6 @@
 - [Mackay - info theory](./mackay/main.md)
     - [Preface](./mackay/preface.md)
     - [Intro](./mackay/ch01.md)
+    - [Probability, Entropy, Inference](./mackay/ch02.md)
 - [Kernel Hacker Roadmap](./kernel_hacker/main.md)
 - [Information Theory Roadmap](./info_theory/roadmap.md)
