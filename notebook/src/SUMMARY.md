@@ -5,6 +5,7 @@
 - [Current Focus](./current.md)
 - [Thoughts](./thoughts/main.md)
     - [On ML Experiments](./thoughts/ml_experiments.md)
+    - [On AI Assistants](./thoughts/ai_assistant.md)
 - [Recommender Systems]()
     - [Recent Trends](./recsys/recent_trends.md)
     - [Gradient Boosting](./recsys/gradient_boosting.md)
