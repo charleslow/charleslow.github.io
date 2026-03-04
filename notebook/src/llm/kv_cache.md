@@ -94,7 +94,7 @@ Now suppose we want to generate token $4$. We will need:
 - $K_{1:3}$
 - $V_{1:3}$
 
-> <<Key Insight>>: Due to the causal mask, $K_{1:2}$ and $V_{1:2}$ did not change. Hence we can cache them and just append $K_3$ and $V_3$ to get $K_{1:3}, V_{1:3}$. This is the main idea of the <<KV Cache>>.
+> <<Key Insight>>: Due to the causal mask, $K_{1:2}$ and $V_{1:2}$ did not change. Hence we can cache them and just append $K_3$ and $V_3$ to get $K_{1:3}, V_{1:3}$. This is the main idea of the <|KV Cache|>.
 
 ## Naive Implementation (No Cache)
 

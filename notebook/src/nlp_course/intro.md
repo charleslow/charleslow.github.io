@@ -36,7 +36,7 @@ Another way to address this is to use character-level models. The main issue of 
 
 <<Byte Pair Encoding>> (2015) is a very simple method to create subwords. It simply incrementally combines the most frequent token pairs together, starting at the character level. e.g. starting with the sentence `newest, widest`, we first combine `es` into a token, then `est`, and so on.
 
-Another way to do this is to use <<Unigram Models>> (e.g. Kudo 2018). First we use a unigram LM that generates all words in the sequence independently. We then pick a vocabulary that maximizes the log likelihood of the corpus given a fixed vocabulary size. The optimization process is using the EM algorithm.
+Another way to do this is to use <|Unigram Models|> (e.g. Kudo 2018). First we use a unigram LM that generates all words in the sequence independently. We then pick a vocabulary that maximizes the log likelihood of the corpus given a fixed vocabulary size. The optimization process is using the EM algorithm.
 
 `Sentencepiece` is a highly optimized library to train both these types of subword models.
 
@@ -62,7 +62,7 @@ Generative models for text are called language models. We can use LMs to generat
 
 Auto-regressive language models compute $P(X) = \prod_{i=1}^I P(x_i | x_1, ..., x_{i-1})$. Question: why do we do it auto-regressively instead of computing the entire sequence $x$ at once? The problem is computational - predicting the next token has a space of $|\mathcal{V}| \sim 60,000$, but predicting the entire sequence is in the order of $|\mathcal{V}|^N$ where $N$ is the length of the sequence, which is currently untractable. That being said, if we can model the entire sequence, it will probably be a lot more efficient than the auto-regressive way.
 
-The simplest language model is <<count-based unigram model>>. By making an indepenence assumption $P(x_i | x_1, ..., x_{i-1}) \sim P(x_i)$, we just ignore all the previous words and predict the probability of a word occurring.
+The simplest language model is <|count-based unigram model|>. By making an indepenence assumption $P(x_i | x_1, ..., x_{i-1}) \sim P(x_i)$, we just ignore all the previous words and predict the probability of a word occurring.
 
 The maximum likelihood estimation for the probability of a given token $x_i$ will simply be:
 
@@ -79,7 +79,7 @@ $$
 
 Correspondingly, we can define the parameters $\theta_{x_i} = log P(x_i)$.
 
-Moving on to <<higher order n-gram models>>, the idea is to limit the context length to one-word before the token we are predicting, and then count:
+Moving on to <|higher order n-gram models|>, the idea is to limit the context length to one-word before the token we are predicting, and then count:
 
 $$
     P_{ML}(x_i | X_{i-n+1}, ..., x_{i-1}) := \frac{c(x_{i-n+1}, ..., x_i)}{c(x_{i-n+1}, ..., x_{i-1})}
@@ -134,7 +134,7 @@ $$
 
 ## Other Desiderata of LMs
 
-<<Calibration>> Guo 2017. Formally, we want the model probability of the answer matching the actual probability of getting it right. Typically we measure calibration by bucketing the model output probabilities and calculating <<expected calibration error>>:
+<<Calibration>> Guo 2017. Formally, we want the model probability of the answer matching the actual probability of getting it right. Typically we measure calibration by bucketing the model output probabilities and calculating <|expected calibration error|>:
 
 $$
     ECE = \sum_{m=1}^M \frac{|B_m|}{n} |acc(B_m) - confidence(B_m)|
@@ -146,7 +146,7 @@ How do we calculate answer probabilities? e.g. `the university is CMU` and `the 
 - One way is to use paraphrases to substitute phrases `Jiang 2021`.
 - One way is to just ask the model to generate a confidence score, see [Tian 2023 - Just ask for calibration](https://aclanthology.org/2023.emnlp-main.330.pdf)
 
-Another desirable characteristic is <<efficiency>>. Some metrics are:
+Another desirable characteristic is <|efficiency|>. Some metrics are:
 - Memory usage (load model only, peak memory usage)
 - Latency (to first token, to last token)
 - Throughput
@@ -160,7 +160,7 @@ Some efficiency tips:
 
 [Lecture 4 Link](https://www.youtube.com/watch?v=x3U2zVhrgJ8)
 
-NLP is full of sequential data, especially those containing long range dependencies. References can also be complicated, e.g. `the trophy would not fit in the suitcase because it was too big`. What does `it` refer to? These are called <<winograd schemas>>.
+NLP is full of sequential data, especially those containing long range dependencies. References can also be complicated, e.g. `the trophy would not fit in the suitcase because it was too big`. What does `it` refer to? These are called <|winograd schemas|>.
 
 Types of tasks:
 - Binary classification
@@ -185,7 +185,7 @@ Three major types of sequence modelling:
 2. Convolutional 
 3. Attentional
 
-Recurrent neural networks essentially unroll a computational graph through "time" (where time is the position in the sequence). This results in a <<vanishing gradient>> problem, where the gradient on the last token is largest, and the gradient becomes smaller as we move backwards towards the first token. This problem is not just present in RNNs, but in general for computation graphs, if there is important information, adding direct connections from the important nodes to the loss is one way to improve performance. This is the motivation for residual or skip-connections.
+Recurrent neural networks essentially unroll a computational graph through "time" (where time is the position in the sequence). This results in a <|vanishing gradient|> problem, where the gradient on the last token is largest, and the gradient becomes smaller as we move backwards towards the first token. This problem is not just present in RNNs, but in general for computation graphs, if there is important information, adding direct connections from the important nodes to the loss is one way to improve performance. This is the motivation for residual or skip-connections.
 
 <<LSTM>> is one way of solving this problem - the basic idea is to make additive connections between time steps, which does not result in vanishing. The idea is to have different "gates" that control the information flow, and use additive connections. Additive connections solves the vanishing gradient problem because it does not modify the gradient (?).
 
@@ -254,7 +254,7 @@ In practice the attention weights across all the heads are concatenated together
 
 2. <<Learnable Embeddings>>. This was proposed in Shaw 2018, which basically just allows the embedding at each position to be a learnable vector. The problem of this approach is that it becomes impossible to extrapolate to longer sequences in inference time.
 
-3. <<Rotary Positional Encodings>> or <<RoPE>>. This was proposed in Su 2021. The fundamental idea is that we want the dot product of embeddings to result in a function of relative position.
+3. <<Rotary Positional Encodings>> or <|RoPE|>. This was proposed in Su 2021. The fundamental idea is that we want the dot product of embeddings to result in a function of relative position.
 
     Specifically, we desire that for given positions $m, n$, and the respective word embeddings $x_m, x_n$, the dot product of the resulting embeddings may be expressed purely as a function of their relative distance $m-n$, and in so doing we lose notion of the absolute position entirely. 
     $$
@@ -263,7 +263,7 @@ In practice the attention weights across all the heads are concatenated together
 
     The paper uses trigonometry and imaginary numbers to come up with a function that satisfies this property. The benefit of losing notion of absolute position entirely means that we can extrapolate to longer sequences that we have not seen before, and RoPE extrapolates better than sinusoidal embeddings. LLaMa uses RoPE embeddings.
 
-<<Stability>>. Problem of gradient vanishing or exploding as we pass through the layers of an rnn or transformer. <<Layer normalization>> (Ba 2016) is the traditional way to deal with this issue. The intuition is that it normalizes the outputs of each attention layer to a consistent range, preventing too much variance in the scale of outputs.
+<<Stability>>. Problem of gradient vanishing or exploding as we pass through the layers of an rnn or transformer. <|Layer normalization|> (Ba 2016) is the traditional way to deal with this issue. The intuition is that it normalizes the outputs of each attention layer to a consistent range, preventing too much variance in the scale of outputs.
 
 $$
 \text{LayerNorm}(X;g,b) = \frac{g}{\sigma_x} \cdot (X - \mu_x) + b
@@ -271,7 +271,7 @@ $$
 
 Here, $X \in \R^{d \times n}$ is the output of an attention layer of embedding dimension $d$ and sequence length $n$, $\mu_x$ and $\sigma_x$ are the element-wise mean and standard deviation respectively across the time positions, and $g$ and $b$ are learnable vectors of dimension $d$. Hence, if $X$ has very large or small values, the normalization process standardizes the range of values. The parameters $g$ and $b$ allow the model flexibility to shift the values to a different part of the space.  
 
-A simplification of layer norm is <<RMSNorm>> (Zhang and Sennrich 2019). It removes the mean and bias terms but does not hurt performance empirically. It is used in Llama. The only learnable parameters per layer is $g$.
+A simplification of layer norm is <|RMSNorm|> (Zhang and Sennrich 2019). It removes the mean and bias terms but does not hurt performance empirically. It is used in Llama. The only learnable parameters per layer is $g$.
 $$
 \begin{align*}
     RMS(X) = \sqrt{\frac{1}{n} \sum_{i=1}^n x_i^2}\\
@@ -317,7 +317,7 @@ $$
     P(Y|X) = \prod_{j=1}^J P(y_j | X, y_1, ..., y_{j-1})
 $$
 
-The nice thing about the conditional distribution is that we get some notion of the model's confidence about the next token to generate. The problem with the conditional distribution is <<hallucination>>, since models generally assign some small but non-zero probability to  incorrect tokens, even if all the pre-training data is factual. See Kalai and Kempala 2023.
+The nice thing about the conditional distribution is that we get some notion of the model's confidence about the next token to generate. The problem with the conditional distribution is <|hallucination|>, since models generally assign some small but non-zero probability to  incorrect tokens, even if all the pre-training data is factual. See Kalai and Kempala 2023.
 
 <<Ancestral Sampling>> is to sample the next token based on the indicated confidence by the model. The nice thing is that the resultant generations follow exactly the distribution of the model.
 
@@ -325,15 +325,15 @@ $$
     y_j \sim P(y_j | X, y_1, ..., y_{j-1})
 $$
 
-The problem with ancestral sampling is the <<long tail>> problem. Most language models have around 30k tokens, and the probabilities from the long tail adds up, so that there's a somewhat good chance of sampling something really unlikely. 
+The problem with ancestral sampling is the <|long tail|> problem. Most language models have around 30k tokens, and the probabilities from the long tail adds up, so that there's a somewhat good chance of sampling something really unlikely. 
 
-The obvious solution to this problem is to ignore the long tail and only sampling from the top-k most probably tokens. This is <<top-k sampling>>. This results in only tokens that the model is somewhat confident in. 
+The obvious solution to this problem is to ignore the long tail and only sampling from the top-k most probably tokens. This is <|top-k sampling|>. This results in only tokens that the model is somewhat confident in. 
 
-Alternatively, we could only sampling from the top-p probability mass. This is called <<top-p or nucleus sampling>>. This is to account for the case where top-k sampling is not so desirable because if most of the probability mass is only on say 3 tokens, we may only want to sample from them. 
+Alternatively, we could only sampling from the top-p probability mass. This is called <|top-p or nucleus sampling|>. This is to account for the case where top-k sampling is not so desirable because if most of the probability mass is only on say 3 tokens, we may only want to sample from them. 
 
-Another alternative is <<epsilon sampling>>, where we only sample tokens with some minimum probability. This ensures that we only sample from tokens where the model is somewhat confident.
+Another alternative is <|epsilon sampling|>, where we only sample tokens with some minimum probability. This ensures that we only sample from tokens where the model is somewhat confident.
 
-Another strategy is to modify the "peakiness" of the data by controlling the <<distribution temperature>>. This is done by modifying the scaling factor for the final softmax layer. This allows the user to put more weights on the top results (`temperature < 1.0`) for factual answers, or spread the weights out more by increasing the temperature for say story generaion.
+Another strategy is to modify the "peakiness" of the data by controlling the <|distribution temperature|>. This is done by modifying the scaling factor for the final softmax layer. This allows the user to put more weights on the top results (`temperature < 1.0`) for factual answers, or spread the weights out more by increasing the temperature for say story generaion.
 
 <<Contrastive Decoding>> is a newer idea - the idea is that we use a smaller model to improve the performance of a larger model. Instead of just decoding from the larger model's distribution, we contrastively decode by choosing outputs where the expert model thinks are more likely than the smaller model. The intuition is that both the big and small model are degenerate in similar ways (e.g. keep repeating itself), but the expert has knowledge which the smaller model does not have. Hence taking the probability difference $log(p_{expert}) - log(p_{amateur})$ helps to eliminate the degenerate cases and produce better results. 
 
@@ -350,12 +350,12 @@ $$
     y_j = \argmax_{y'} P(y' | X, y_1, ..., y_{j-1})
 $$
 
-However, greedy decoding does not guarantee finding the most likely sequence. e.g. `the` is often the most likely word, but choosing `the` would exclude many other sentences that may be more likely. Hence <<Beam Search>>, which ensures that we don't miss a high-probability sequence "hidden" behind a lower-probability prefix. This is a form of breadth-first search, where we maintain a few options at any point in the search.
+However, greedy decoding does not guarantee finding the most likely sequence. e.g. `the` is often the most likely word, but choosing `the` would exclude many other sentences that may be more likely. Hence <|Beam Search|>, which ensures that we don't miss a high-probability sequence "hidden" behind a lower-probability prefix. This is a form of breadth-first search, where we maintain a few options at any point in the search.
 - First, we explore the top 3 next tokens at time step 1
 - Next, we explore the top 3 next tokens at time step 2 from each branch, leading to 9 options
 - Then, we prune down to the top 3 paths from the 9 options and repeat the process for time step 3
 
-In practice, beam search often results in a very non-diverse set, i.e. sentences that are very similar to each other. Hence we may want to introduce <<diversity>> into the process. <<Diverse beam search>> modifies the scoring when pruning beams to avoid choosing overly similar beams. The similarity score can be as simple as word jaccard similarity between pairs. <<Stochastic beam search>> modifies the next token selection to sampling instead of using top greedy decodings.
+In practice, beam search often results in a very non-diverse set, i.e. sentences that are very similar to each other. Hence we may want to introduce <|diversity|> into the process. <|Diverse beam search|> modifies the scoring when pruning beams to avoid choosing overly similar beams. The similarity score can be as simple as word jaccard similarity between pairs. <|Stochastic beam search|> modifies the next token selection to sampling instead of using top greedy decodings.
 
 ## Minimum Bayes Risk
 
@@ -375,20 +375,20 @@ $$
 
 In the equation above, $\mathcal{Y}_e$ refers to a random sample from the model, say `100 samples`. $\mathcal{Y}_h$ refers to our hypothesis space, supposedly the `top 10 outputs`. The risk function $G$ measures the similarity of each candidate $y'$ against the samples. For example, a risk function could be ROUGE score, which measures the n-gram overlap between two sequences. Generally, MBR is high performance but high cost - even if G is `ROUGE-1` (i.e. unigram overlap), it significantly outperforms beam search or greedy search.
 
-Other MBR variants: <<output ensembling>>. Post-ensemble (Kobayashi 2018) compares pairwise embedding similarity between outputs acoss models and chooses outputs with highest average similarity. <<self-consistency>> (Wang 2023) prompts for an answer using chain of thought, samples multiple outputs, and extracts the answer from each sample (ignoring the explanations). The most frequently generated answer is then chosen. 
+Other MBR variants: <|output ensembling|>. Post-ensemble (Kobayashi 2018) compares pairwise embedding similarity between outputs acoss models and chooses outputs with highest average similarity. <|self-consistency|> (Wang 2023) prompts for an answer using chain of thought, samples multiple outputs, and extracts the answer from each sample (ignoring the explanations). The most frequently generated answer is then chosen. 
 
 ## Constrained Generation
 
 Sometimes we want to impose some constraints on the outputs, e.g. we want the model to suggest some hobbies but we do not want `climbing`, or more properly, say we want to omit toxic texts. Options:
 - Ask the model to exclude `climbing`: often does not work
 - <<Logit Manipulation>>. Set the logit for the token(s) corresponding to `climbing` to be 0. This often messes up because there may be many synonyms or ways to express the same thing and its impossible to enumerate them
-- <<Sample and Discard>>. We set up a new <<discriminator>> model which predicts whether a sequence corresponds to the idea of `climbing` or not. This is an easier task and often people will initialize the model from the original language model and train it to predict this idea from a small set of fine-tuning data.
+- <<Sample and Discard>>. We set up a new <|discriminator|> model which predicts whether a sequence corresponds to the idea of `climbing` or not. This is an easier task and often people will initialize the model from the original language model and train it to predict this idea from a small set of fine-tuning data.
     
-    We can then get the generative model to generate a few samples and keep only samples where the predicted probability of the idea to avoid is low. Another variant of this is <<FUDGE>> (Yang and Klein 2021), where we multiply the generative probability of the next token $p(y_j)$ by the discriminator probability that the new sequence will belong to the idea that we desire (e.g. formality). The chosen token will be that which maximizes the combined score.
+    We can then get the generative model to generate a few samples and keep only samples where the predicted probability of the idea to avoid is low. Another variant of this is <|FUDGE|> (Yang and Klein 2021), where we multiply the generative probability of the next token $p(y_j)$ by the discriminator probability that the new sequence will belong to the idea that we desire (e.g. formality). The chosen token will be that which maximizes the combined score.
 
 - <<RLHF>>. The alignment fine-tuning using RLHF may be viewed as a way to do constrained generation. An interesting paper that discusses RLHF as bayesian inference is [Korbak 2022](https://ar5iv.labs.arxiv.org/html/2205.11275).
 
-    Instead of fine-tuning, one way is to do <<reward-augmented decoding>> (Deng and Raffel 2023). The idea is to have a reward model that modifies the generative probabilities based on rewards. (?)
+    Instead of fine-tuning, one way is to do <|reward-augmented decoding|> (Deng and Raffel 2023). The idea is to have a reward model that modifies the generative probabilities based on rewards. (?)
 
 ## Human In the Loop Decoding
 
@@ -397,11 +397,11 @@ Some strategies to incorporate human intervention in the generation:
 - <<Fine-grained replacement>>. Human selects some part of the generated text, and twiddles some knobs (e.g. "more descriptive" etc.)
 - <<Choosing outputs>>. Model generates a few options, and human chooses one.
 
-We could also use a model in the loop. One idea is <<Tree of thought>> prompting, which is somewhat analogous to beam search. We have the model generate a few sentences at a time, with a few samples. An external model then judges and chooses the best branches to continue generation.
+We could also use a model in the loop. One idea is <|Tree of thought|> prompting, which is somewhat analogous to beam search. We have the model generate a few sentences at a time, with a few samples. An external model then judges and chooses the best branches to continue generation.
 
 ## Practical Considerations
 
-To increase decoding speed, one method is <<speculative decoding>>. We generally generate tokens with a small model, but when the small model is very uncertain, the small model will generate topk samples and a large model will pick the next token. This can speed up generation significantly. 
+To increase decoding speed, one method is <|speculative decoding|>. We generally generate tokens with a small model, but when the small model is very uncertain, the small model will generate topk samples and a large model will pick the next token. This can speed up generation significantly. 
 
 There are many libraries for fast decoding, e.g. vLLM, Outlines, disco etc. General takeaway is that a lot can be done at decoding time without needing to fine-tune the original model.
 
@@ -420,21 +420,21 @@ An interesting phenomenon for predicting labels is that getting the model to pre
 
 Effects of few-shot prompting are also sometime counter-intuitive. For example, replacing correct labels with random labels sometimes barely hurts the accuracy of the task. This suggests that the few-shot prompts are more for getting the structure of the response correct rather than learning the desired labelling logic. Sometimes, more demonstrations can also hurt accuracy (this may be due to the longer context length confusing the model).
 
-<<Chain of thought prompting>> (Wei 2022) basically tries to get the model to explain its reasoning before making an answer. The original idea was to include reasoning steps in the few-shot prompts to get the model to do likewise, and it found that this significantly improved the accuracy of the model. One interpretation for why this works is that it provides the model with <<adaptive computation time>> to generate the correct answer. e.g. a simple question like `1+1=` may be answered immediately but some complex logical question might require several steps, and the reasoning step allows the model to generate whatever it needs to get the answer right.
+<<Chain of thought prompting>> (Wei 2022) basically tries to get the model to explain its reasoning before making an answer. The original idea was to include reasoning steps in the few-shot prompts to get the model to do likewise, and it found that this significantly improved the accuracy of the model. One interpretation for why this works is that it provides the model with <|adaptive computation time|> to generate the correct answer. e.g. a simple question like `1+1=` may be answered immediately but some complex logical question might require several steps, and the reasoning step allows the model to generate whatever it needs to get the answer right.
 
-The next step is <<unsupervised chain of thought prompting>> (Kojima 2022), which basically found that we can get the same results by just appending `let's think step by step` to the prompt, without requiring the few-shot examples. 
+The next step is <|unsupervised chain of thought prompting|> (Kojima 2022), which basically found that we can get the same results by just appending `let's think step by step` to the prompt, without requiring the few-shot examples. 
 
 Another idea is that structuring outputs as computer programs can help (Madaan 2022). e.g. if we want the model to output a Direct Acyclic Graph, we could represent the output as a python graph class object. The reason that this works is perhaps because programs are highly structured and there is a lot of code in the pre-training data. Another useful method is to get the model to output `JSON` format, which it has also seen a lot of.
 
-Another idea is to have <<program-aided language models>> (Gao 2022). This allows the LLM to call a code interpreter or calculator to compute answers. This works especially well for numeric questions.
+Another idea is to have <|program-aided language models|> (Gao 2022). This allows the LLM to call a code interpreter or calculator to compute answers. This works especially well for numeric questions.
 
 ## Prompt Engineering
 
 One thing of take note of is that the format should match that of a trained model. e.g. leaving out the space after the colon `Passage:text` can lead to severe performance degradation. Changing the casing to `PASSAGE: text` can also degrade performance.
 
-We can also do automatic prompt generation. e.g. use another model to paraphrase our prompt and then select the best response out of the samples. Another approach is <<gradient-based>>, where we try out different prompt words and choose the best prompt words based on some kind of loss. These types of methods can result in highly non-human sequences that somehow produce the best results, but they can also be exploited to elicit harmful responses.
+We can also do automatic prompt generation. e.g. use another model to paraphrase our prompt and then select the best response out of the samples. Another approach is <|gradient-based|>, where we try out different prompt words and choose the best prompt words based on some kind of loss. These types of methods can result in highly non-human sequences that somehow produce the best results, but they can also be exploited to elicit harmful responses.
 
-Another method along these lines is <<Prefix tuning>> (Li and Liang 2021), where they train an embedding prefix that is appended to the transformer weights in each layer according to the task of interest. This is akin to LORA methods which train additional weights that are appendable to the model. 
+Another method along these lines is <|Prefix tuning|> (Li and Liang 2021), where they train an embedding prefix that is appended to the transformer weights in each layer according to the task of interest. This is akin to LORA methods which train additional weights that are appendable to the model. 
 
 One way to view prompting is to view it as a human-interpretable prior to the model, which can be easier than fine-tuning. 
 
@@ -449,20 +449,20 @@ The general framework is that language models are pre-trained on the semi-superv
 
 - <<Pre-train then fine-tune>>. However, because it is so expensive to perform the language modelling, usually pre-train and fine-tune is the actual paradigm that we follow. 
 
-<<Full fine-tuning>> means to simply continue training the language model on the training data that we have. This is also called <<supervised fine-tuning>>. This can be prohibitively expensive. Rajbhandari 2019 showed that training a 65B parameter with 16-bit mixed precision without any optimizations requires around 1TB of GPU memory, which is clearly not feasible.
+<<Full fine-tuning>> means to simply continue training the language model on the training data that we have. This is also called <|supervised fine-tuning|>. This can be prohibitively expensive. Rajbhandari 2019 showed that training a 65B parameter with 16-bit mixed precision without any optimizations requires around 1TB of GPU memory, which is clearly not feasible.
 
 The simplest solution is to scale-up horizontally across multiple-GPUs. DeepSpeed ZeRo (Rajbhandari 2019) is a popular framework for doing so:
 - Stage 1: partitioning the optimizer state does not hurt optimization speed much. This brings down memory per device from 120GB to 31GB across 12 devices.
 - Stage 2: in addition, it partitions the gradients. This brings memory further down to 16GB.
 - Stage 3: in addition, it partitions the parameters. This brings memory down to 1.9GB but severely impacts computation speed.
 
-An alternative strategy is to only fine tune a smaller set of parameters. <<Adapters>> (Houlsby 2019) is one way to do this. The idea is to add an adapter block after each attention block. The adapter block down-projects the embedding dimensionality to something small like `16`, passes it through a non-linearity, then up-projects back to the original dimension. Each adapter block only uses `2 x model_dim x adapter_dim` parameters. 
+An alternative strategy is to only fine tune a smaller set of parameters. <|Adapters|> (Houlsby 2019) is one way to do this. The idea is to add an adapter block after each attention block. The adapter block down-projects the embedding dimensionality to something small like `16`, passes it through a non-linearity, then up-projects back to the original dimension. Each adapter block only uses `2 x model_dim x adapter_dim` parameters. 
 
 There are generally two benefits to parameter-efficient fine-tuning methods:
 - They are much more memory efficient. This is because we only need to back-propagate gradients on nodes which are on the computation path between the adapter block sto the final loss function
 - They are more robust to over-fitting on the small set of fine-tuning data
 
-An extension to Adapters is <<Adapter Fusion>> (Pfeiffer 2020). The idea is that instead of a single adapter after each attention block, we have multiple adapters, each trained on a different task. We then add an AdapterFusion block, which is basically a multi-head attention over each adapter block, so that it can learn to choose which adapters to use automatically. 
+An extension to Adapters is <|Adapter Fusion|> (Pfeiffer 2020). The idea is that instead of a single adapter after each attention block, we have multiple adapters, each trained on a different task. We then add an AdapterFusion block, which is basically a multi-head attention over each adapter block, so that it can learn to choose which adapters to use automatically. 
 
 <<LoRA>> (Hu 2021) is very similar conceptually to adapters, with the important difference that it does not have any non-linearity. The idea is that we express the fine-tuned weights as follows (reference: [Cameron Wolfe's blog post](https://cameronrwolfe.substack.com/p/easily-train-a-specialized-llm-peft)):
 $$

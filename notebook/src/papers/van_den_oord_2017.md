@@ -73,14 +73,14 @@ However, we cannot simply use this equation for the VQ-VAE:
 
 Hence the authors need to re-design the optimization objective.
 
-The <<first decision is to use the straight through estimator>> to circumvent the gradient issue. For the non-linear operation $f(z_e(x)) = z_q(x)$, we compute the forward pass normally (i.e. embedding table lookup) but simply pass the gradients through during backpropagation. This means that we approximate: 
+The <|first decision is to use the straight through estimator|> to circumvent the gradient issue. For the non-linear operation $f(z_e(x)) = z_q(x)$, we compute the forward pass normally (i.e. embedding table lookup) but simply pass the gradients through during backpropagation. This means that we approximate: 
 $$
     \frac{dL}{d z_e(x)} \approx \frac{dL}{d z_q(x)}
 $$
 
 This allows the encoder to still receive gradient updates despite the non-differentiable operation. The theoretical justification for this operation is given in an earlier Bengio 2013 paper. Intuitively, if $z_e(x)$ is close to $z_q(x)$, the gradients should still be meaningful.
 
-The <<second decision is to use l2 distance to learn the embedding table>>. This is a form of dictionary learning. Specifically, we add a term to the loss:
+The <|second decision is to use l2 distance to learn the embedding table|>. This is a form of dictionary learning. Specifically, we add a term to the loss:
 $$
     || sg[z_e(x)] - e ||^2_2
 $$
@@ -89,7 +89,7 @@ Note that:
 - $e$ here refers to the closest embedding to a given $z_e(x)$. We want embeddings in the codebook to move toward the average encoded representation
 - $sg[]$ is the stop gradient operation (e.g. `.detach()` in pytorch). It uses the value of $z_e(x)$ but does not pass gradients back to the encoder. Since the objective of this loss term is to learn the codebook, we do not wish to pass gradients back to the encoder
 
-The <<third decision is to add a commitment loss to bound the encoder outputs>>. This part feels a bit more arbitrary. The authors say that with just the first two terms, there is nothing that tethers the encoder output, which can grow arbitrarily and perpetually be far away from the codebook embeddings. The solution is to include the reverse direction from the dictionary learning loss:
+The <|third decision is to add a commitment loss to bound the encoder outputs|>. This part feels a bit more arbitrary. The authors say that with just the first two terms, there is nothing that tethers the encoder output, which can grow arbitrarily and perpetually be far away from the codebook embeddings. The solution is to include the reverse direction from the dictionary learning loss:
 $$
     \beta || z_e(x) - sg[e] ||^2_2
 $$
@@ -114,7 +114,7 @@ $$
     \log p(x) = \log \sum_k p(x|z_k)p(z_k)
 $$
 
-Note that $-\log_2 p(x) / (H \times W \times \text{Channels})$ is also computed to report <<bits per dimension>>, which is a common way to evaluate such VAE models on test data. This is literally the number of bits required to represent our data under this model.
+Note that $-\log_2 p(x) / (H \times W \times \text{Channels})$ is also computed to report <|bits per dimension|>, which is a common way to evaluate such VAE models on test data. This is literally the number of bits required to represent our data under this model.
 
 Because the decoder $p(x|z)$ is trained with $z = z_q(x)$ from MAP-inference, the decoder should end up placing all probability mass on $p(x|z_q(x))$ after full convergence and no probability mass on $p(x|z) \forall z \neq z_q(x)$. So we can write:
 $$

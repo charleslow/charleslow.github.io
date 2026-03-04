@@ -117,7 +117,7 @@ The simplest way to compute the policy gradient is to use finite differences:
 We now want to compute the policy gradient analytically, assuming:
 - The policy $\pi_\theta$ is differentiable whenever it is non-zero; and
 - We know the gradient $\nabla_\theta \pi_\theta (s, a)$
-- Likelihood ratio methods exploit the following identity (call it the <<log trick>>):
+- Likelihood ratio methods exploit the following identity (call it the <|log trick|>):
 $$
 \begin{align*}
     \nabla_\theta \pi_\theta(s, a) &= 
@@ -128,7 +128,7 @@ $$
 - Note that we use the simple identity $\partial_\theta \log f(\theta) =  \frac{\partial_\theta f(\theta)}{ f(\theta)}$
 - The new formulation is nicer to work with because we have $\pi_\theta(s, a)$ on the left, which when integrated over, basically gives us the expectation over our policy $\pi_\theta$
     - This allows us to basically sample trajectories from the data and compute the gradient at each step
-- The <<score function>> is the quantity $\nabla_\theta \log \pi_\theta(s, a)$ 
+- The <|score function|> is the quantity $\nabla_\theta \log \pi_\theta(s, a)$ 
 
 ## Linear Softmax Policy
 
@@ -236,12 +236,12 @@ Empirically, policy gradient methods have a nice learning curve without the jitt
 
 The main problem with monte carlo policy gradient is the high variance of the return $G_t$. Sometimes we get no reward, sometimes we get high reward.
 
-The idea is thus to use a <<critic>> to estimate the action-value function $Q$:
+The idea is thus to use a <|critic|> to estimate the action-value function $Q$:
 $$
     Q_w(s, a) \approx Q^{\pi_\theta}(s, a)
 $$
 
-The name <<critic>> refers to the value function, which simply "watches" and evaluates the value of an action, whilst the <<actor>> is the policy itself which decides how we should act.
+The name <|critic|> refers to the value function, which simply "watches" and evaluates the value of an action, whilst the <|actor|> is the policy itself which decides how we should act.
 
 We maintain two sets of parameters:
 - **Critic** updates the action value function parameters $w$
@@ -311,7 +311,7 @@ $$
 Note that in line 2, since $\pi_\theta$ is a probability, the right-most term sums to $1$, which is a constant. Hence the gradient $\nabla_\theta$ will become $0$, and the expectation resolves to $0$.
 
 A good and popular choice of baseline is the *state* value function $B(s) = V^{\pi_\theta}(s)$.
-- So we can rewrite the policy gradient using the <<advantage function>> $A^{\pi_\theta}(s, a)$:
+- So we can rewrite the policy gradient using the <|advantage function|> $A^{\pi_\theta}(s, a)$:
 $$
 \begin{align*}
     A^{\pi_\theta}(s, a) &= Q^{\pi_\theta}(s, a) - V^{\pi_\theta}(s)\\

@@ -10,7 +10,7 @@ We are given a pre-trained LLM and a question-only training dataset (e.g. like G
 
 The method is simple. For each question $x_i$ in the training set, we:
 - Sample $m$ reasoning paths and answers
-- Use <<majority voting>> from the $m$ answers to select the most consistent answer $\tilde{y}$ (this is called self-consistency in the literature). Importantly, to increase diversity:
+- Use <|majority voting|> from the $m$ answers to select the most consistent answer $\tilde{y}$ (this is called self-consistency in the literature). Importantly, to increase diversity:
     - Set the temperature $T > 0$
     - Apply mixed formats of prompts and answers
 - Keep all reasoning paths that lead to $\tilde{y}$ as our synthetic dataset

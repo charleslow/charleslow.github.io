@@ -33,14 +33,14 @@ $$
     v_\pi(s) = \E_\pi [G_t | S_t = s]
 $$
 
-So the whole idea of MC policy evaluation is to replace the expected return function with the <<empirical mean return>> from observing many many episodes.
+So the whole idea of MC policy evaluation is to replace the expected return function with the <|empirical mean return|> from observing many many episodes.
 
 There are two main methods of performing this:
 - First visit MC policy evaluation
 - Every visit MC policy evaluation
 
 <<Method 1: First visit MC policy evaluation>>. Algorithm for evaluating a given state $s$ is:
-- At the <<first>> time step $t$ where state $s$ is visited in a given episode:
+- At the <|first|> time step $t$ where state $s$ is visited in a given episode:
     - Increment counter $N(s) \leftarrow N(s) + 1$. $N(s)$ is the count of episodes where $s$ was visited.
     - Increment total return $S(s) \leftarrow S(s) + G_t$
     - Value is estimated by mean return $V(s) = S(s) / N(s)$
@@ -48,7 +48,7 @@ There are two main methods of performing this:
 
 Note that $G_t$ above is the total discounted reward from time step $t$ onwards. 
 
-<<Method 2: Every visit MC policy evaluation>>. The algorithm is identical to first visit, with the only difference in that we perform the increment step <<every time>> we visit state $s$.
+<<Method 2: Every visit MC policy evaluation>>. The algorithm is identical to first visit, with the only difference in that we perform the increment step <|every time|> we visit state $s$.
 
 ### BlackJack example
 - There are `200` unique states:
@@ -106,7 +106,7 @@ So applying this incremental mean algorithm to monte carlo updates. Recall that 
 TD methods are different from MC methods, in that we do not need to wait for full episodes to learn.
 - TD methods, like MC methods, learn directly from episodes of experience
 - TD methods, like MC methods, are also model-free
-- TD learns from incomplete episodes using <<bootstrapping>>
+- TD learns from incomplete episodes using <|bootstrapping|>
 - TD updates a guess towards a guess
 
 Goal remains the same: learn $v_\pi$ online from experience under policy $\pi$.
@@ -249,7 +249,7 @@ $$
 
 Note that the weight given to the final return $G_t^{(n)}$ is the sum to $\infty$ of weights from step $n$ onwards, i.e. it is a geometric series. It makes sense to put more weight on the final, actual return.
 
-This leads directly to <<forward-view TD($\lambda$)>>, where we sample trajectories of $n$ steps and update the value function according to:
+This leads directly to <|forward-view TD($\lambda$)|>, where we sample trajectories of $n$ steps and update the value function according to:
 $$
     V(S_t) \leftarrow V(S_t) + \alpha \left( 
         G_t^\lambda - V(S_t)
@@ -260,7 +260,7 @@ Now, the forward view has a shortcoming, which is that we need to wait until we 
 
 ## Backward View TD Lambda
 
-One key idea is <<eligibility traces>>. In deciding to assign credit to past events for a current reward, there are generally two intuitive heuristics to use:
+One key idea is <|eligibility traces|>. In deciding to assign credit to past events for a current reward, there are generally two intuitive heuristics to use:
 - <<Frequency heuristic>>: assign credit to most frequent recent states
 - <<Recency heuristic>>: assign credit to most recent states
 
@@ -270,7 +270,7 @@ The eligiblity trace combines both heuristics in a simple formula:
 
 The eligibility trace gives us a weight at a given time step for each state $s$. This weight tells us how much credit we should assign to $s$ for a reward at the current time step.
 
-The <<Backward View TD Lambda>> uses this idea:
+The <|Backward View TD Lambda|> uses this idea:
 - Keep an eligibility trace for every state $s$
 - Update value V(s) for *every* state $s$ in proportion to the TD-error $\delta_t$ and eligibility trace $E_t(s)$:
 $$
@@ -280,7 +280,7 @@ $$
 \end{align*}
 $$
 
-Observe that $\delta_t$ is just our update for <<TD(0)>> with a single step look ahead, i.e. $G_t^{(1)} - V(S_t)$. Thus we can see that when $\lambda=0$, only the current state is updated, since $E_t(s) = \mathbf{1}(S_t = s)$. This results in the TD(0) update: $V(S_t) \leftarrow V(S_t) + \alpha \delta_t$.
+Observe that $\delta_t$ is just our update for <|TD(0)|> with a single step look ahead, i.e. $G_t^{(1)} - V(S_t)$. Thus we can see that when $\lambda=0$, only the current state is updated, since $E_t(s) = \mathbf{1}(S_t = s)$. This results in the TD(0) update: $V(S_t) \leftarrow V(S_t) + \alpha \delta_t$.
 
 On the other extreme, when $\lambda=1$, all credit is deferred until the end of the episode (not sure I see this from the formula). Thus it is equivalent to MC update.
 

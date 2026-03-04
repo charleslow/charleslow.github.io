@@ -42,7 +42,7 @@ Recall at 30 is used as evaluation metric. `google/flan-t5-base` is used as the 
 
 The results show that:
 - Single-task based embeddings perform best in their own task, much better than any multi-task method. But they degrade performance on the other task very badly.
-- Amongst the multi-task methods, the <<multi-task>> method of training a bi-encoder on both contexts works best. 
+- Amongst the multi-task methods, the <|multi-task|> method of training a bi-encoder on both contexts works best. 
 - Amongst semantic ID tokenisation methods, `RQ-Kmeans` was the clear winner, far outperforming all other methods. `RQ-VAE` in particular showed degenerate results especially for the search case.
 
 > <<Question:>> Why did RQVAE perform so badly compared to the naive RQ-Kmeans? Did the authors handle the RQVAE correctly?

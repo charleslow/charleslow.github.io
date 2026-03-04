@@ -38,7 +38,7 @@ Personalized Page Rank (PPR) is an adaptation of the well-known Page Rank algori
 
 In training the GNN under the GraphSAGE framework, embeddings of neighbours to a node `s` are aggregated together to form the representation for `s`. A terse way of saying the same thing is that "GNNs propagate signals across graphs". Hence, how neighbours are sampled is crucial in determining the performance of the GNN.
 
-The simple way is <<Random Sampling>>, which simply chooses neighbours randomly amongst nodes connected to node `s`. This can done over a single-hop or multi-hops, and is efficient but not the most performant. The better way is <<PPR sampling>>, which chooses neighbours weighted by their PPR score, with the search space limited to nodes connected to `s` over `k` hops. This is slower but a better measure of neighbourhood. 
+The simple way is <|Random Sampling|>, which simply chooses neighbours randomly amongst nodes connected to node `s`. This can done over a single-hop or multi-hops, and is efficient but not the most performant. The better way is <|PPR sampling|>, which chooses neighbours weighted by their PPR score, with the search space limited to nodes connected to `s` over `k` hops. This is slower but a better measure of neighbourhood. 
 
 From their experiments, 2-hop PPR sampling contributes 2.1% validation AUC lift. Adding more hops beyond 2 hops contributes marginally to performance, hence 2-hops is chosen for efficiency.
 

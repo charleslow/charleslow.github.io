@@ -19,7 +19,7 @@ It is common practice to have an upstream pipeline to learn item embeddings that
 Another way is to have each retrieval and ranker model learn its own embeddings for its specific task. 
 - However, this leads to redundancy to store and update each set of embeddings, often in some in-memory feature store, which is costly. 
 - This approach is also often not as performant as learning a universal set of embeddings and then adapting the embeddings to each task via a small learned MLP layer
-- Training from a frozen set of universal embeddings is also much more <<compute efficient>>, as we do not need to forward/backward propagate into a potentially large language model that generates the embeddings from text or some other modality.
+- Training from a frozen set of universal embeddings is also much more <|compute efficient|>, as we do not need to forward/backward propagate into a potentially large language model that generates the embeddings from text or some other modality.
 
 We can think of upstream training of an embedding model as analogous to the common practice of pre-training large language models in a semi-supervised manner on a large text corpus. The LLM is then fine-tuned for specific applications.
 
@@ -38,7 +38,7 @@ There are 3 primary ways of embedding representation in the literature:
     - This is particularly effective in social network products where network interactions are crucial, such as on LinkedIn, Pinterest, or Facebook
     - While powerful, this method is more computationally expensive at both training and inference times because it requires access to the graph to compute embeddings
 
-Embeddings are typically trained in a <<contrastive learning>> manner, which simply means that we want to encourage related items (e.g. videos frequently co-watched) to have high similarity scores and unrelated items (e.g. randomly sampled vidoe pairs) to have low scores. 
+Embeddings are typically trained in a <|contrastive learning|> manner, which simply means that we want to encourage related items (e.g. videos frequently co-watched) to have high similarity scores and unrelated items (e.g. randomly sampled vidoe pairs) to have low scores. 
 
 Thus, we can think of contrastive learning as comprising 3 main components:
 - <<Positive Sampling>>. How we mine for related items from data is a non-trivial, but an oft-neglected topic. Usually some behavioural statistics are used, e.g. Lee 2020 uses `videos frequently co-watched by users` to determine positive pairs. The guiding principle is to err on the side of being stricter in the selection of positive samples to minimize the appearance of false positives in the data (which are more harmful than false negatives).

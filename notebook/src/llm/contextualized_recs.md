@@ -21,7 +21,7 @@ Initial tests with zero-shot / few-shot Llama did not work too well. They adopte
     - Tone inconsistencies
     - Factual inaccuracies
 
-The AB tests showed that explanations containing <<meaningful details>> about the artist or music led to significantly higher user engagement.
+The AB tests showed that explanations containing <|meaningful details|> about the artist or music led to significantly higher user engagement.
 
 For LLM fine-tuning, they found that Llama 3.1 8B worked well and could be trained with multiple adapters for 10 different tasks. Throughout the training process, they used MMLU benchmark as a guardrail to ensure that the model's overall ability remained intact. Spotify uses vLLM for inference.
 

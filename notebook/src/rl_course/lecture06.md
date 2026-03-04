@@ -25,11 +25,11 @@ Solution for large MDPs:
 - Update parameters of our function using MC or TD learning
 
 Types of value function approximation (different architectures):
-- Represent a given state $s$ with some parameters $w$. Then neural network spits out <<$\hat{v}(s, w)$>>, which is our value function for being in state $s$
-- Have a neural network <<$\hat{q}(s, a, w)$>>, which takes in a state-action pair and spits out the Q value
-- Sometimes, it is more efficient to have a neural network <<$\hat{q}(s, w)$>>, such that we feed in a single state and we get Q-values for every possible action in a single forward pass, i.e. we get $\hat{q}(s, a_1, w), \hat{q}(s, a_2, w), ...$
+- Represent a given state $s$ with some parameters $w$. Then neural network spits out <|$\hat{v}(s, w)$|>, which is our value function for being in state $s$
+- Have a neural network <|$\hat{q}(s, a, w)$|>, which takes in a state-action pair and spits out the Q value
+- Sometimes, it is more efficient to have a neural network <|$\hat{q}(s, w)$|>, such that we feed in a single state and we get Q-values for every possible action in a single forward pass, i.e. we get $\hat{q}(s, a_1, w), \hat{q}(s, a_2, w), ...$
 
-Which function approximator? We focus on <<differentiable>> function approximators that we can easily optimize, i.e. Linear combinations of features, neural networks. Furthermore, we want a training algorithm for a <<non-iid, non-stationary>> set of data, so it is not standard supervised learning.
+Which function approximator? We focus on <|differentiable|> function approximators that we can easily optimize, i.e. Linear combinations of features, neural networks. Furthermore, we want a training algorithm for a <|non-iid, non-stationary|> set of data, so it is not standard supervised learning.
 
 ## Incremental Methods
 

@@ -2,11 +2,11 @@
 
 [Schroff 2015 - FaceNet: A Unified Embedding for Face Recognition and Clustering](https://ar5iv.labs.arxiv.org/html/1503.03832)
 
-This paper proposes the <<Triplet Loss>> for learning a face recognition system.
+This paper proposes the <|Triplet Loss|> for learning a face recognition system.
 
 The task is that given a large number of person identities with a number of images associated with each person, to learn a model representation for an image in euclidean space, such that images belonging to the same person are close by and images for different persons are far away. This paper was impactful because it improved the SOTA on face verification by a large margin.
 
-At this point, representation learning often trained a CNN classification model to classify images to a known identity. A bottleneck layer of relatively low dimensionality in the middle of the network is chosen as the representation of an image. In contrast to this indirect method, this paper directly optimizes the representation using <<contrastive learning>>.
+At this point, representation learning often trained a CNN classification model to classify images to a known identity. A bottleneck layer of relatively low dimensionality in the middle of the network is chosen as the representation of an image. In contrast to this indirect method, this paper directly optimizes the representation using <|contrastive learning|>.
 
 ## Setup
 
@@ -52,5 +52,5 @@ Hence, the authors propose:
 
 ## Application to Semantic Search
 
-The triplet loss may be applied directly to semantic search. However, it is important to note that the paper assumes that for each person, <<all others-labelled instances are negatives>>. This is a suitable assumption for face recognition as each image can only belong to one person, but it is not true for semantic search, where a document may be relevant for multiple queries. Hence, the mislabelling issue when mining hard negatives is amplified for semantic search. I imagine that the selection of accurate negatives for semantic search would require more verification and filtering.
+The triplet loss may be applied directly to semantic search. However, it is important to note that the paper assumes that for each person, <|all others-labelled instances are negatives|>. This is a suitable assumption for face recognition as each image can only belong to one person, but it is not true for semantic search, where a document may be relevant for multiple queries. Hence, the mislabelling issue when mining hard negatives is amplified for semantic search. I imagine that the selection of accurate negatives for semantic search would require more verification and filtering.
 

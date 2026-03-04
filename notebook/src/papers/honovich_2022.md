@@ -31,5 +31,5 @@ Notably, the authors were careful to control for the variation caused by the sel
 - The evaluation accuracy of this prompt is recorded
 - The evaluation accuracy is averaged over `100` runs
 
-In hindsight, by using the idea of [self-consistency](./wang_2022.md), the performance can likely be significantly improved by taking the <<majority vote>> over the `100` runs rather than the average accuracy.
+In hindsight, by using the idea of [self-consistency](./wang_2022.md), the performance can likely be significantly improved by taking the <|majority vote|> over the `100` runs rather than the average accuracy.
 

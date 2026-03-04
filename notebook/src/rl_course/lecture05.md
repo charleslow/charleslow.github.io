@@ -28,7 +28,7 @@ So now we do generalized policy iteration with action-value function.
 - Update action-value function $Q = q_\pi$
 - Greedily update policy to $\pi = greedy(Q)$
 
-However, we still have another problem, which is the <<exploration issue>>. If we act greedily all the time, there is no guarantee that we will explore all states and thus find the optimal policy.
+However, we still have another problem, which is the <|exploration issue|>. If we act greedily all the time, there is no guarantee that we will explore all states and thus find the optimal policy.
 
 ## Toy Example: Greedy Action Selection
 
@@ -260,7 +260,7 @@ Why is off policy learning useful?
 - We can learn about the optimal policy while following the exploratory policy
 - We can learn about multiple policies while following one policy
 
-First mechanism is <<importance sampling>>. The main idea is to estimate the expectation of a different distribution by re-weighting the distributions:
+First mechanism is <|importance sampling|>. The main idea is to estimate the expectation of a different distribution by re-weighting the distributions:
 $$
 \begin{align*}
     \E_{X \sim P} [f(X)] &= \sum P(X) f(X)\\
@@ -269,7 +269,7 @@ $$
 \end{align*}
 $$
 
-We can apply importance sampling to Monte Carlo for <<Off policy monte carlo learning>>:
+We can apply importance sampling to Monte Carlo for <|Off policy monte carlo learning|>:
 - We use returns generated from behaviour policy $\mu$ to evaluate $\pi$
 - Then we weight the return $G_t$ according to the ratio of probabilities between the two policies
 - We need to apply the correction at every time step along the whole episode, because the change in policy affects every time step
@@ -288,7 +288,7 @@ While off policy MC learning is theoretically sound, there are some major proble
 - Importance sampling dramatically increases variance, as we are adjusting over every time step, and the cumulative effect over the whole episode makes our estimate of $G_t^{\pi / \mu}$ vary wildly
 - We also cannot use this adjustment if $\mu$ is zero when $\pi$ is non-zero
 
-So we have to use bootstrapping for importance sampling. This allows us to only adjust the probability for one time step. So we have <<importance sampling for off policy TD>>:
+So we have to use bootstrapping for importance sampling. This allows us to only adjust the probability for one time step. So we have <|importance sampling for off policy TD|>:
 - We use TD targets generated from $\mu$ to evaluate $\pi$
 - For TD(0), We weight the TD target $R + \gamma V(S')$ by importance sampling
 - This means we only need a single importance sampling correction:
@@ -300,7 +300,7 @@ $$
 $$
 - This has much lower variance that MC importance sampling, and could work if $\mu$ and $\pi$ do not differ by too much over a single step
 
-As we have seen, importance sampling leads to large variances. The best solution is known as <<Q-learning>>, which is specific to TD(0) or Sarsa(0).
+As we have seen, importance sampling leads to large variances. The best solution is known as <|Q-learning|>, which is specific to TD(0) or Sarsa(0).
 - Does not require any importance sampling
 - Allows off policy learning of action values $Q(s, a)$
 
@@ -318,7 +318,7 @@ Note importantly that we are using $A' \sim \pi$ in the Q value above, instead o
 
 ### Q-Learning (or SARSA-MAX)
 
-A special case of Q-learning is the case where the target policy is greedy wrt $Q(s, a)$. This is usually what people refer to as <<Q-learning>>.
+A special case of Q-learning is the case where the target policy is greedy wrt $Q(s, a)$. This is usually what people refer to as <|Q-learning|>.
 
 We allow both behaviour and target policies to improve:
 - The target policy $\pi$ is greedy wrt $Q(s,a)$, i.e.

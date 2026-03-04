@@ -43,7 +43,7 @@ The environment:
 - Emits observation $O_t$
 - Emits reward $R_t$
 
-The <<history>> is the sequence of observations, actions, rewards.
+The <|history|> is the sequence of observations, actions, rewards.
 $$
     H_t = A_1, O_1, R_1, ..., A_t, O_t, R_t
 $$
@@ -61,11 +61,11 @@ $$
 
 The simplest example of state is to e.g. just take the observation at the last timestamp (this worked for Atari games).
 
-The <<environment state>> $S_t^e$ is the environment's private representation. What state the environment is in. That is, the data that the environment uses to pick the next observation / reward. The environment state is not usually visible to the agent or the algorithm. 
+The <|environment state|> $S_t^e$ is the environment's private representation. What state the environment is in. That is, the data that the environment uses to pick the next observation / reward. The environment state is not usually visible to the agent or the algorithm. 
 
-The <<agent state>> $S_t^a$ is the agent's internal representation, i.e. it is the information used by reinforcement learning algorithms. It can be any function we choose of the history: $S_t^a = f(H_t)$.
+The <|agent state|> $S_t^a$ is the agent's internal representation, i.e. it is the information used by reinforcement learning algorithms. It can be any function we choose of the history: $S_t^a = f(H_t)$.
 
-A more mathematical definition of state. An information state (or <<Markov state>>) contains all useful information from the history.
+A more mathematical definition of state. An information state (or <|Markov state|>) contains all useful information from the history.
 
 > **Definition**. A state S_t is Markov if and only if
 $$
@@ -83,7 +83,7 @@ $$
     O_t = S_t^a = S_t^e
 $$
 
-Formally, this is a <<markov decision process (MDP)>>. 
+Formally, this is a <|markov decision process (MDP)|>. 
 
 <<Partially observable environments>>. Partial observability means that agent indirectly observes the environment. e.g.
 - Robot with camera doesn't know its absolute location

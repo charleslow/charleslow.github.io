@@ -34,9 +34,9 @@ The proposal is to first encode the original sequence into a shorter sequence of
 The latent transformer is described in terms of a machine translation task. Given an input sequence $x$ in English, and a corresponding output sequence $y$ in German, our input-output pair is $(x, y) = (x_1, ..., x_k, ..., y_1, ..., y_n)$.
 
 The high level architecture is:
-- The function <<$\text{ae}(y, x)$>> will autoencode $y$ into a shorter sequence $l = l_1, ..., l_m$ of discrete latent tokens using some discretization technique
-- The latent prediction model <<$\text{lp}(x)$>> which is a transformer will autoregressively predict $l$ based on $x$
-- The decoder <<$\text{ad}(l, x)$>> is a parallel model that will decode $y$ from $l$ and the input sequence $x$
+- The function <|$\text{ae}(y, x)$|> will autoencode $y$ into a shorter sequence $l = l_1, ..., l_m$ of discrete latent tokens using some discretization technique
+- The latent prediction model <|$\text{lp}(x)$|> which is a transformer will autoregressively predict $l$ based on $x$
+- The decoder <|$\text{ad}(l, x)$|> is a parallel model that will decode $y$ from $l$ and the input sequence $x$
 
 ### Loss
 
@@ -73,15 +73,15 @@ Now we describe each part in more detail. The diagram below summarizes the archi
 
 The input to the autoencoder is of shape `length x hidden_size`. The aim is to shorten the sequence length by downsampling using convolutions.
 
-We first pass through a <<residual block>> which aims to learn local features using convolutions:
+We first pass through a <|residual block|> which aims to learn local features using convolutions:
 - Pass through `relu`
 - Pass through 1D convolution with `k=3, s=1`. This means we look over a window of `3` tokens each time, and take a step of `1` token each step.
     - Since stride is `1`, the sequence length is unchanged
 - Pass through layer norm + add the residual connection
 
-Then we pass through a standard <<self attention>> block.
+Then we pass through a standard <|self attention|> block.
 
-Then we pass `c` times through a <<downsampling convolution>>:
+Then we pass `c` times through a <|downsampling convolution|>:
 - `k=2` means that we look over a window of `2` tokens
 - `s=2` means that we stride over `2` steps at a time: this effectively halves the sequene length
 - Doing this `c` times means we get $C = 2^c$ reduction in length
@@ -97,7 +97,7 @@ The decoder $\text{ad}(l, x)$ decodes from latent space back into token space.
 | ![Decoder Architecture](../images/kaiser_2018_decoder_architecture.jpg) |
 | *Decoder architecture* |
 
-We first pass through `c` <<up-steps>>, each of which will double the sequence length of the encoded sequence:
+We first pass through `c` <|up-steps|>, each of which will double the sequence length of the encoded sequence:
 - The same residual block from before is used
 - Self attention layer is used
 - An up-conv step is performed:

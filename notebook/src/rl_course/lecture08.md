@@ -132,7 +132,7 @@ Given a model $\mathcal{M}_\eta = \left< \P_\eta, \mathcal{R}_\eta \right>$, now
 - Policy iteration
 - Tree search
 
-One of the simplest approaches is to do <<sample-based planning>>, but also one of the most powerful. The idea is to use the model only to generate samples. We sample experiences from the model:
+One of the simplest approaches is to do <|sample-based planning|>, but also one of the most powerful. The idea is to use the model only to generate samples. We sample experiences from the model:
 $$
 \begin{align*}
     S_{t+1} &\sim \mathcal{P_\eta}(S_{t+1} | S_t, A_t)\\
@@ -246,7 +246,7 @@ Two key ideas: sampling and forward search.
 
 So we do not need to solve the entire MDP, just the sub-MDP starting from the current position. Solving the entire MDP is a waste of time. Note that this is in contrast to the Dyna-Q algorithm, where the "thinking" step starts by randomly visiting a previously observed state.
 
-So we can <<simulate>> episodes of experience from now using our model, and apply model free RL to simulated episodes.
+So we can <|simulate|> episodes of experience from now using our model, and apply model free RL to simulated episodes.
 
 <<Simulation based search>>:
 - Simulate episodes of experience from now with the model
@@ -254,8 +254,8 @@ $$
     \{ s_t^k, A_t^k, R_{t+1}^k, ..., S_T^k \}^K_{k=1} \sim \mathcal{M}_v
 $$ 
 - Apply model free RL to simulated episodes
-    - If we use Monte-carlo control, we get <<Monte-Carlo search>>
-    - If we use Sarsa for control, we get <<TD search>>
+    - If we use Monte-carlo control, we get <|Monte-Carlo search|>
+    - If we use Sarsa for control, we get <|TD search|>
 
 ### Simple Monte Carlo Search
 

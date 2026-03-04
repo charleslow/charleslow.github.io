@@ -2,9 +2,9 @@
 
 [Lewis 2020 - Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks](https://ar5iv.labs.arxiv.org/html/2005.11401)
 
-This paper proposes a way to fine-tune a parametric seq2seq transformers (e.g. GPT) with a non-parametric memory through dense retrieval. The main idea is to extend <<parametric memory>> (i.e. the "knowledge" that is stored within the LLM floating point parameters) of the seq2seq model by coupling it with retrieval of documents from a vector database (dubbed <<non-parametric>> memory, using Wikipedia articles in the original paper). We can update the non-parametric database's knowledge as the world changes.
+This paper proposes a way to fine-tune a parametric seq2seq transformers (e.g. GPT) with a non-parametric memory through dense retrieval. The main idea is to extend <|parametric memory|> (i.e. the "knowledge" that is stored within the LLM floating point parameters) of the seq2seq model by coupling it with retrieval of documents from a vector database (dubbed <|non-parametric|> memory, using Wikipedia articles in the original paper). We can update the non-parametric database's knowledge as the world changes.
 
-The paper argues that this setup is ideal for *knowledge-intensive* tasks such as open question answering, fact verification etc., where it is impossible to store all knowledge in <<parametric memory>>.
+The paper argues that this setup is ideal for *knowledge-intensive* tasks such as open question answering, fact verification etc., where it is impossible to store all knowledge in <|parametric memory|>.
 
 ## Setup
 

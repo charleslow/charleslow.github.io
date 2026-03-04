@@ -37,7 +37,7 @@ A Markov Process (or Markov Chain) is a tuple $<\mathcal{S}, \mathcal{P}>$, wher
 > (ii) $\mathcal{P}$ is a state transition probability matrix  
 > (iii) $P_{ss'} = P(S_{t+1} = s' | S_t = s)$ 
 
-Example of a Markov Process. A student can transit from Class 1 to Class 2 to Class 3, Pass or Sleep or Pub based on transition probabilities. We can sample <<episodes>> for the markov chain. E.g. one episode may be `C1 C2 C3 Pass Sleep`.
+Example of a Markov Process. A student can transit from Class 1 to Class 2 to Class 3, Pass or Sleep or Pub based on transition probabilities. We can sample <|episodes|> for the markov chain. E.g. one episode may be `C1 C2 C3 Pass Sleep`.
 
 The transition probability matrix may look something like the below. Note that `Sleep` is the terminal state, so its self-probability is `1.0`.
 
@@ -58,13 +58,13 @@ $$
 
 A markov reward process is a markov chain with values.
 
-> **Definition.** A <<Markov reward process>> is a tuple $<\mathcal{S}, \mathcal{P}, \mathcal{R}, \gamma>$:  
+> **Definition.** A <|Markov reward process|> is a tuple $<\mathcal{S}, \mathcal{P}, \mathcal{R}, \gamma>$:  
 > - $\S$ is a finite set of states  
 > - $\mathcal{P}$ is a transition probability matrix, $\mathcal{P}_{ss'} = P[S_{t+1} = s' | S_t = s]$
 > - $\mathcal{R}$ is a reward function, $\mathcal{R}_s = \E[R_{t+1} | S_t=s]$  
 > - $\gamma$ is a discount factor, $\gamma \in [0,1]$
 
-> **Definition.** The <<return>> $G_t$ is the total discounted reward from time step $t$.  
+> **Definition.** The <|return|> $G_t$ is the total discounted reward from time step $t$.  
 > $G_t = R_{t+1} + \gamma R_{t+2} + ... = \sum_{k=0}^{\infty} \gamma^k R_{t+k+1}$
 
 There is no expectation because $G_t$ is one sample run of the Markov reward process. We'll take expectation later to get the expected return over infinite runs. 
@@ -80,7 +80,7 @@ Most Markov reward and decision processes are discounted. Why?
 - It is sometimes possible to use undiscounted Markov reward processes, e.g. if all sequences terminate
 
 The value function $v(s)$ gives the long-term value of state $s$.
-> **Definition.** The <<state value function>> $v(s)$ of an MRP is the expected return stating from state $s$:  
+> **Definition.** The <|state value function|> $v(s)$ of an MRP is the expected return stating from state $s$:  
 >   $v(s) = \E[G_t | S_t = s]$
 
 How do we compute the state value function? One way is to sample returns from the MRP. e.g. stating from $S1 = C1$ and $\gamma = 1/2$:
@@ -89,7 +89,7 @@ How do we compute the state value function? One way is to sample returns from th
 
 Consider if we set $\gamma = 0$. Then the value function $v(s) = R_s$, i.e. the value is just the immediate reward.
 
-Now the important <<Bellman equation for MRPs>>:
+Now the important <|Bellman equation for MRPs|>:
 $$
     v(s) = \E[R_{t+1} + \gamma v(S_{t+1})| S_t = s]
 $$
@@ -177,7 +177,7 @@ So far it has been a building block. The MDP is what we really use. A Markov Dec
 
 Note that the transition probabilities and reward functions now also depend on an action, in which we can have some agency now. We can choose actions to influence the reward and values.
 
-> **Definition.** A <<policy $\pi$>> is a distribution over actions given states,  
+> **Definition.** A <|policy $\pi$|> is a distribution over actions given states,  
 > $$\pi(a | s) = P[ A_t =a | S_t = s]$$
 
 A policy fully defines the behaviour of an agent. Some properties of a policy:
@@ -186,10 +186,10 @@ A policy fully defines the behaviour of an agent. Some properties of a policy:
 
 We can still obtain the optimal policy because of the markov property - the current state captures all relevant information to make the optimal decision.
 
-> **Definition.** The <<state-value function $v_{\pi}(s)$>> of an MDP is the expected return starting from state $s$, and following policy $\pi$:
+> **Definition.** The <|state-value function $v_{\pi}(s)$|> of an MDP is the expected return starting from state $s$, and following policy $\pi$:
 > $$v_{\pi}(s) = \E_{\pi} [G_t | S_t = s]$$
 
-> **Definition.** The <<action-value function $q_{\pi}(s, a)$>> of an MDP is the expected return starting from state $s$, taking action $a$, and following policy $\pi$:
+> **Definition.** The <|action-value function $q_{\pi}(s, a)$|> of an MDP is the expected return starting from state $s$, taking action $a$, and following policy $\pi$:
 > $$q_{\pi}(s, a) = \E_{\pi} [G_t | S_t = s, A_t=a]$$
 
 <<Bellman Expectation Equation>>. The state-value function can again be decomposed into immediate reward plus discounted value of the successor state.
@@ -214,7 +214,7 @@ $$
 
 Now we can stitch these two perspectives together. Starting from a particular state, we can write $v_{\pi}(s)$ in terms of $q_{\pi}$, then write $q_{\pi}$ in terms of $v_{\pi}$ again. This will allow us to get a recursive relationship of $v_{\pi(s)}$ in terms of $v_{\pi}(s')$ and allow us to solve the equation.
 
-The <<bellman expectation equation>> for $v_{\pi}(s)$ is thus:
+The <|bellman expectation equation|> for $v_{\pi}(s)$ is thus:
 
 $$
     v_{\pi}(s) = \sum_{a \in \mathcal{A}} \pi(a|s) \left( 
@@ -234,9 +234,9 @@ $$
 
 So far we have been defining the dynamic process of the MDP, but have not tried solving the optimization problem. We will turn to this now.
 
-> **Definition.** The <<optimal state-value function>> $v_*(s)$ is the maximum value function over all policies:
+> **Definition.** The <|optimal state-value function|> $v_*(s)$ is the maximum value function over all policies:
 > $$v_*(s) = \max_{\pi} v_{\pi}(s)$$
-> The <<optimal action-value function>> $q_*(s, a)$ is the maximum action-value function over all policies:
+> The <|optimal action-value function|> $q_*(s, a)$ is the maximum action-value function over all policies:
 > $$q_*(s, a) = \max_{\pi} q_{\pi}(s, a)$$
 
 The MDP problem is solved once we find $q_*$. We thus need some algorithms to systematically find $q_*$.
@@ -260,7 +260,7 @@ $$
 \end{cases}
 $$
 
-Intuitively, we find the optimal policy by starting at the end (resting), and iteratively look backward. This is the same kind of intuition for the <<Bellman optimality equations>>.
+Intuitively, we find the optimal policy by starting at the end (resting), and iteratively look backward. This is the same kind of intuition for the <|Bellman optimality equations|>.
 
 The optimal value of being in a state $s$ is the highest value action we can take in that state. Note that we use $q_*$ instead of a generic $q$ because we are choosing from the optimal action-value function.
 $$
