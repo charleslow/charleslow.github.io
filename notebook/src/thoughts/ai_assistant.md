@@ -2,7 +2,7 @@
 
 The popularity of Openclaw and its variants show that there is much interest and fascination with having a personal AI assistant to make us more productive etc. However, after thinking about it for some time, it seems not so trivial in designing an AI assistant that actually helps (vs appearing to help).
 
-I think my desiderata for a helpful AI assistant are:
+I think my desiderata for a helpful AI assistant (in roughly descending order of importance) are:
 1. <<Reliable>>. Able to autonomously and reliably complete non-trivial tasks (e.g. tasks that normally take a few hours of my time)
 2. <<No brain rot>>. Do not replace or shortchange my own grokking process as a result of said offloading
 3. <<Self-learning>>. Able to learn and improve over time based on my interactions with it
@@ -21,7 +21,7 @@ I think the main killer of AI assistant usage is reliability for the specific ta
 
 For example, it is not straightforward to use AI assistants to run ML experiments. I'm trying to find the best harness for doing so (when I have time), but naively using claude code has resulted in pretty bad outcomes for me. For example, it insisted on using synthetic data instead of downloading movielens as per the paper I assigned to it - I only discovered this when the validation accuracies were abnormally high.
 
-The problem of reliability is related to the "brain rot tax". When I am doing my own research, I gain an <<internal mental map>> as I go along that allows me to auto-correct wrong things I encounter along the way. With LLM-generated output, it feels like all-or-nothing - either we are able to trust the output 99% or we are not able to trust it at all. Suppose 80% of the report is gold and 20% is dross. We do not have the mental tools to correct the 20% because we don't know which 20% is the dross.
+The problem of reliability is related to the "brain rot tax" (see below). When I am doing my own research, I gain an <<internal mental map>> as I go along that allows me to auto-correct wrong things I encounter along the way. With LLM-generated output, it feels like all-or-nothing - either we are able to trust the output 99% or we are not able to trust it at all. Suppose 80% of the report is gold and 20% is dross. We do not have the mental tools to correct the 20% because we don't know which 20% is the dross.
 
 Another way to say a similar thing is to call it a "<<verification tax>>". Unless we have strong apriori evidence or experience to trust the output, we will have to either spend effort verifying the reliability of the output or live with a nagging feeling that something could be very wrong somewhere. The effort spent to verify the output could have been better invested in doing the research ourselves instead.
 
