@@ -9,7 +9,25 @@ I think my desiderata for a helpful AI assistant are:
 4. <<Tool access>>. Able to read/write/act on local data files or permissions to apps that I pass to it
 5. <<Accessible>>. I am able to communicate (both input / output wise) with the assistant via convenient means (e.g. slack, telegram etc.)
 
-Vanilla chat-based UI LLMs fulfil reliable, accessible. Their self-learning and tool access are limited. I think these are the main pros of openclaw - the promise of self-learning, creating its own tools, persisting these in a local environment, and extensive permissions to interact with our files and applications (e.g. calendar, email etc.).
+Vanilla chat-based UI LLMs fulfil (1) reliable and (5) accessible. However, their self-learning and tool access are limited. 
+
+I think these are the main pros of openclaw and its variants - the promise of (3) self-learning, creating its own tools, persisting these in a local environment, and (4) extensive permissions to interact with our files and applications (e.g. calendar, email etc.). 
+
+These are also the easier problems to solve. The hard problems are in (1) reliable and (2) no brain rot, for which I elaborate some thoughts below.
+
+## "Reliable" is task dependent
+
+I think the main killer of AI assistant usage is reliability for the specific tasks that people are interested in. AI assistant reliability has passed the `[for info]` benchmark but is often not sufficient at the `[for action]` level.
+
+For example, it is not straightforward to use AI assistants to run ML experiments. I'm trying to find the best harness for doing so (when I have time), but naively using claude code has resulted in pretty bad outcomes for me. For example, it insisted on using synthetic data instead of downloading movielens as per the paper I assigned to it - I only discovered this when the validation accuracies were abnormally high.
+
+The problem of reliability is related to the "brain rot tax". When I am doing my own research, I gain an <<internal mental map>> as I go along that allows me to auto-correct wrong things I encounter along the way. With LLM-generated output, it feels like all-or-nothing - either we are able to trust the output 99% or we are not able to trust it at all. Suppose 80% of the report is gold and 20% is dross. We do not have the mental tools to correct the 20% because we don't know which 20% is the dross.
+
+Another way to say a similar thing is to call it a "<<verification tax>>". Unless we have strong apriori evidence or experience to trust the output, we will have to either spend effort verifying the reliability of the output or live with a nagging feeling that something could be very wrong somewhere. The effort spent to verify the output could have been better invested in doing the research ourselves instead.
+
+Again, my sense is that the relationship of LLM usefulness to reliability is not linear - meaning that reliability of 79% does not make it doubly useful than reliability of 40%. Instead, I think usefulness is near zero at low levels of reliability, and there is a threshold at which utility shoots up. It then grows exponentially as reliability approaches 100% before tailing off. A system that is 90% reliable is way more useful than 80%, and 95% way more than 90%. 
+
+There is a chicken and egg problem in that we need to be an expert to design and evaluate an LLM system to have high reliability, but we often need LLM systems in areas that we are not experts. Hence the verification tax is very high for such greenfield areas that are also the most useful.
 
 ## The "brain rot" tax
 
@@ -25,14 +43,6 @@ Thus it seems that there is always some brain rot "tax" of trading output agains
 
 There is probably value in designing AI assistant interfaces that explicitly mitigate brain rot through various mechanisms, such as testing the user. But I have not seen much of this yet. My own [code-stories](charleslow.github.io/code-stories) is a small attempt to find ways of encouraging user understanding of LLM material.
 
-## "Reliable" is task dependent
+## Conclusion
 
-I think the other main killer of AI assistant usage is reliability for the specific tasks that people are interested in. AI assistant reliability has passed the `[for info]` benchmark but is often not sufficient at the `[for action]` level.
-
-For example, it is not straightforward to use AI assistants to run ML experiments. I'm trying to find the best harness for doing so (when I have time), but naively using claude code has resulted in pretty bad outcomes for me. For example, it insisted on using synthetic data instead of downloading movielens as per the paper I assigned to it - I only discovered this when the validation accuracies were abnormally high.
-
-The problem of reliability is connected with the "brain rot tax". When I am doing my own research, I gain an internal mental map as I go along that allows me to auto-correct wrong things I encounter along the way. With LLM-generated output, it feels like all-or-nothing - either we are able to trust the output 100% or we are not able to trust it at all. Suppose 80% of the report is gold and 20% is dross. We do not have the mental tools to correct the 20% because we don't know which 20% is the dross.
-
-Another perspective is that it is often easier to write code from scratch than to amend from someone else's code. This is because we create a mental scaffolding as we go along, and the right set of high level abstractions are already in our heads. With another person's code, we have an additional step of finding out the high level abstraction and mental model first, then making our amendments based on that understanding.
-
-The same analogy happens when parsing LLM output. In trying to assess the reliability of a given report, I need to spend time understanding the report first, before I can more accurately assess the reliability of it. This double work makes it often not worthwhile to rely on the mediation of the LLM and just go straight to the sources itself. 
+There is no clear way forward currently. My sense is that we have to be intentional in designing specific sub-agents for each task that we want the AI assistant to do, and think carefully about the input / output medium to give us confidence that it is (1) reliable and also discourage (2) brain rot. The openclaw agent is more of an orchestrator to glue things together, but the default chat interface is not ideal for many high value tasks.
