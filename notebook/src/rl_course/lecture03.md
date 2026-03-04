@@ -21,10 +21,10 @@ Note that Markov Decision Processes satisfy both properties:
 Planning by dynamic programming. Planning is a different problem from RL. Someone tells us the dynamics of the MDP, and we try to solve it.
 - Assume full knowledge of the MDP
 - Used for planning in an MDP
-- We can use this for <<prediction>>:
+- We can use this for <|prediction|>:
     - e.g. input: an MDP $<\mathcal{S}, \mathcal{A}, \mathcal{P}, \mathcal{R}, \gamma >$ and policy $\pi$
     - The output of this planning step is to output the value function $v_{\pi}$
-- We can also use this for <<control>>:
+- We can also use this for <|control|>:
     - Input: MDP $<\mathcal{S}, \mathcal{A}, \mathcal{P}, \mathcal{R}, \gamma >$
     - Output: optimal value function $v_*$, i.e. we want to find the best policy $\pi_*$
 
@@ -40,7 +40,7 @@ Problem: we want to evaluate a given policy $\pi$ to see how good it is. The sol
     - $s'$ is a successor state of $s$, i.e. the next states we can reach using an action from $s$
 - It can be proven that this algorithm will converge to $v_{\pi}$
 
-How exactly do we update $v_{k+1}(s)$? We use the <<bellman expectation equation>> from before. Intuitively, it is a one-step look ahead from the current state $s$ to compute the value for $s$.
+How exactly do we update $v_{k+1}(s)$? We use the <|bellman expectation equation|> from before. Intuitively, it is a one-step look ahead from the current state $s$ to compute the value for $s$.
 $$
     v_{k+1}(s) = \sum_{a \in \mathcal{A}} \pi(a | s) \left(
         \mathcal{R}_s^a + \gamma \sum_{s' \in \S} \mathcal{P}_{ss'}^a v_k (s')
@@ -86,7 +86,7 @@ Somewhat realistic toy example from Sutton and Barto:
 
 Naturally we expect the optimal policy to involve moving cars from location A to location B. Using the policy iteration process, we get convergence to the optimal policy in 4 steps. Note that since this is a planning problem, we do know the underlying probability mechanisms, which allows us to compute the value function.
 
-Now we can show that this <<policy iteration process converges to the optimal policy>>. 
+Now we can show that this <|policy iteration process converges to the optimal policy|>. 
 
 > **Theorem.** Policy iteration process converges to the optimal policy.  
 > 
@@ -148,7 +148,7 @@ Now, an observation is that policy iteration is quite wasteful. This is because 
 Some ways to early stop policy evaluation to speed up this process:
 - Introduce a stopping condition once the value function does not change by much ($\epsilon$-convergence of value function)
 - Stop policy evaluation after $k$ iterations
-    - In the extreme case, if we stop policy evaluation after $k=1$ iterations, it is called <<value iteration>>
+    - In the extreme case, if we stop policy evaluation after $k=1$ iterations, it is called <|value iteration|>
 
 ## Value Iteration
 
@@ -173,7 +173,7 @@ The statement above shows us how we can propagate the optimal value function fro
 
 The way to think about it (using the small gridworld as example) is that the termination point (trivially) starts off with the optimal value function. After one step of update, the states next to the termination point will now have the optimal value function, and then the states next to these, and so on until we propagate through all states.
 
-Note that in contrast to policy iteration, where in the policy evaluation step we update the value function across all states based on the <<bellman *expectation* equation>>, in value iteration, we are updating the value in each state by choosing the optimal action. This is a key difference in how the two algorithms differ. The value iteration algorithm may be thought of as combining the (i) policy evaluation step and the (ii) greedy policy step from value itaration into one single step.
+Note that in contrast to policy iteration, where in the policy evaluation step we update the value function across all states based on the <|bellman *expectation* equation|>, in value iteration, we are updating the value in each state by choosing the optimal action. This is a key difference in how the two algorithms differ. The value iteration algorithm may be thought of as combining the (i) policy evaluation step and the (ii) greedy policy step from value itaration into one single step.
 
 So we have seen that value iteration iteratively applies the bellman optimality equation to update $v_1 \rightarrow v_2 \rightarrow ... \rightarrow v_*$. (<<Note:>> Useful to compare this update statement with the bellman expectation equation used for policy evaluation above). Convergence to $v_*$ will be proved later. The update equation is:
 $$

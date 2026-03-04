@@ -13,8 +13,8 @@ Sequential recommendation is a popular approach currently to recommender systems
 BERT4Rec was proposed as an improvement to SASRec, and the claim was that introducing bi-directional attention (like BERT) and performing prediction on the cloze passage task (i.e. randomly masking x% of items) is able to lead to significant gains over SASRec. The argument is that the random masking is akin to data augmentation, as there are far more permutations of masked positions compared to just predicting the next item.
 
 The authors point out two misgivings they have with this interpretation, which is in line with my own intuitions:
-- BERT4Rec task is only <<weakly related>> to the final goal of sequential recommendations, whereas SASRec tasks for training and prediction are perfectly aligned (i.e. just predict the next item). This is akin to only using the BERT encoder (without the decoder) for a language modelling task, which is quite strange.
-- BERT4Rec masks some items and <<only calculates losses for the subset of items>>, whereas SASRec computes losses for all items (except the last item) at once, getting more training signal from each training sequence
+- BERT4Rec task is only <|weakly related|> to the final goal of sequential recommendations, whereas SASRec tasks for training and prediction are perfectly aligned (i.e. just predict the next item). This is akin to only using the BERT encoder (without the decoder) for a language modelling task, which is quite strange.
+- BERT4Rec masks some items and <|only calculates losses for the subset of items|>, whereas SASRec computes losses for all items (except the last item) at once, getting more training signal from each training sequence
 
 So we should expect SASRec to perform better and more efficiently than BERT4Rec. How then do we explain the performance discrepancy? The authors hypothesize that the performance difference is really due to the difference in loss functions between them, as explained below.
 

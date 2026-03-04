@@ -107,7 +107,7 @@ Now, the whole point of this derivation is to write the approximation in a form 
 
 ### Binary Entropy
 
-The <<binary entropy function>> is ($\log$ denotes logarithm with base $2$):
+The <|binary entropy function|> is ($\log$ denotes logarithm with base $2$):
 $$
     H_2(x) \equiv x \log \frac{1}{x} + (1 - x) \log \frac{1}{1-x}
 $$

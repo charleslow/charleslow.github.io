@@ -39,7 +39,7 @@ The RQ-VAE model is trained with the following losses:
 
 ## Stage 2: Using Semantic IDs for Ranking
 
-Now that each item $v$ is represented by a sequence of semantic IDs $(c_1^v, ..., c_L^v)$, we can treat each ID as a token. The most intuitive thing is to treat each token as a subword and assign a unique embedding to each token (this is the `unigram` approach below). Unfortunately, this simplistic approach is not the most ideal. The experiments reveal that these semantic tokens behave more like <<characters>> in NLP, and it is important for performance to assign unique embeddings to *sequences of tokens* (i.e. create subwords out of the characters). 
+Now that each item $v$ is represented by a sequence of semantic IDs $(c_1^v, ..., c_L^v)$, we can treat each ID as a token. The most intuitive thing is to treat each token as a subword and assign a unique embedding to each token (this is the `unigram` approach below). Unfortunately, this simplistic approach is not the most ideal. The experiments reveal that these semantic tokens behave more like <|characters|> in NLP, and it is important for performance to assign unique embeddings to *sequences of tokens* (i.e. create subwords out of the characters). 
 
 There are two approaches that were experimented:
 - **Create n-grams out of the IDs**. Suppose an item has semantic IDs `(4, 6, 3, 2)`. A unigram approach would look up embeddings for each ID by itself. A bigram approach would look up embeddings for `(46, 63, 32)` and so on. Consequently, the embedding table size for a quantizer with `L` levels and `K` codes in each level is something like $(L-N+1) \times K^N$. This gets prohibitively expensive for larger `N`, so the experiments stop at bigram.
@@ -52,7 +52,7 @@ The experiments use CTR AUC as the target metric. The model is trained on a wind
 - <<SPM > random hashing>> with the same vocab size for overall performance. It does not compromise on the memorization capacity of the model.
 - <<All Semantic ID approaches > random hashing>> in the cold start scenario (as expected)
 
-The authors also conducted a set of experiments where items are represented by their content embedding directly. Due to the large size of the embedding, they did not include user past history for these experiments. These showed that <<content embedding approach is inferior to random hashing>>, unless the number of layers is increased significantly. This suggests that a larger model is indeed able to memorize better just using the content embeddings, but at a significant computational cost. Hence this justifies the use of semantic IDs as a more efficient way to balance between memorization and cold start performance.
+The authors also conducted a set of experiments where items are represented by their content embedding directly. Due to the large size of the embedding, they did not include user past history for these experiments. These showed that <|content embedding approach is inferior to random hashing|>, unless the number of layers is increased significantly. This suggests that a larger model is indeed able to memorize better just using the content embeddings, but at a significant computational cost. Hence this justifies the use of semantic IDs as a more efficient way to balance between memorization and cold start performance.
 
 ## Takeaways
 

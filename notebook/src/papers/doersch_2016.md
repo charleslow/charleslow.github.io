@@ -27,7 +27,7 @@ $$
 \end{align*}
 $$
 
-The choice of $P(X|z; \theta)$ for VAEs is often <<gaussian>>. Specifically, the most standard choice is:
+The choice of $P(X|z; \theta)$ for VAEs is often <|gaussian|>. Specifically, the most standard choice is:
 $$
     P(X|z; \theta) = \mathcal{N}(X | f(z; \theta), \sigma^2 \times I)
 $$
@@ -51,13 +51,13 @@ For the first problem, VAEs basically prescribe minimal structure to the latents
 
 ### Problem 2: How to deal with integral over P(z)?
 
-For the second problem, the naive approach is to deal with the integral via <<sampling>>. That is we sample a large number of latents $z = \{ z_1, ..., z_n \}$ and compute $P(X) \approx \frac{1}{n} \sum_i P(X|z_i)$. The problem with this approach is that in high dimensional spaces, we need a very large $n$ to get an accurate estimate of $P(X)$. This is because for most instances of $z$, $P(X|z)$ will be very close to $0$.
+For the second problem, the naive approach is to deal with the integral via <|sampling|>. That is we sample a large number of latents $z = \{ z_1, ..., z_n \}$ and compute $P(X) \approx \frac{1}{n} \sum_i P(X|z_i)$. The problem with this approach is that in high dimensional spaces, we need a very large $n$ to get an accurate estimate of $P(X)$. This is because for most instances of $z$, $P(X|z)$ will be very close to $0$.
 
-The key idea behind VAEs is to <<speed up sampling by attempting to sample values of $z$ that are likely>> to have produced $X$, and compute $P(X)$ just from those. To do this, we need a new function $Q(z|X)$ which when given an image $X$, produces a distribution over $z$ values likely to have produced $X$. If the space of $z$ values that are likely under $Q$ is smaller than the space of $z$ values that are likely under $P(z)$, we will be able to estimate $E_{z \sim Q} P(X|z)$ much more cheaply.
+The key idea behind VAEs is to <|speed up sampling by attempting to sample values of $z$ that are likely|> to have produced $X$, and compute $P(X)$ just from those. To do this, we need a new function $Q(z|X)$ which when given an image $X$, produces a distribution over $z$ values likely to have produced $X$. If the space of $z$ values that are likely under $Q$ is smaller than the space of $z$ values that are likely under $P(z)$, we will be able to estimate $E_{z \sim Q} P(X|z)$ much more cheaply.
 
 However, by introducing a new arbitrary distribution $Q$, we are no longer sampling under $P(z)$, so we cannot directly obtain $P(X)$ from it. Thus we need some way to relate $E_{z \sim Q} P(X|z)$ and $P(X)$. This relationship is one of the cornerstones of variational Bayesian methods.
 
-Let us start by defining <<KL divergence>> between $P(z|X)$ and some arbitrary distribution $Q(z)$ (which may or may not depend on $X$).
+Let us start by defining <|KL divergence|> between $P(z|X)$ and some arbitrary distribution $Q(z)$ (which may or may not depend on $X$).
 $$
     \mathcal{D}[Q(z) || P(z|X)] = E_{z \sim Q}[\log Q(z) - \log P(z | X)]
 $$
@@ -76,7 +76,7 @@ Some comments on the above:
 - $P(X)$ comes out as a constant because it does not depend on $z$.
 - We can group $Q(z)$ and $P(z)$ together into its own KL divergence term.
 
-So far, we have not made any assumption on the arbitrary distribution $Q(z)$. In the context of trying to maximize $P(X)$, it makes sense to construct a $Q$ which does depend on $X$. So we make that dependency on $X$ explicit. Let's call this the <<ELBO equation>>. 
+So far, we have not made any assumption on the arbitrary distribution $Q(z)$. In the context of trying to maximize $P(X)$, it makes sense to construct a $Q$ which does depend on $X$. So we make that dependency on $X$ explicit. Let's call this the <|ELBO equation|>. 
 $$
 \begin{align*}
     \log P(X) - \mathcal{D}[Q(z | X) || P(z|X)] &= E_{z \sim Q}[\log P(X |z)] - \mathcal{D}[Q(z | X) || P(z)]\\
@@ -87,7 +87,7 @@ This equation is core to the VAE, so we should understand it deeply.
 - The left hand side represents what we want to optimize:
     - $\log P(X)$ was the original maximum likelihood objective - we want our model to produce images that look like $X$
     - $\mathcal{D}[Q(z|X) || P(z | X)]$ is the error or deviation of our tractable, estimated distribution $Q(z | X)$ from the true, intractable oracle distribution $P(z | X)$. This term is always more than or equals to $0$ and is $0$ if and only if $Q = P$.
-- The right hand side is called the <<Evidence Lower Bound (ELBO)>>. In bayesian statistics, the marginal $P(X)$ is called the evidence, because our data $X$ is evidence for how good our model is. The RHS is a lower bound for our evidence precisely because the KL divergence term $\mathcal{D}[Q(z|X) || P(z|X)] \geq 0$, which implies $\log P(X) \geq \text{RHS}$.
+- The right hand side is called the <|Evidence Lower Bound (ELBO)|>. In bayesian statistics, the marginal $P(X)$ is called the evidence, because our data $X$ is evidence for how good our model is. The RHS is a lower bound for our evidence precisely because the KL divergence term $\mathcal{D}[Q(z|X) || P(z|X)] \geq 0$, which implies $\log P(X) \geq \text{RHS}$.
 - We cannot directly optimize $\log P(X)$, but we can do the next best thing which is to optimize the tractable RHS, given an appropriate choice of $Q$.
 - As we increase the capacity of $Q$, the "error" term should become smaller and smaller, so the RHS will more accurately estimate the evidence (and lead to better optimization)
 
@@ -137,7 +137,7 @@ This term is more tricky, because it involves two steps. Suppose we approximate 
 
 The first sampling step is not an operation that can be backpropagated through, so we cannot optimize this equation as-is. This is where the re-parametrization trick comes into play. 
 
-The <<re-parametrization trick>> essentially moves the stochasticity of the sampling step out of the model forward pass into the data layer. Instead of sampling $z \sim Q$ directly, we first sample an intermediate $\epsilon \sim \mathcal{N}(0, I)$ and treat it as data. Then, we compute deterministically $z = \mu(X) + \Sigma^{1/2}(X) \times \epsilon$. This achieves the same effect as the direct sampling approach, but the difference is that the parameters of $Q$ have entered the equation in a deterministic way that can be backpropagated.
+The <|re-parametrization trick|> essentially moves the stochasticity of the sampling step out of the model forward pass into the data layer. Instead of sampling $z \sim Q$ directly, we first sample an intermediate $\epsilon \sim \mathcal{N}(0, I)$ and treat it as data. Then, we compute deterministically $z = \mu(X) + \Sigma^{1/2}(X) \times \epsilon$. This achieves the same effect as the direct sampling approach, but the difference is that the parameters of $Q$ have entered the equation in a deterministic way that can be backpropagated.
 
 With the trick, we now have fully specified the optimization objective. The equation we take the gradient of is:
 $$

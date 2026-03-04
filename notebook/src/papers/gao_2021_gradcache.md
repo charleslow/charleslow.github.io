@@ -51,11 +51,11 @@ From these simple statements, the paper makes two important observations:
 
 Note that we can 
 
-The above statements are focused on $f$, $s_i$ and $\Theta$, but similar statements hold for $g$, $t_j$ and $\Lambda$. The first statement above allows us to <<run the expensive gradient updates on a small batch of anchors or passages at a time>>, which avoids the memory bottleneck of running gradient updates on a large batch size for the large encoders. We can do this so long as we have access to the partial derivatives $\frac{\partial \L}{\partial f(s_i)}$. The second statement shows us that computing these partial derivatives is not difficult, because <<we just need the encoded representations of each anchor and passage>>. Hence we can batch encode all the anchors and passages in the mini-batch (without gradients), and then use these values to compute this derivative.
+The above statements are focused on $f$, $s_i$ and $\Theta$, but similar statements hold for $g$, $t_j$ and $\Lambda$. The first statement above allows us to <|run the expensive gradient updates on a small batch of anchors or passages at a time|>, which avoids the memory bottleneck of running gradient updates on a large batch size for the large encoders. We can do this so long as we have access to the partial derivatives $\frac{\partial \L}{\partial f(s_i)}$. The second statement shows us that computing these partial derivatives is not difficult, because <|we just need the encoded representations of each anchor and passage|>. Hence we can batch encode all the anchors and passages in the mini-batch (without gradients), and then use these values to compute this derivative.
 
 ## Method
 
-The above explanation directly informs the algorithm called <<GradCache>>. It works as follows. First, split the large batch into tiny batches which can fit into memory, denoted as $S = \{ \hat{S_1}, \hat{S_2}, ... \}$ and $T = \{ \hat{T_1}, \hat{T_2} \}$.
+The above explanation directly informs the algorithm called <|GradCache|>. It works as follows. First, split the large batch into tiny batches which can fit into memory, denoted as $S = \{ \hat{S_1}, \hat{S_2}, ... \}$ and $T = \{ \hat{T_1}, \hat{T_2} \}$.
 
 <<Step 1: Graph-less Forward>>. We run a no-gradient forward pass of each encoder to obtain $f(s_i), g(t_j)$ for all $s_i \in S, t_j \in T$. We store all the encoded representations in memory.
 
@@ -64,7 +64,7 @@ The above explanation directly informs the algorithm called <<GradCache>>. It wo
 - Denote $v_i = \frac{\partial \L}{\partial g(t_i)}$
 - Store the representation gradient cache $\{ u_i, u_2, ..., v_1, v_2, ... \}$
 
-<<Step 3: Tiny Batch Gradient Accumulation>>. Recall earlier we said that so long as we have access to the partial derivatives from the loss to the embeddings, we can compute gradients for each $s_i$ or $t_j$ in arbitrarily tiny batches. This is the step where we do so. Specifically, we perform <<gradient accumulation>> one tiny batch at a time.
+<<Step 3: Tiny Batch Gradient Accumulation>>. Recall earlier we said that so long as we have access to the partial derivatives from the loss to the embeddings, we can compute gradients for each $s_i$ or $t_j$ in arbitrarily tiny batches. This is the step where we do so. Specifically, we perform <|gradient accumulation|> one tiny batch at a time.
 
 For the parameters $\Theta$ of encoder $f$:
 $$
@@ -132,10 +132,10 @@ The main method is in `cache_step` which computes the loss for a mini batch. We 
     - After the `forward_backward` function, the gradients will be accumulated in `model.parameters().grad`, and the optimizer step can then be taken
 
 `RandContext` itself is an interesting context manager to store and load pytorch's internal rng state.
-- On `init`, the current cpu and gpu rng states are <<captured>>:
+- On `init`, the current cpu and gpu rng states are <|captured|>:
     - `torch.get_rng_state()` gets a byte tensor representing the cpu rng state
     - `torch.utils.checkpoint.get_device_states(*tensors)` looks up the gpu device where the tensors are held, and returns both the `gpu_devices` and `gpu_rng_states` across all gpu devices
-- `__enter__` is triggered when this class is used as context manager, to <<restore>> the earlier captured rng state.
+- `__enter__` is triggered when this class is used as context manager, to <|restore|> the earlier captured rng state.
     - `self._fork = torch.random.fork_rng` is called to create a fork of the current torch rng state. This creates an isolated rng environment where we can restore the earlier rng environment without messing up the original rng environment that we entered from.
     - `self._fork.__enter__()` is called to actually enter the forked state
     - `torch.set_rng_state` now sets the cpu rng state to the earlier captured state

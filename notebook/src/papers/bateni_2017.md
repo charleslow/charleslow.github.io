@@ -17,7 +17,7 @@ Suppose we have an undirected graph $\mathcal{G} = (V, E)$, where $V$ is the set
 - At the end of each round, we have the desired $k$ number of clusters
 - The next round then commences with these obtained clusters
 
-Note that this is essentially Boruvka's algorithm (minus the undo steps), which is guaranteed to find the Minimum Spanning Tree (MST) of the graph $G$. This implies that if we start with $G' := MST(G)$, <<we can run the naive algorithm on the MST $G'$ and get exactly the same clusters as running it on $G$>>, because only the edges in $G'$ come into play when running affinity clustering on $G$. Since the number of nodes in the $G'$ is $|V| - 1$ (by definition of an MST), we would be able to do this efficiently on a single machine (unless |V| is much larger than a few millions).
+Note that this is essentially Boruvka's algorithm (minus the undo steps), which is guaranteed to find the Minimum Spanning Tree (MST) of the graph $G$. This implies that if we start with $G' := MST(G)$, <|we can run the naive algorithm on the MST $G'$ and get exactly the same clusters as running it on $G$|>, because only the edges in $G'$ come into play when running affinity clustering on $G$. Since the number of nodes in the $G'$ is $|V| - 1$ (by definition of an MST), we would be able to do this efficiently on a single machine (unless |V| is much larger than a few millions).
 
 Therefore, we just need a distributed algorithm to find the MST of $G$ efficiently, and we can perform affinity clustering efficiently.
 

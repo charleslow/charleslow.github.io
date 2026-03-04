@@ -36,7 +36,7 @@ Other goals:
     - Run through pretrained backbone (e.g. `qwen0.6B`)
     - Downsample using convolutions
 - Run RQ-VAE on the latent representation to discretize into latent tokens
-    - This is the <<fast decoding>> part
+    - This is the <|fast decoding|> part
 - Decode latent tokens back into original textual space
     - Upsample using de-convolutions
     - Run through pretrained backbone (e.g. `qwen0.6B`)
@@ -137,7 +137,7 @@ The decoder `TextDecoder` is very similar to the encoder, except we go in the ot
 
 Now we dive into the residual quantization portion. 
 
-The <<Quantizer>> class represents one level of the codebook. It is initialized with parameters:
+The <|Quantizer|> class represents one level of the codebook. It is initialized with parameters:
 - `dim`: latent dimension of codebook vectors
 - `codebook_size`: number of vectors for this level of the codebook
 - `ema_decay`: the rate of updating codebook vectors (analogous to `1 - learning_rate`)
@@ -171,7 +171,7 @@ The `update_codebook_ema` acts like a gradient update to the codebook vectors (f
     - We detect these codes by tracking their exponential moving average of counts
     - If the average assignment falls below a certain threshold, we delete these codebook vectors and re-initialize them to an average of a few random encoder embeddings in the batch
 
-There is also `compute_perplexity`, which is used to measure the distribution of codebook utilisation using <<perplexity>>
+There is also `compute_perplexity`, which is used to measure the distribution of codebook utilisation using <|perplexity|>
 - Perplexity is defined as $\exp(\text{entropy}) = \exp(\sum^K_{i=1} -p_i \log p_i)$ of a categorical distribution with $K$ categories
 - We know that entropy ranges from $0$ to $\log K$
 - So perplexity ranges from $1$ to $K$
@@ -179,9 +179,9 @@ There is also `compute_perplexity`, which is used to measure the distribution of
 
 > <<Question:>> 
 > - Is uniform codebook utilisation optimal, or is there some way to reason about the ideal distribution of codebook utilisation?
-> - There seems to be some reason to reduce the codebook size as we go into deeper levels, since the variance decreases and there is higher risk of modelling noise. Is there some information theoretic way to <<dynamically adjust the codebook size>> based on the amount of information gain from that codebook level?
+> - There seems to be some reason to reduce the codebook size as we go into deeper levels, since the variance decreases and there is higher risk of modelling noise. Is there some information theoretic way to <|dynamically adjust the codebook size|> based on the amount of information gain from that codebook level?
 
-The <<ResidualQuantizer>> class is a stack of <<Quantizer>>s based on the desired number of `codebook_levels`.
+The <|ResidualQuantizer|> class is a stack of <|Quantizer|>s based on the desired number of `codebook_levels`.
 
 The `forward` pass is where most of the logic resides:
 - We receive an input tensor `x` with shape `batch_size, seq_len, latent_dim`

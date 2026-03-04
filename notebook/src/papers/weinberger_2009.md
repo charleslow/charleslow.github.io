@@ -11,7 +11,7 @@ This paper proposes a method to represent a large feature set in a smaller space
 
 Consider having data points $x^{(1)}, ..., x^{(n)} \in \R^d$, where $d$ can be very large (e.g. millions). This setting is easily realized when we use, for example, word bi-grams and tri-grams as term-frequency features to perform some kind of text classification task. Such a large feature vector is unwieldy, and also inefficient since the feature vector is very sparse for a given text.
 
-The <<hashing trick>> maps the high dimensional input vector to a smaller dimension feature space with the notation $\phi: \mathcal{X} \rightarrow \R^m$, such that $m << d$.
+The <|hashing trick|> maps the high dimensional input vector to a smaller dimension feature space with the notation $\phi: \mathcal{X} \rightarrow \R^m$, such that $m << d$.
 
 We start with the following definitions:
 - Let $h$ be a hash function $h: \mathbb{N} \rightarrow \{1, ..., m \}$
@@ -34,7 +34,7 @@ With this setup, the paper aims to prove analytically that hashing in this manne
 We won't trace through all the results, just the important and simple ones.
 
 
-**Lemma 2** <<The hash kernel is unbiased>>, i.e. $\mathbb{E}_\phi \left[ \langle x, x' \rangle_\phi \right] = \langle x, x' \rangle$. 
+**Lemma 2** <|The hash kernel is unbiased|>, i.e. $\mathbb{E}_\phi \left[ \langle x, x' \rangle_\phi \right] = \langle x, x' \rangle$. 
 
 **Proof**. The proof simply starts by expanding the inner product in the hashed space as follows:
 $$
@@ -90,9 +90,9 @@ $$
 \end{align*}
 $$
 
-Not only is the hashed inner product unbiased, it also has a <<variance that scales down in $O(\frac{1}{m})$>>. The proof does a similar but more tedious expansion as the above, and assumes that $x, x'$ have l2-norm of $1$. This suggests that the hashed inner product will be concentrated within $O(\frac{1}{\sqrt{m}})$ of the true value.
+Not only is the hashed inner product unbiased, it also has a <|variance that scales down in $O(\frac{1}{m})$|>. The proof does a similar but more tedious expansion as the above, and assumes that $x, x'$ have l2-norm of $1$. This suggests that the hashed inner product will be concentrated within $O(\frac{1}{\sqrt{m}})$ of the true value.
 
-These results are sufficient to <<justify use of the hashed inner product space in practice>>. That is, we can perform recommendations in the hashed space with sufficiently large $m$ (we can tune that using validation error) to make the large feature space tractable. The paper goes on to prove more detailed bounds on the error and norm which are of less practical significance.
+These results are sufficient to <|justify use of the hashed inner product space in practice|>. That is, we can perform recommendations in the hashed space with sufficiently large $m$ (we can tune that using validation error) to make the large feature space tractable. The paper goes on to prove more detailed bounds on the error and norm which are of less practical significance.
 
 ## Multi-task Learning
 

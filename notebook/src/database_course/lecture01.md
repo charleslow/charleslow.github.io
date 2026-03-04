@@ -1,6 +1,6 @@
 # Lecture 1
 
-Course about how to design and implement a database management system. Textbook: <<Database System Concepts>> by Silberschatz, Korth and Sudarshan. 
+Course about how to design and implement a database management system. Textbook: <|Database System Concepts|> by Silberschatz, Korth and Sudarshan. 
 
 Agenda:
 - Database Systems Background
@@ -18,9 +18,9 @@ Store our database as a csv file that we manage. e.g. each line corresponds to a
 - Data types are not stored on the csv file, we need to know which is an integer etc.
 - Concurrent writes to the file are not supported
 
-A <<Database Management System (DBMS)>> is a software that allows applications to store and analyze information in a database. A general purpose DBMS supports the definition, creation, querying, update and administrations of databases in accordance with some data model. Usually first choice is postgres or sqlite.
+A <|Database Management System (DBMS)|> is a software that allows applications to store and analyze information in a database. A general purpose DBMS supports the definition, creation, querying, update and administrations of databases in accordance with some data model. Usually first choice is postgres or sqlite.
 
-A <<data model>> is a collection of concepts for describing the data in a database. A <<schema>> is a description of a particular collection of data, using a given data model. Examples of data models:
+A <|data model|> is a collection of concepts for describing the data in a database. A <|schema|> is a description of a particular collection of data, using a given data model. Examples of data models:
 1. Relational
 2. Key / Value 
 3. Graph
@@ -40,11 +40,11 @@ Early database applications were difficult to write. Every time the database sch
 - Physical storage left up to the DBMS implementation
 - Access data through high-level language, DBMS figures out the best execution model
 
-A <<relation>> is an unordered set that contain the relationship of attributes that represent entities. An n-ary relation is equivalent to a table with n columns. A <<tuple>> is a set of attributes values (also known as its domain) in the relation. The special value `NULL` is a member of every domain.
+A <|relation|> is an unordered set that contain the relationship of attributes that represent entities. An n-ary relation is equivalent to a table with n columns. A <|tuple|> is a set of attributes values (also known as its domain) in the relation. The special value `NULL` is a member of every domain.
 
-A relation's <<primary key>> uniquely identifies a single tuple. Some DBMSs automatically create an internal primary key if a table does not define one. Primary key is a constraint that the DBMS will enforce to ensure no duplicates exist. A <<foreign key>> specifies that an attribute from one relation maps to a tuple in another relation. E.g. If we have an artist table with the artist id, and an album table with an artist column, the artist column is a foreign key.
+A relation's <|primary key|> uniquely identifies a single tuple. Some DBMSs automatically create an internal primary key if a table does not define one. Primary key is a constraint that the DBMS will enforce to ensure no duplicates exist. A <|foreign key|> specifies that an attribute from one relation maps to a tuple in another relation. E.g. If we have an artist table with the artist id, and an album table with an artist column, the artist column is a foreign key.
 
-We can impose <<constraints>> on the database that must hold for any tuple. DBMS will then prevent any modification that could violate those constraints. Unique and foreign key constraints are the most common. e.g. `CREATE ASSERTION` in SQL. 
+We can impose <|constraints|> on the database that must hold for any tuple. DBMS will then prevent any modification that could violate those constraints. Unique and foreign key constraints are the most common. e.g. `CREATE ASSERTION` in SQL. 
 
 ## Data Manipulation Languages (DML)
 
@@ -88,7 +88,7 @@ Instead of specifying the exact operations, DBMS allow us to state the high leve
 
 ## Document Data Model
 
-A collections of record documents containing a hierarchy of named field / value pairs. A field's value can be a scalar type, array, or another document. Modern implementations use `JSON`. Main reason for this model is to avoid <<relational object impedance mismatch>>, i.e. relational databases store data in rows with relationships between tables, but in object oriented languages like Python data is stored in objects with nested attributes, which could result in inefficient queries when we try to map between the two. In contrast, Document Databases store data in a nested json which closely resembles the object-oriented approach, making it easier to work with. The down side is that we could end up storing a lot of duplicate data in the json objects.
+A collections of record documents containing a hierarchy of named field / value pairs. A field's value can be a scalar type, array, or another document. Modern implementations use `JSON`. Main reason for this model is to avoid <|relational object impedance mismatch|>, i.e. relational databases store data in rows with relationships between tables, but in object oriented languages like Python data is stored in objects with nested attributes, which could result in inefficient queries when we try to map between the two. In contrast, Document Databases store data in a nested json which closely resembles the object-oriented approach, making it easier to work with. The down side is that we could end up storing a lot of duplicate data in the json objects.
 - Examples: MongoDB, RavenDB, DynamoDB etc.
 
 ## Vector Data Model

@@ -58,7 +58,7 @@ Metrics for measuring quality of RQ-VAE:
 2. `loss/vq`: Combined codebook and commitment loss across all levels.
     - Ensures that encoder outputs and codebook vectors stay close together
 3. `loss/total`: sum of `loss/vq` and `loss/reconstruction`
-4. `loss/validation`: total loss but on the held out validation set. Our <<deciding metric>>.
+4. `loss/validation`: total loss but on the held out validation set. Our <|deciding metric|>.
 5. `metrics/avg_residual_norm`: Leftover residuals between the quantized embedding and the original embedding
 6. `metrics/unique_ids_proportion`: % of items with unique IDS in a batch
     - Helps to check against codebook collapse
@@ -344,7 +344,7 @@ At initialization:
 
 ### finetune_qwen3_8b_vocab.py
 
-This script performs <<Stage 1>> of the qwen fine-tuning. It focuses on extending the vocabulary to include new semantic ID tokens and trains embeddings for these new tokens.
+This script performs <|Stage 1|> of the qwen fine-tuning. It focuses on extending the vocabulary to include new semantic ID tokens and trains embeddings for these new tokens.
 
 #### FineTuneConfig
 
