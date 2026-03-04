@@ -180,8 +180,8 @@
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="lewis-2020---retrieval-augmented-generation"><a class="header" href="#lewis-2020---retrieval-augmented-generation">Lewis 2020 - Retrieval Augmented Generation</a></h1>
 <p><a href="https://ar5iv.labs.arxiv.org/html/2005.11401">Lewis 2020 - Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks</a></p>
-<p>This paper proposes a way to fine-tune a parametric seq2seq transformers (e.g. GPT) with a non-parametric memory through dense retrieval. The main idea is to extend <span style="color:orange">parametric memory</span> (i.e. the "knowledge" that is stored within the LLM floating point parameters) of the seq2seq model by coupling it with retrieval of documents from a vector database (dubbed <span style="color:orange">non-parametric</span> memory, using Wikipedia articles in the original paper). We can update the non-parametric database's knowledge as the world changes.</p>
-<p>The paper argues that this setup is ideal for <em>knowledge-intensive</em> tasks such as open question answering, fact verification etc., where it is impossible to store all knowledge in <span style="color:orange">parametric memory</span>.</p>
+<p>This paper proposes a way to fine-tune a parametric seq2seq transformers (e.g. GPT) with a non-parametric memory through dense retrieval. The main idea is to extend <span class="hl-subtle">parametric memory</span> (i.e. the "knowledge" that is stored within the LLM floating point parameters) of the seq2seq model by coupling it with retrieval of documents from a vector database (dubbed <span class="hl-subtle">non-parametric</span> memory, using Wikipedia articles in the original paper). We can update the non-parametric database's knowledge as the world changes.</p>
+<p>The paper argues that this setup is ideal for <em>knowledge-intensive</em> tasks such as open question answering, fact verification etc., where it is impossible to store all knowledge in <span class="hl-subtle">parametric memory</span>.</p>
 <h2 id="setup"><a class="header" href="#setup">Setup</a></h2>
 <p>Given an input sequence of tokens <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span></span></span></span>, we wish to retrieve contextual documents <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span></span></span></span> and use them as additional context when generating target sequence <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span>. We have two models:</p>
 <ul>
@@ -243,6 +243,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

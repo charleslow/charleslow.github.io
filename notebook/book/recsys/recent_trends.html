@@ -197,7 +197,7 @@
 <ul>
 <li>However, this leads to redundancy to store and update each set of embeddings, often in some in-memory feature store, which is costly.</li>
 <li>This approach is also often not as performant as learning a universal set of embeddings and then adapting the embeddings to each task via a small learned MLP layer</li>
-<li>Training from a frozen set of universal embeddings is also much more <span style="color:orange">compute efficient</span>, as we do not need to forward/backward propagate into a potentially large language model that generates the embeddings from text or some other modality.</li>
+<li>Training from a frozen set of universal embeddings is also much more <span class="hl-subtle">compute efficient</span>, as we do not need to forward/backward propagate into a potentially large language model that generates the embeddings from text or some other modality.</li>
 </ul>
 <p>We can think of upstream training of an embedding model as analogous to the common practice of pre-training large language models in a semi-supervised manner on a large text corpus. The LLM is then fine-tuned for specific applications.</p>
 <p>Although the performance of using multiple embeddings to represent an item has been proven to be more performant than using a single embedding (e.g. using ColBert), most companies seem to adopt a single embedding to reduce engineering complexity. For example, Pinterest briefly experimented with multiple embeddings per item but reverted to a single embedding to reduce costs.</p>
@@ -224,7 +224,7 @@
 </ul>
 </li>
 </ul>
-<p>Embeddings are typically trained in a <span style="color:orange">contrastive learning</span> manner, which simply means that we want to encourage related items (e.g. videos frequently co-watched) to have high similarity scores and unrelated items (e.g. randomly sampled vidoe pairs) to have low scores.</p>
+<p>Embeddings are typically trained in a <span class="hl-subtle">contrastive learning</span> manner, which simply means that we want to encourage related items (e.g. videos frequently co-watched) to have high similarity scores and unrelated items (e.g. randomly sampled vidoe pairs) to have low scores.</p>
 <p>Thus, we can think of contrastive learning as comprising 3 main components:</p>
 <ul>
 <li><span style="color:orange">Positive Sampling</span>. How we mine for related items from data is a non-trivial, but an oft-neglected topic. Usually some behavioural statistics are used, e.g. Lee 2020 uses <code>videos frequently co-watched by users</code> to determine positive pairs. The guiding principle is to err on the side of being stricter in the selection of positive samples to minimize the appearance of false positives in the data (which are more harmful than false negatives).
@@ -448,6 +448,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

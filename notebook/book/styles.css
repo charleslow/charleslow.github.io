@@ -1,3 +1,13 @@
 .content main li {
     margin-bottom: 0.5em;
 }
+
+/* Subtle inline highlight: <|text|> */
+.hl-subtle {
+    background: rgba(255, 160, 50, 0.18);
+    padding: 1px 6px;
+    border-radius: 4px;
+    border-bottom: 2px solid rgba(255, 140, 40, 0.55);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+}

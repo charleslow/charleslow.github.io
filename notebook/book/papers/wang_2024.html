@@ -190,13 +190,13 @@
 <li>L1: Highly Irrelevant</li>
 </ul>
 <h2 id="teacher-model"><a class="header" href="#teacher-model">Teacher Model</a></h2>
-<p>The <span style="color:orange">teacher model</span> takes the form of a standard cross encoder setup. The teacher model is either a BERT-based LLM or a decoder-style LLM. The text inputted to the LLM is of the following format:</p>
+<p>The <span class="hl-subtle">teacher model</span> takes the form of a standard cross encoder setup. The teacher model is either a BERT-based LLM or a decoder-style LLM. The text inputted to the LLM is of the following format:</p>
 <pre><code>[CLS] Query [SEP] Pin Text
 </code></pre>
 <p>The embedding of the <code>[CLS]</code> token is taken for BERT-based models, whilst the embedding of the final non-padding token is taken for decoder-based models (such as Llama). The embedding is passed through several fully-connected layers, and the final output dimension corresponds to the <code>5</code> relevance levels. The LLMs are fine-tuned during training by minimizing the pointwise multi-class cross entropy loss.</p>
 <p>To enhance the representation of the pin text for the teacher model, several features are concatenated together:</p>
 <ul>
-<li>Pin <span style="color:orange">titles</span> and <span style="color:orange">descriptions</span> are used as-is</li>
+<li>Pin <span class="hl-subtle">titles</span> and <span class="hl-subtle">descriptions</span> are used as-is</li>
 <li><span style="color:orange">Synthetic image captions</span> are generated using an off-the-shelf model called BLIP</li>
 <li>High-engagement <span style="color:orange">query tokens</span>. Queries resulting in high engagement with a pin are aggregated over the past 2 years, and the top tokens are selected.</li>
 <li>User-curated <span style="color:orange">Board Titles</span>. Users curate their pins onto boards. The board titles are aggregated across users and top tokens are selected.</li>
@@ -264,6 +264,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

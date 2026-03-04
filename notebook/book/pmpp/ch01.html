@@ -207,13 +207,13 @@
 <p>A GPU is organized as an array of highly threaded streaming multiprocessors (SMs).</p>
 <ul>
 <li>Each SM has a number of streaming processors (SPs) that share control logic and instruction cache</li>
-<li>Each GPU comes with high bandwidth (and also higher latency) global memory which we will refer to as DRAM. In NVIDIA's recent Pascal architecture, this is refered to as High Bandwidth Memory (HBM).</li>
+<li>Each GPU comes with high bandwidth (and also higher latency) global memory which we will refer to as DRAM. In NVIDIA's recent Pascal architecture, this is referred to as High Bandwidth Memory (HBM).</li>
 </ul>
 <p>There is also a CPU - GPU / GPU - GPU connection to allow data transfers. In the Pascal family, this is called NVLINK, which allows transfers of up to 40 GB/s per channel. As the size of GPU memory grows, applications increasingly keep their data in the global memory instead of relying on the CPU-GPU connection.</p>
 <h1 id="speeding-up-applications"><a class="header" href="#speeding-up-applications">Speeding up Applications</a></h1>
 <p>How much parallelism can speed up an application depends on the portion of the application that can be parallelized. If the time taken for a sequential program is <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span></span></span></span> and we can only parallelize <code>30%</code> of it, then a <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">10</span><span class="mord mathnormal">x</span></span></span></span> speed-up of the parallel portion will only result in <code>27%</code> execution time reduction:
 <span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord">0.7</span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord">0.03</span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord">0.73</span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span></span></span></span></span></p>
-<p>The fact that the level of speedup one can achieve through parallel execution can be severely limited by the parallelizable portion is known as <span style="color:orange">Amdahl's Law</span>.</p>
+<p>The fact that the level of speedup one can achieve through parallel execution can be severely limited by the parallelizable portion is known as <span class="hl-subtle">Amdahl's Law</span>.</p>
 <h1 id="goals-of-the-book"><a class="header" href="#goals-of-the-book">Goals of the book</a></h1>
 <p>Much of the book is dedicated to techniques for developing high performance parallel code. Focus on computational thinking techniques that will be amenable to parallel computing.</p>
 <p>Second goal is to write parallel programs with correct functionality and reliability, and in a way that you can debug and inspect the code. CUDA encourages use of simple forms of barrier synchronization, memory consistency, and atomicity for managing parallelism.</p>
@@ -248,6 +248,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

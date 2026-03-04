@@ -253,11 +253,11 @@ Where <span class="katex"><span class="katex-html" aria-hidden="true"><span clas
 <li>The inclusion of the document summary in the document representation adds around <code>0.65%</code> in DCG@2</li>
 <li>The inclusion of fine-tuning on calibrated relevance scores increases the gains to <code>2.78%</code></li>
 </ul>
-<p>The ablation experiments also showed that <span style="color:orange">calibrated relevance scores is critical</span> for effective fine-tuning. By using raw user clicks as signal, the positive-negative ratio (PNR, i.e. ratio of concordant <code>q,d</code> pairs over number of discordant <code>q,d</code> pairs) was only <code>1.86</code>, but with the calibrated scores it increased dramatically to <code>3.35</code>.</p>
+<p>The ablation experiments also showed that <span class="hl-subtle">calibrated relevance scores is critical</span> for effective fine-tuning. By using raw user clicks as signal, the positive-negative ratio (PNR, i.e. ratio of concordant <code>q,d</code> pairs over number of discordant <code>q,d</code> pairs) was only <code>1.86</code>, but with the calibrated scores it increased dramatically to <code>3.35</code>.</p>
 <h2 id="takeaways"><a class="header" href="#takeaways">Takeaways</a></h2>
-<p>This is an interesting paper on building an effective pure search ranker (i.e. no personalization), although we can always layer additional personalization on top of the initial relevance score. The benefit of training a pure search ranker is that we can observe multiple instances of the same <code>q, d</code> pair, which allows us to <span style="color:orange">bootstrap a diverse array of weaker relevance signals into a much stronger relevance score</span>. Even if we do not have human-annotated signals to train the decision tree, we often have a sparser but stronger signal (e.g. conversion) and many other weaker but more abundant signals. Hence, it may be possible to use the same approach to predict the stronger signal from the weaker ones.</p>
+<p>This is an interesting paper on building an effective pure search ranker (i.e. no personalization), although we can always layer additional personalization on top of the initial relevance score. The benefit of training a pure search ranker is that we can observe multiple instances of the same <code>q, d</code> pair, which allows us to <span class="hl-subtle">bootstrap a diverse array of weaker relevance signals into a much stronger relevance score</span>. Even if we do not have human-annotated signals to train the decision tree, we often have a sparser but stronger signal (e.g. conversion) and many other weaker but more abundant signals. Hence, it may be possible to use the same approach to predict the stronger signal from the weaker ones.</p>
 <p>I suppose another way to deal with the diverse signal problem is multi-task learning, but this approach allows us to avoid the complexity of multi-task learning by first pre-processing relevance signals.</p>
-<p>The idea of a <span style="color:orange">on-the-fly query-sensitive document summary</span> also sounds useful, and can probably be implemented with the help of ElasticSearch. We could extend this approach by performing query expansion before doing the document summary, which may allow us to fetch more relevant sentences which do not have exact term overlap. Another way of doing this is to pre-generate document summaries using an LLM, which requires assuming that one summary for a document is able to suit all queries, which may not be the case.</p>
+<p>The idea of a <span class="hl-subtle">on-the-fly query-sensitive document summary</span> also sounds useful, and can probably be implemented with the help of ElasticSearch. We could extend this approach by performing query expansion before doing the document summary, which may allow us to fetch more relevant sentences which do not have exact term overlap. Another way of doing this is to pre-generate document summaries using an LLM, which requires assuming that one summary for a document is able to suit all queries, which may not be the case.</p>
 
                     </main>
 
@@ -288,6 +288,22 @@ Where <span class="katex"><span class="katex-html" aria-hidden="true"><span clas
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

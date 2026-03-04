@@ -202,7 +202,7 @@ The instruction was ...
 <li>The evaluation accuracy of this prompt is recorded</li>
 <li>The evaluation accuracy is averaged over <code>100</code> runs</li>
 </ul>
-<p>In hindsight, by using the idea of <a href="./wang_2022.html">self-consistency</a>, the performance can likely be significantly improved by taking the <span style="color:orange">majority vote</span> over the <code>100</code> runs rather than the average accuracy.</p>
+<p>In hindsight, by using the idea of <a href="./wang_2022.html">self-consistency</a>, the performance can likely be significantly improved by taking the <span class="hl-subtle">majority vote</span> over the <code>100</code> runs rather than the average accuracy.</p>
 
                     </main>
 
@@ -233,6 +233,22 @@ The instruction was ...
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

@@ -191,7 +191,7 @@
   <figcaption style="font-size:0.85rem;color:#555;margin-top:0.4rem;">Figure: A naive approach.</figcaption>
 </figure>
 <h2 id="my-solution"><a class="header" href="#my-solution">My Solution</a></h2>
-<p>Let's draw a vertical and horizontal line from each uncovered square (call it a "<span style="color:orange">gap</span>"). Observe there may be <code>2-4</code> such lines emanating in the NSEW directions from each gap. Overall, there would be <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">4</span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">4</span></span></span></span> such lines (<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">−</span><span class="mord">4</span></span></span></span> because there is no line at the first &amp; last row / column). Let's call each of these lines a "<span style="color:orange">half-line</span>".</p>
+<p>Let's draw a vertical and horizontal line from each uncovered square (call it a "<span class="hl-subtle">gap</span>"). Observe there may be <code>2-4</code> such lines emanating in the NSEW directions from each gap. Overall, there would be <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">4</span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">4</span></span></span></span> such lines (<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">−</span><span class="mord">4</span></span></span></span> because there is no line at the first &amp; last row / column). Let's call each of these lines a "<span class="hl-subtle">half-line</span>".</p>
 <p>Since each <code>row, col</code> pair has one gap, we are assured that a tiling that covers all the half-lines satisfies Matilda (as it will then cover every row and column, except for the gaps).</p>
 <p>Now the question is, how quickly can we cover the <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">4</span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">4</span></span></span></span> half-lines with a minimal number of tiles? In other words, how many half-lines can we clear with each tile we introduce?</p>
 <p>Now, it is tricky to analyze the number of lines we clear on each turn, because it depends on the preceding steps. For example, if we had cleared all but one remaining tile on each half-line (show example), then the next step can clear a large number of half-lines. It is hard to reason across multiple turns.</p>
@@ -206,7 +206,7 @@
 <p><strong>Proof</strong>. This is also not hard to see. Imagine a tile bounded on all sides by gaps. Since there can only be one gap per row and column, the tile cannot be touching more than one gap per side. Since the tile only has 4 sides, it can only touch up to 4 gaps.</p>
 </blockquote>
 <h3 id="4-x-4-configuration"><a class="header" href="#4-x-4-configuration">4 x 4 Configuration</a></h3>
-<p>To get a minimal tiling, we wish to maximize the number of "<span style="color:orange">4-tiles</span>" (i.e. tiles touching <code>4</code> holes). This may be done by minimizing the size for a 4-tile at <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span></span></span></span>. One such configuration is shown below.</p>
+<p>To get a minimal tiling, we wish to maximize the number of "<span class="hl-subtle">4-tiles</span>" (i.e. tiles touching <code>4</code> holes). This may be done by minimizing the size for a 4-tile at <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span></span></span></span>. One such configuration is shown below.</p>
 <figure style="max-width:320px;margin:1.25rem auto;padding:0 1.5rem;text-align:center;">
   <img src="../images/imo_2025_q6/optimal_4_tile.png" alt="Optimal 4-tile configuration" style="width:100%;height:auto;border:1px solid #ccc;border-radius:6px;box-shadow:0 2px 4px rgba(0,0,0,0.08);" />
   <figcaption style="font-size:0.85rem;color:#555;margin-top:0.4rem;">Figure: A minimal 2×2 tile touching four gaps.</figcaption>
@@ -301,6 +301,22 @@ print(main(2025))
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

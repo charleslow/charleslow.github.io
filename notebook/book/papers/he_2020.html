@@ -180,7 +180,7 @@
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="he-2020---lightgcn"><a class="header" href="#he-2020---lightgcn">He 2020 - LightGCN</a></h1>
 <p><a href="https://arxiv.org/pdf/2002.02126.pdf">He 2020 - LightGCN</a> is a simple and effective Graph Convolution Network for recommendation.</p>
-<p>LightGCN is an adaptation of Graph Convolutional Neural Networks (GCN) to the task of recommendations. In a typical Convolutional Neural Network for vision, convolution aggregations (such as linear projections, pooling, average) are applied to a <span style="color:orange">neighbourhood</span> of pixels that are near to one another. The aggregations transform the raw pixel values into a hidden layer of "embedding" values, and the next layer of aggregations is applied to the hidden layer, allowing the CNN to learn more abstract features with each increasing layer. A GCN uses essentially the same idea, except that the definition of <span style="color:orange">neighbourhood</span> of a node A are the neighbouring nodes that are connected by an edge to A. The GCN thus allows us to train node embeddings on all types of graphical data, such as social networks, user-item interactions etc.</p>
+<p>LightGCN is an adaptation of Graph Convolutional Neural Networks (GCN) to the task of recommendations. In a typical Convolutional Neural Network for vision, convolution aggregations (such as linear projections, pooling, average) are applied to a <span class="hl-subtle">neighbourhood</span> of pixels that are near to one another. The aggregations transform the raw pixel values into a hidden layer of "embedding" values, and the next layer of aggregations is applied to the hidden layer, allowing the CNN to learn more abstract features with each increasing layer. A GCN uses essentially the same idea, except that the definition of <span class="hl-subtle">neighbourhood</span> of a node A are the neighbouring nodes that are connected by an edge to A. The GCN thus allows us to train node embeddings on all types of graphical data, such as social networks, user-item interactions etc.</p>
 <h2 id="setting"><a class="header" href="#setting">Setting</a></h2>
 <p>This paper tackles the task of collaborative filtering <em>without features</em>, i.e. making recommendations purely from the user and item <code>id</code>. Also, no negative samples are required - all we need is edges between users and items based on some form of implicit interaction.</p>
 <h2 id="neural-graph-collaborative-filtering-ngcf"><a class="header" href="#neural-graph-collaborative-filtering-ngcf">Neural Graph Collaborative Filtering (NGCF)</a></h2>
@@ -287,6 +287,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

@@ -191,8 +191,8 @@
 </ul>
 <p>In terms of memory:</p>
 <ul>
-<li>Each SM has a set of on-chip memory structures collectively called <span style="color:orange">Memory</span></li>
-<li>All SMs also have access to gigabytes of off-chip device memory, called <span style="color:orange">Global Memory</span></li>
+<li>Each SM has a set of on-chip memory structures collectively called <span class="hl-subtle">Memory</span></li>
+<li>All SMs also have access to gigabytes of off-chip device memory, called <span class="hl-subtle">Global Memory</span></li>
 <li>For recent GPUs, these are HBM or HBM2</li>
 <li>We will refer to this as DRAM (dynamic random access memory)</li>
 </ul>
@@ -200,19 +200,19 @@
 <p>When a kernel is called, a grid of threads is launched. These threads are assigned to SMs on a block by block basis, i.e. all threads in a block are simultaneously assigned to the same SM.</p>
 <p>Usually, multiple blocks are simultaneously assigned to one SM. The number of blocks that can be processed at the same time by an SM depends on hardware constraints.</p>
 <p>This means that there is a limit on the number of blocks that are simultaneously executing on a CUDA GPU. The runtime system needs to maintain a list of blocks to execute and assign new blocks to SMs that have finished execution.</p>
-<p>Since we are guaranteed that all threads on the same block are assigned to the same SM, it is possible for these threads on the same block to interact with each other. One interaction is <span style="color:orange">barrier synchronization</span>.</p>
+<p>Since we are guaranteed that all threads on the same block are assigned to the same SM, it is possible for these threads on the same block to interact with each other. One interaction is <span class="hl-subtle">barrier synchronization</span>.</p>
 <h2 id="synchronization"><a class="header" href="#synchronization">Synchronization</a></h2>
 <p>There is a <code>__syncthreads()</code> function to coorindate activities between threads in the same block. When a thread calls it, it will be held at the program location of the call until every thread in the block reaches that location.</p>
 <p><strong>Each <code>__syncthreads</code> call must be executed by all threads in a block</strong>. If we use control flows like <code>if-else</code>, each <code>__syncthreads</code> call is considered a different barrier. Hence, if some threads go through the <code>if</code> branch and others the <code>else</code> branch, we can end in a deadlock as we never reach the state where <em>all</em> threads hit the same <code>__syncthreads</code> call.</p>
 <p>Note that by design, threads in different blocks cannot perform barrier synchronization with each other. This means that CUDA runtime can execute blocks in any order. This flexibility allows the runtime to efficiently allocate blocks to SMs according the GPU capacity.</p>
 <h2 id="warps-and-simd"><a class="header" href="#warps-and-simd">Warps and SIMD</a></h2>
-<p>Here we go into further details on thread scheduling within a block. When a block is assigned to an SM, it gets further divided into 32-thread units called <span style="color:orange">warps</span>. Each warp comprises <code>32</code> threads of consecutive <code>threadIdx</code> values.</p>
+<p>Here we go into further details on thread scheduling within a block. When a block is assigned to an SM, it gets further divided into 32-thread units called <span class="hl-subtle">warps</span>. Each warp comprises <code>32</code> threads of consecutive <code>threadIdx</code> values.</p>
 <ul>
 <li>threads <code>0-31</code> form the first warp</li>
 <li>threads <code>32-63</code> form the next warp etc.</li>
 <li>If the number of threads is not a multiple of <code>32</code>, the warp will be padded with extra dormant threads to complete the warp</li>
 </ul>
-<p>Blocks are partitioned into warps based on thread indices. If the blockDim is one-dimensional, the partitioning and ordering is trivial. If there are two or three dimensions, the thread indices will be linearized using a <span style="color:orange">row-major</span> layout before partitioning and ordering into warps.</p>
+<p>Blocks are partitioned into warps based on thread indices. If the blockDim is one-dimensional, the partitioning and ordering is trivial. If there are two or three dimensions, the thread indices will be linearized using a <span class="hl-subtle">row-major</span> layout before partitioning and ordering into warps.</p>
 <p>An SM is designed to execute all threads in a warp following the Single Instruction, Multiple Data (SIMD) model. This means that at any point in time, a single instruction is fetched and executed for all threads in a warp (for the most part, common exception is conditional branches).</p>
 <ul>
 <li>For e.g., the A100 SM has <code>64</code> cores, split into <code>4</code> processing blocks with <code>16</code> cores each. Threads in the same warp get assigned to the same processing block, which fetches one instruction and executes it for all <code>32</code> threads simultaneously.</li>
@@ -229,12 +229,12 @@ for (i=0; i &lt; N; ++i) {
 </code></pre>
 <p>The cost we pay for this flexibility is the extra number of passes we need to make.</p>
 <p>The most common example of control divergence is handling boundary conditions due to the number of data points not being a multiple of the number of threads. For this case, only the last boundary case has control divergence. Hence when the size of data is large, the effects of control divergence is minimal.</p>
-<p>An important implication of control divergence is that <span style="color:orange">one cannot assume that all threads in a warp have the same execution timing</span>. Hence we must use <code>__syncwarp</code> if we are depending on such behaviour.</p>
+<p>An important implication of control divergence is that <span class="hl-subtle">one cannot assume that all threads in a warp have the same execution timing</span>. Hence we must use <code>__syncwarp</code> if we are depending on such behaviour.</p>
 <h2 id="warp-scheduling-and-latency-tolerance"><a class="header" href="#warp-scheduling-and-latency-tolerance">Warp Scheduling and Latency Tolerance</a></h2>
 <p>When assigning threads to SMs, we usually assign far more threads than cores available on the SM. A natural question to ask is whether we should just assign the number of threads to be equal to the number of cores at each request?</p>
-<p>It turns out that having many threads (or warps) waiting around for execution on SMs is an important feature for GPUs to <span style="color:orange">tolerate long latency operations</span> like reading from global memory.</p>
+<p>It turns out that having many threads (or warps) waiting around for execution on SMs is an important feature for GPUs to <span class="hl-subtle">tolerate long latency operations</span> like reading from global memory.</p>
 <p>When a warp of threads arrives at an SM and it is not ready for execution (as it is waiting for the result of a previously initiated memory access operation), the warp is not selected. Instead the SM will select another warp that is ready for execution. This mechanism allows the SM to "hide" the latency of long latency operations and fill it with meaningful work.</p>
-<p>This dynamic scheduling of warps is made even more efficient due to <span style="color:orange">zero-overhead scheduling</span> design of GPUs. In CPUs, context switching is more expensive because when switching context from a thread that is waiting to a thread that is ready to make progress, some work needs to be done to save and restore register contents, adding significant overhead.</p>
+<p>This dynamic scheduling of warps is made even more efficient due to <span class="hl-subtle">zero-overhead scheduling</span> design of GPUs. In CPUs, context switching is more expensive because when switching context from a thread that is waiting to a thread that is ready to make progress, some work needs to be done to save and restore register contents, adding significant overhead.</p>
 <p>In GPUs, because SMs hold all the execution states of assigned warps in the hardware registers, there is very little overhead in switching between warps. Since GPUs can effectively "hide" the latency of long latency operations, GPUs dedicate less chip area to latency-reduction mechanisms like cache memories and branch prediction mechanisms, allowing them to focus more on floating point execution and large bandwidth memory access.</p>
 <h2 id="occupancy"><a class="header" href="#occupancy">Occupancy</a></h2>
 <p>As we saw, over-subscription of warps to SMs is key for tolerating long latency operations. Hence, the goal is to maximize the number of warps assigned to an SM.</p>
@@ -251,7 +251,7 @@ for (i=0; i &lt; N; ++i) {
 <p>If we set <code>block_size=512</code>, <code>num_blocks=4</code>, then we get to max out our thread slots at <code>2,048</code></p>
 <p>But if we set <code>block_size=32</code>, and maximize the number of blocks at <code>num_blocks=32</code>, we only utilize <code>1,024</code> thread slots. Because we utilized too few threads per block, we end up with only <code>50%</code> occupancy.</p>
 <p>Anoter scenario for under-utilization is when the number of threads per block is not divisible by the block size. For example, if we choose <code>block_size=768</code>, then the maximum <code>num_blocks=2</code>. This results in <code>1,536 / 2,048 = 75%</code> occupancy.</p>
-<p>Another factor that may lower occupancy is the <span style="color:orange">impact of register usage</span>. The A100 has a maximum of <code>65,536</code> registers per SM, so to run at full occupancy, we can only support <code>65,536 / 2,048 = 32</code> registers per thread. If our kernel code uses <code>64</code> registers, then the maximum occupancy we can achieve is <code>1,024 / 2,048 = 50%</code> regardless of the block size.</p>
+<p>Another factor that may lower occupancy is the <span class="hl-subtle">impact of register usage</span>. The A100 has a maximum of <code>65,536</code> registers per SM, so to run at full occupancy, we can only support <code>65,536 / 2,048 = 32</code> registers per thread. If our kernel code uses <code>64</code> registers, then the maximum occupancy we can achieve is <code>1,024 / 2,048 = 50%</code> regardless of the block size.</p>
 <h2 id="querying-device-properties"><a class="header" href="#querying-device-properties">Querying device properties</a></h2>
 <p>Get number of CUDA devices in the system:</p>
 <pre><code class="language-c">int devCount;
@@ -477,6 +477,22 @@ So number of warps is <code>8 * 4 = 32</code>.</p>
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

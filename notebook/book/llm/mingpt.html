@@ -191,7 +191,7 @@
 <li>The first <code>256</code> tokens represents the <code>256</code> byte values. Each token is some arbitrarily chosen character (just need to make sure it is printable)</li>
 <li>These tokens are a <em>fallback</em> to ensure that we can encode any text sequence. For example, if we encounter a new emoji with unknown byte sequence, at the very least we can encode each byte separately.</li>
 <li>The next <code>50k</code> tokens map from a byte sequence of length <code>2</code> and above to an index, these are the BPE mined sequences of merged bytes</li>
-<li>The last token is <code>&lt;|endoftext|&gt;</code> which is a special token</li>
+<li>The last token is <code>&lt;span class="hl-subtle"&gt;endoftext&lt;/span&gt;</code> which is a special token</li>
 </ul>
 </li>
 <li><code>vocab.bpe</code> is a <code>\n</code> separated list of byte sequences that should be merged (<code>50k</code> of them)
@@ -232,6 +232,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

@@ -181,14 +181,14 @@
 <h1 id="reimers-2019---sentence-bert"><a class="header" href="#reimers-2019---sentence-bert">Reimers 2019 - Sentence-BERT</a></h1>
 <p><a href="https://ar5iv.labs.arxiv.org/html/1908.10084">Link to paper</a>.</p>
 <p>Sentence-BERT (or SBERT) was one of the first papers to suggest a way to fine-tune BERT models to generate useful embeddings that can be used for search / retrieval.</p>
-<p>Prior to SBERT, BERT models were mainly used for sentence pair regression tasks by passing two sentences into the transformer network and adding a classification head on top to produce a float value. We can call this the <span style="color:orange">cross-encoder</span> approach. In other words, researchers only cared about the final prediction and did not make use of the embeddings, or the final vector representation of the inputs. This approach is suitable for reranking a small number of documents but not for nearest neighbour search in a corpus with millions of documents.</p>
+<p>Prior to SBERT, BERT models were mainly used for sentence pair regression tasks by passing two sentences into the transformer network and adding a classification head on top to produce a float value. We can call this the <span class="hl-subtle">cross-encoder</span> approach. In other words, researchers only cared about the final prediction and did not make use of the embeddings, or the final vector representation of the inputs. This approach is suitable for reranking a small number of documents but not for nearest neighbour search in a corpus with millions of documents.</p>
 <p>Naively, one can element-wise average the BERT embeddings at the final layer to produce a vector representation of the text. This vector representation can then be used for nearest neighbour search or clustering. However, because BERT was not explicitly trained for this objective, it results in rather bad sentence embeddings, often worse than GloVe embeddings.</p>
 <h2 id="method"><a class="header" href="#method">Method</a></h2>
 <p>The SBERT paper presents 3 different training objectives, all of which perform well on embedding similarity tasks. The choice of objective depends on the dataset:</p>
 <ol>
 <li>
 <p><span style="color:orange">Classification objective</span>. This is for tasks where the objective is to predict a label given two sentences A, B. We pass each sentence into the BERT network and a pooling layer to get two vector representations, <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">u</span></span></span></span> and <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span></span></span></span>. The pooling layer can be (i) take the <code>[CLS]</code> token embedding, (ii) take the element-wise mean or (iii) take the element-wise max. We then create a concatenated vector <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal">u</span><span class="mpunct">,</span><span class="mspace"> </span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mpunct">,</span><span class="mspace"> </span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">∣</span><span class="mord mathnormal">u</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mord">∣</span><span class="mclose">)</span></span></span></span> which is fed into a softmax classifer. The network is trained using cross-entropy loss.</p>
-<p>Note that this siamese approach (where each sentence is passed into the same network) differs a little from the typical cross-encoder approach, where the sentences are concatenated as a <span style="color:orange">string</span> with the <code>[SEP]</code> token before passed into the network. The latter approach is presumably more powerful because the attention mechanism can attend to all pairwise relationships</p>
+<p>Note that this siamese approach (where each sentence is passed into the same network) differs a little from the typical cross-encoder approach, where the sentences are concatenated as a <span class="hl-subtle">string</span> with the <code>[SEP]</code> token before passed into the network. The latter approach is presumably more powerful because the attention mechanism can attend to all pairwise relationships</p>
 </li>
 <li>
 <p><span style="color:orange">Regression objective</span>. This is for tasks where the objective is to predict a float given two sentences A, B. Given the vectors <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">u</span></span></span></span> and <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span></span></span></span>, the cosine similarity is simply taken to generate a float between <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">−</span><span class="mord">1</span></span></span></span> and <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span>. The cosine similarity is then compared with the actual float value using mean-squared error to generate a loss.</p>
@@ -235,6 +235,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

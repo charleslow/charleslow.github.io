@@ -185,8 +185,8 @@
 </ul>
 <p>Eugene Yan's experience of training an LLM-recommender hybrid that can recommend items using natural language.</p>
 <h2 id="extend-the-vocab"><a class="header" href="#extend-the-vocab">Extend the vocab</a></h2>
-<p>Insert semantic ID tokens like <code>&lt;|sid_0|&gt;</code>, <code>&lt;|sid_1|&gt;</code> into the vocab. Sequences of these tokens will be used to represent the catalog. So an item may be represented like:</p>
-<pre><code>&lt;|sid_start|&gt;&lt;|sid_173|&gt;&lt;|sid_324|&gt;&lt;|sid_764|&gt;&lt;|sid_768|&gt;&lt;|sid_end|&gt;
+<p>Insert semantic ID tokens like <code>&lt;span class="hl-subtle"&gt;sid_0&lt;/span&gt;</code>, <code>&lt;span class="hl-subtle"&gt;sid_1&lt;/span&gt;</code> into the vocab. Sequences of these tokens will be used to represent the catalog. So an item may be represented like:</p>
+<pre><code>&lt;span class="hl-subtle"&gt;sid_start&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_173&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_324&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_764&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_768&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_end&lt;/span&gt;
 </code></pre>
 <h2 id="data"><a class="header" href="#data">Data</a></h2>
 <p>He used video games category of Amazon Reviews 2023, because it has rich product metadata and lots of behavioural data.</p>
@@ -239,7 +239,7 @@
 </ul>
 </li>
 <li><code>loss/total</code>: sum of <code>loss/vq</code> and <code>loss/reconstruction</code></li>
-<li><code>loss/validation</code>: total loss but on the held out validation set. Our <span style="color:orange">deciding metric</span>.</li>
+<li><code>loss/validation</code>: total loss but on the held out validation set. Our <span class="hl-subtle">deciding metric</span>.</li>
 <li><code>metrics/avg_residual_norm</code>: Leftover residuals between the quantized embedding and the original embedding</li>
 <li><code>metrics/unique_ids_proportion</code>: % of items with unique IDS in a batch
 <ul>
@@ -318,21 +318,21 @@
 <h2 id="inference"><a class="header" href="#inference">Inference</a></h2>
 <p>Now the model is trained, we can have chat / recommendation conversations with it:</p>
 <blockquote>
-<p><span style="color:orange">User</span>: “Halo 3 Limited Edition -Xbox 360”, “Lost Planet: Extreme Condition - Xbox 360”, “Lost Planet: Extreme Condition Collector’s Edition -Xbox 360” &lt;|rec|&gt;</p>
-<p><span style="color:orange">Model</span>: <code>&lt;|sid_start|&gt;&lt;|sid_64|&gt;&lt;|sid_351|&gt;&lt;|sid_733|&gt;&lt;|sid_768|&gt;&lt;|sid_end|&gt;</code></p>
+<p><span style="color:orange">User</span>: “Halo 3 Limited Edition -Xbox 360”, “Lost Planet: Extreme Condition - Xbox 360”, “Lost Planet: Extreme Condition Collector’s Edition -Xbox 360” <span class="hl-subtle">rec</span></p>
+<p><span style="color:orange">Model</span>: <code>&lt;span class="hl-subtle"&gt;sid_start&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_64&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_351&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_733&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_768&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_end&lt;/span&gt;</code></p>
 </blockquote>
 <p>The model can also explain its recs:</p>
 <blockquote>
-<p><span style="color:orange">User</span>: I just finished “Dragon Quest Heroes II Explorer’s Edition - PlayStation 4”. Suggest another &lt;|rec|&gt; and explain why:</p>
-<p><span style="color:orange">Model</span>: <code>&lt;|sid_start|&gt;&lt;|sid_139|&gt;&lt;|sid_289|&gt;&lt;|sid_534|&gt;&lt;|sid_768|&gt;&lt;|sid_end|&gt;</code></p>
+<p><span style="color:orange">User</span>: I just finished “Dragon Quest Heroes II Explorer’s Edition - PlayStation 4”. Suggest another <span class="hl-subtle">rec</span> and explain why:</p>
+<p><span style="color:orange">Model</span>: <code>&lt;span class="hl-subtle"&gt;sid_start&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_139&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_289&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_534&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_768&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_end&lt;/span&gt;</code></p>
 <p>If you liked Dragon Quest Heroes II, you might like Nights of Azure because both are action RPGs for the PlayStation 4 with a focus on combat and character progression. Both games offer a narrative-driven experience with a strong emphasis on combat mechanics, suggesting a shared player interest in this genre.</p>
 </blockquote>
 <p>We can even have multi-turn conversation with the model:</p>
 <blockquote>
-<p><span style="color:orange">User</span>: I’m looking for games similar to Mario Kart. &lt;|rec|&gt;</p>
-<p><span style="color:orange">Model</span>: <code>&lt;|sid_start|&gt;&lt;|sid_131|&gt;&lt;|sid_503|&gt;&lt;|sid_738|&gt;&lt;|sid_768|&gt;&lt;|sid_end|&gt;, &lt;|sid_start|&gt;&lt;|sid_131|&gt;&lt;|sid_260|&gt;&lt;|sid_577|&gt;&lt;|sid_768|&gt;&lt;|sid_end|&gt;, &lt;|sid_start|&gt;&lt;|sid_145|&gt;&lt;|sid_416|&gt;&lt;|sid_671|&gt;&lt;|sid_768|&gt;&lt;|sid_end|&gt;</code></p>
-<p><span style="color:orange">User</span>: How about something similar but for Xbox? &lt;|rec|&gt;</p>
-<p><span style="color:orange">Model</span>: <code>&lt;|sid_start|&gt;&lt;|sid_183|&gt;&lt;|sid_461|&gt;&lt;|sid_517|&gt;&lt;|sid_768|&gt;&lt;|sid_end|&gt;, &lt;|sid_start|&gt;&lt;|sid_183|&gt;&lt;|sid_461|&gt;&lt;|sid_562|&gt;&lt;|sid_768|&gt;&lt;|sid_end|&gt;,&lt;|sid_start|&gt;&lt;|sid_183|&gt;&lt;|sid_461|&gt;&lt;|sid_616|&gt;&lt;|sid_768|&gt;&lt;|sid_end|&gt;</code></p>
+<p><span style="color:orange">User</span>: I’m looking for games similar to Mario Kart. <span class="hl-subtle">rec</span></p>
+<p><span style="color:orange">Model</span>: <code>&lt;span class="hl-subtle"&gt;sid_start&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_131&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_503&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_738&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_768&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_end&lt;/span&gt;, &lt;span class="hl-subtle"&gt;sid_start&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_131&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_260&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_577&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_768&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_end&lt;/span&gt;, &lt;span class="hl-subtle"&gt;sid_start&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_145&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_416&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_671&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_768&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_end&lt;/span&gt;</code></p>
+<p><span style="color:orange">User</span>: How about something similar but for Xbox? <span class="hl-subtle">rec</span></p>
+<p><span style="color:orange">Model</span>: <code>&lt;span class="hl-subtle"&gt;sid_start&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_183&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_461&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_517&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_768&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_end&lt;/span&gt;, &lt;span class="hl-subtle"&gt;sid_start&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_183&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_461&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_562&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_768&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_end&lt;/span&gt;,&lt;span class="hl-subtle"&gt;sid_start&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_183&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_461&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_616&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_768&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_end&lt;/span&gt;</code></p>
 <p><span style="color:orange">User</span>: Suggest a name and description for the bundle.</p>
 <p><span style="color:orange">Model</span>: Xbox Racing Legends: Speed &amp; Style Pack</p>
 </blockquote>
@@ -654,7 +654,7 @@ Query: {original_item_text}
 </li>
 </ul>
 <h3 id="finetune_qwen3_8b_vocabpy"><a class="header" href="#finetune_qwen3_8b_vocabpy">finetune_qwen3_8b_vocab.py</a></h3>
-<p>This script performs <span style="color:orange">Stage 1</span> of the qwen fine-tuning. It focuses on extending the vocabulary to include new semantic ID tokens and trains embeddings for these new tokens.</p>
+<p>This script performs <span class="hl-subtle">Stage 1</span> of the qwen fine-tuning. It focuses on extending the vocabulary to include new semantic ID tokens and trains embeddings for these new tokens.</p>
 <h4 id="finetuneconfig"><a class="header" href="#finetuneconfig">FineTuneConfig</a></h4>
 <p>Dataclass containing config for the training</p>
 <ul>
@@ -679,7 +679,7 @@ Query: {original_item_text}
 </ul>
 <p>The system prompt is as follows:</p>
 <blockquote>
-<p>"You are a helpful AI assistant that understands and works with semantic IDs for product recommendations. Semantic IDs are hierarchical identifiers in the format <code>&lt;|sid_start|&gt;&lt;|sid_105|&gt;&lt;|sid_307|&gt;&lt;|sid_705|&gt;&lt;|sid_769|&gt;&lt;|sid_end|&gt;</code> that encode product relationships and categories. /no_think"</p>
+<p>"You are a helpful AI assistant that understands and works with semantic IDs for product recommendations. Semantic IDs are hierarchical identifiers in the format <code>&lt;span class="hl-subtle"&gt;sid_start&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_105&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_307&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_705&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_769&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_end&lt;/span&gt;</code> that encode product relationships and categories. /no_think"</p>
 </blockquote>
 <h4 id="extend_tokenizer"><a class="header" href="#extend_tokenizer">extend_tokenizer</a></h4>
 <p><code>extend_tokenizer(model, tokenizer, config: FineTuneConfig)</code> adds semantic ID tokens to the tokenizer using Unsloth's <code>add_new_tokens</code>.</p>
@@ -698,8 +698,8 @@ Query: {original_item_text}
 </li>
 <li>Next, we add new tokens using <code>unsloth.add_new_tokens</code>:
 <ul>
-<li>Special tokens of <code>&lt;|rec|&gt;</code>, <code>&lt;|sid_start|&gt;</code>, <code>&lt;|sid_end|&gt;</code></li>
-<li>Semantic IDs of <code>&lt;|sid_0|&gt;</code> to <code>&lt;|sid_1023|&gt;</code></li>
+<li>Special tokens of <code>&lt;span class="hl-subtle"&gt;rec&lt;/span&gt;</code>, <code>&lt;span class="hl-subtle"&gt;sid_start&lt;/span&gt;</code>, <code>&lt;span class="hl-subtle"&gt;sid_end&lt;/span&gt;</code></li>
+<li>Semantic IDs of <code>&lt;span class="hl-subtle"&gt;sid_0&lt;/span&gt;</code> to <code>&lt;span class="hl-subtle"&gt;sid_1023&lt;/span&gt;</code></li>
 </ul>
 </li>
 </ul>
@@ -713,14 +713,14 @@ Query: {original_item_text}
 <h4 id="load_sid_dataset"><a class="header" href="#load_sid_dataset">load_sid_dataset</a></h4>
 <p>Loads the semantic IDs training dataset:</p>
 <ul>
-<li>Checks if there are texts like <code>&lt;|sid_start|&gt;</code> to make sure processing is correct</li>
+<li>Checks if there are texts like <code>&lt;span class="hl-subtle"&gt;sid_start&lt;/span&gt;</code> to make sure processing is correct</li>
 <li>Applies chat template to the rows (but keeps as text)</li>
 </ul>
 <p>There are 5 distinct categories of training data:</p>
 <ul>
 <li><span style="color:orange">SemanticID -&gt; text</span>:
 <ul>
-<li><strong>Input</strong>: "Product <code>&lt;|sid_start|&gt;...&lt;|sid_end|&gt;</code> has title:"</li>
+<li><strong>Input</strong>: "Product <code>&lt;span class="hl-subtle"&gt;sid_start&lt;/span&gt;...&lt;span class="hl-subtle"&gt;sid_end&lt;/span&gt;</code> has title:"</li>
 <li><strong>Output</strong>: "Super Mario Bros"</li>
 <li><strong>Variations</strong>: ID to title, description, category, features or full context</li>
 </ul>
@@ -728,28 +728,28 @@ Query: {original_item_text}
 <li><span style="color:orange">Text -&gt; SemanticID</span>:
 <ul>
 <li><strong>Input</strong>: "The product Super Mario Bros has SemanticID:"</li>
-<li><strong>Output</strong>: "<code>&lt;|sid_start|&gt;...&lt;|sid_end|&gt;</code>"</li>
+<li><strong>Output</strong>: "<code>&lt;span class="hl-subtle"&gt;sid_start&lt;/span&gt;...&lt;span class="hl-subtle"&gt;sid_end&lt;/span&gt;</code>"</li>
 <li><strong>Variations</strong>: Similar variations to above</li>
 </ul>
 </li>
 <li><span style="color:orange">Sequential Recommendation</span>:
 <ul>
 <li><strong>Input</strong>: "Based on recent purchases etc., next item:"</li>
-<li><strong>Output</strong>: "<code>&lt;|sid_start|&gt;...&lt;|sid_end|&gt;</code>"</li>
+<li><strong>Output</strong>: "<code>&lt;span class="hl-subtle"&gt;sid_start&lt;/span&gt;...&lt;span class="hl-subtle"&gt;sid_end&lt;/span&gt;</code>"</li>
 <li><strong>Variations</strong>: Various sequence lengths of 2, 3, or 5 items.</li>
 </ul>
 </li>
 <li><span style="color:orange">Semantic Understanding</span>:
 <ul>
-<li><strong>Input</strong>: "Products starting with <code>&lt;|sid_start|&gt;&lt;|sid_64|&gt; are typically:</code></li>
+<li><strong>Input</strong>: "Products starting with <code>&lt;span class="hl-subtle"&gt;sid_start&lt;/span&gt;&lt;span class="hl-subtle"&gt;sid_64&lt;/span&gt; are typically:</code></li>
 <li><strong>Output</strong>: "Nintendo switch games"</li>
 <li><strong>Variations</strong>: Prefix to category, prefix to examples, similar items.</li>
 </ul>
 </li>
 <li><span style="color:orange">Multi-hop Reasoning</span>:
 <ul>
-<li><strong>Input</strong>: "A user who bought <code>&lt;|sid_a|&gt;</code> might also buy:"</li>
-<li><strong>Output</strong>: "<code>&lt;|sid_b|&gt;</code></li>
+<li><strong>Input</strong>: "A user who bought <code>&lt;span class="hl-subtle"&gt;sid_a&lt;/span&gt;</code> might also buy:"</li>
+<li><strong>Output</strong>: "<code>&lt;span class="hl-subtle"&gt;sid_b&lt;/span&gt;</code></li>
 <li><strong>Variations</strong>: Co-purchase patterns.</li>
 </ul>
 </li>
@@ -838,6 +838,22 @@ Query: {original_item_text}
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

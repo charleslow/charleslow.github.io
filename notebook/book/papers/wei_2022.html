@@ -198,8 +198,8 @@ A: Roger started with 3 balls. 2 cans of 3 balls each is 6 balls.
 <h2 id="observations"><a class="header" href="#observations">Observations</a></h2>
 <p>An important sub-finding is that between CoT prompting and standard prompting (as per Brown 2020), CoT prompting's improvement gap significantly increases as we:</p>
 <ul>
-<li>Increase the <span style="color:orange">question difficulty</span> (seems intuitive); and</li>
-<li>Increase the <span style="color:orange">model size</span>. At the <code>8B</code> parameter model size, the study showed no difference between CoT prompting and standard prompting. But the gap widened significantly at the <code>100B</code> model size and widened further at the <code>500B</code> model size.</li>
+<li>Increase the <span class="hl-subtle">question difficulty</span> (seems intuitive); and</li>
+<li>Increase the <span class="hl-subtle">model size</span>. At the <code>8B</code> parameter model size, the study showed no difference between CoT prompting and standard prompting. But the gap widened significantly at the <code>100B</code> model size and widened further at the <code>500B</code> model size.</li>
 </ul>
 <p>Another interesting ablation study tried to isolate the improvements to a specific aspect of prompting:</p>
 <ul>
@@ -244,6 +244,22 @@ A: Roger started with 3 balls. 2 cans of 3 balls each is 6 balls.
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

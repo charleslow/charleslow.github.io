@@ -204,7 +204,7 @@
 <h2 id="personalized-page-rank-graph-sampling"><a class="header" href="#personalized-page-rank-graph-sampling">Personalized Page Rank Graph Sampling</a></h2>
 <p>Personalized Page Rank (PPR) is an adaptation of the well-known Page Rank algorithm and is widely used as a notion of node similarity. Specifically, given a source node <code>s</code> and a target node <code>t</code>, the PPR score <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">π</span><span class="mopen">(</span><span class="mord mathnormal">s</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">t</span><span class="mclose">)</span></span></span></span> represents the probability that a random walk originating at <code>s</code> will terminate at <code>t</code>.</p>
 <p>In training the GNN under the GraphSAGE framework, embeddings of neighbours to a node <code>s</code> are aggregated together to form the representation for <code>s</code>. A terse way of saying the same thing is that "GNNs propagate signals across graphs". Hence, how neighbours are sampled is crucial in determining the performance of the GNN.</p>
-<p>The simple way is <span style="color:orange">Random Sampling</span>, which simply chooses neighbours randomly amongst nodes connected to node <code>s</code>. This can done over a single-hop or multi-hops, and is efficient but not the most performant. The better way is <span style="color:orange">PPR sampling</span>, which chooses neighbours weighted by their PPR score, with the search space limited to nodes connected to <code>s</code> over <code>k</code> hops. This is slower but a better measure of neighbourhood.</p>
+<p>The simple way is <span class="hl-subtle">Random Sampling</span>, which simply chooses neighbours randomly amongst nodes connected to node <code>s</code>. This can done over a single-hop or multi-hops, and is efficient but not the most performant. The better way is <span class="hl-subtle">PPR sampling</span>, which chooses neighbours weighted by their PPR score, with the search space limited to nodes connected to <code>s</code> over <code>k</code> hops. This is slower but a better measure of neighbourhood.</p>
 <p>From their experiments, 2-hop PPR sampling contributes 2.1% validation AUC lift. Adding more hops beyond 2 hops contributes marginally to performance, hence 2-hops is chosen for efficiency.</p>
 <h2 id="other-tips-and-tricks"><a class="header" href="#other-tips-and-tricks">Other Tips and Tricks</a></h2>
 <p>The paper is full of practical tips on how to speed up training and improve stability. Here are some that stood out to me:</p>
@@ -241,6 +241,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

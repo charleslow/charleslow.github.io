@@ -179,7 +179,7 @@
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="lecture-1"><a class="header" href="#lecture-1">Lecture 1</a></h1>
-<p>Course about how to design and implement a database management system. Textbook: <span style="color:orange">Database System Concepts</span> by Silberschatz, Korth and Sudarshan.</p>
+<p>Course about how to design and implement a database management system. Textbook: <span class="hl-subtle">Database System Concepts</span> by Silberschatz, Korth and Sudarshan.</p>
 <p>Agenda:</p>
 <ul>
 <li>Database Systems Background</li>
@@ -196,8 +196,8 @@
 <li>Data types are not stored on the csv file, we need to know which is an integer etc.</li>
 <li>Concurrent writes to the file are not supported</li>
 </ul>
-<p>A <span style="color:orange">Database Management System (DBMS)</span> is a software that allows applications to store and analyze information in a database. A general purpose DBMS supports the definition, creation, querying, update and administrations of databases in accordance with some data model. Usually first choice is postgres or sqlite.</p>
-<p>A <span style="color:orange">data model</span> is a collection of concepts for describing the data in a database. A <span style="color:orange">schema</span> is a description of a particular collection of data, using a given data model. Examples of data models:</p>
+<p>A <span class="hl-subtle">Database Management System (DBMS)</span> is a software that allows applications to store and analyze information in a database. A general purpose DBMS supports the definition, creation, querying, update and administrations of databases in accordance with some data model. Usually first choice is postgres or sqlite.</p>
+<p>A <span class="hl-subtle">data model</span> is a collection of concepts for describing the data in a database. A <span class="hl-subtle">schema</span> is a description of a particular collection of data, using a given data model. Examples of data models:</p>
 <ol>
 <li>Relational</li>
 <li>Key / Value</li>
@@ -217,9 +217,9 @@
 <li>Physical storage left up to the DBMS implementation</li>
 <li>Access data through high-level language, DBMS figures out the best execution model</li>
 </ul>
-<p>A <span style="color:orange">relation</span> is an unordered set that contain the relationship of attributes that represent entities. An n-ary relation is equivalent to a table with n columns. A <span style="color:orange">tuple</span> is a set of attributes values (also known as its domain) in the relation. The special value <code>NULL</code> is a member of every domain.</p>
-<p>A relation's <span style="color:orange">primary key</span> uniquely identifies a single tuple. Some DBMSs automatically create an internal primary key if a table does not define one. Primary key is a constraint that the DBMS will enforce to ensure no duplicates exist. A <span style="color:orange">foreign key</span> specifies that an attribute from one relation maps to a tuple in another relation. E.g. If we have an artist table with the artist id, and an album table with an artist column, the artist column is a foreign key.</p>
-<p>We can impose <span style="color:orange">constraints</span> on the database that must hold for any tuple. DBMS will then prevent any modification that could violate those constraints. Unique and foreign key constraints are the most common. e.g. <code>CREATE ASSERTION</code> in SQL.</p>
+<p>A <span class="hl-subtle">relation</span> is an unordered set that contain the relationship of attributes that represent entities. An n-ary relation is equivalent to a table with n columns. A <span class="hl-subtle">tuple</span> is a set of attributes values (also known as its domain) in the relation. The special value <code>NULL</code> is a member of every domain.</p>
+<p>A relation's <span class="hl-subtle">primary key</span> uniquely identifies a single tuple. Some DBMSs automatically create an internal primary key if a table does not define one. Primary key is a constraint that the DBMS will enforce to ensure no duplicates exist. A <span class="hl-subtle">foreign key</span> specifies that an attribute from one relation maps to a tuple in another relation. E.g. If we have an artist table with the artist id, and an album table with an artist column, the artist column is a foreign key.</p>
+<p>We can impose <span class="hl-subtle">constraints</span> on the database that must hold for any tuple. DBMS will then prevent any modification that could violate those constraints. Unique and foreign key constraints are the most common. e.g. <code>CREATE ASSERTION</code> in SQL.</p>
 <h2 id="data-manipulation-languages-dml"><a class="header" href="#data-manipulation-languages-dml">Data Manipulation Languages (DML)</a></h2>
 <p>There are two broad methods to store and retrieve information from a database:</p>
 <ol>
@@ -278,7 +278,7 @@
 </ul>
 <p>Instead of specifying the exact operations, DBMS allow us to state the high level answer we want, and the DBMS decides on the exact operations and the ordering to perform. This abstracts away the need for the user to know which operations are more efficient. Note that the relational model is independent of the query language implementation, although SQL is the de-facto standard (with many variants).</p>
 <h2 id="document-data-model"><a class="header" href="#document-data-model">Document Data Model</a></h2>
-<p>A collections of record documents containing a hierarchy of named field / value pairs. A field's value can be a scalar type, array, or another document. Modern implementations use <code>JSON</code>. Main reason for this model is to avoid <span style="color:orange">relational object impedance msimatch</span>, i.e. relational databases store data in rows with relationships between tables, but in object oriented languages like Python data is stored in objects with nested attributes, which could result in inefficient queries when we try to map between the two. In contrast, Document Databases store data in a nested json which closely resembles the object-oriented approach, making it easier to work with. The down side is that we could end up storing a lot of duplicate data in the json objects.</p>
+<p>A collections of record documents containing a hierarchy of named field / value pairs. A field's value can be a scalar type, array, or another document. Modern implementations use <code>JSON</code>. Main reason for this model is to avoid <span class="hl-subtle">relational object impedance mismatch</span>, i.e. relational databases store data in rows with relationships between tables, but in object oriented languages like Python data is stored in objects with nested attributes, which could result in inefficient queries when we try to map between the two. In contrast, Document Databases store data in a nested json which closely resembles the object-oriented approach, making it easier to work with. The down side is that we could end up storing a lot of duplicate data in the json objects.</p>
 <ul>
 <li>Examples: MongoDB, RavenDB, DynamoDB etc.</li>
 </ul>
@@ -317,6 +317,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

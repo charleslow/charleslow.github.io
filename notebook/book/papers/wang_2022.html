@@ -180,12 +180,12 @@
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="wang-2022---self-consistency-llm"><a class="header" href="#wang-2022---self-consistency-llm">Wang 2022 - Self Consistency LLM</a></h1>
 <p><a href="https://arxiv.org/abs/2203.11171">Self-Consistency Improves Chain of Thought Reasoning in Language Models</a></p>
-<p>The main idea of this paper is that <span style="color:orange">majority decoding</span> (dubbed self-consistency) of sampled LLM responses significant improves over CoT prompting (<a href="./wei_2022.html">see Wei 2022</a>).</p>
+<p>The main idea of this paper is that <span class="hl-subtle">majority decoding</span> (dubbed self-consistency) of sampled LLM responses significant improves over CoT prompting (<a href="./wei_2022.html">see Wei 2022</a>).</p>
 <h2 id="method"><a class="header" href="#method">Method</a></h2>
 <p>The idea is simple. As per (<a href="./wei_2022.html">Wei 2022</a>), we use CoT few shot examples in our prompt. Instead of just picking the answer from one run of the LLM, we sample many <code>&lt;CoT reasoning, Answer&gt;</code> pairs from the LLM with the same prompt. We then "marginalize out" the reasoning by just choosing the answer that occurs the most frequently.</p>
 <p>Note that this method is unsupervised and the only cost to pay is the compute cost of multiple runs.</p>
-<p>The name <span style="color:orange">self-consistency</span> comes from the idea that the most consistent answer given by the model is the most reliable one. Prior approaches to task-based responses is to use <span style="color:orange">greedy decoding</span>, i.e. set <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span> and get the highest likelihood answer. This paper shows that an ensemble of diverse answers is far more effective than the greedy approach.</p>
-<p>We may think of this idea as <span style="color:orange">analogous to random forests</span>. Creating an ensemble over diverse weak learners improves significantly, and increasing the diversity of the learners (via column or row sampling) up to a certain point helps to improve performance.</p>
+<p>The name <span class="hl-subtle">self-consistency</span> comes from the idea that the most consistent answer given by the model is the most reliable one. Prior approaches to task-based responses is to use <span class="hl-subtle">greedy decoding</span>, i.e. set <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span> and get the highest likelihood answer. This paper shows that an ensemble of diverse answers is far more effective than the greedy approach.</p>
+<p>We may think of this idea as <span class="hl-subtle">analogous to random forests</span>. Creating an ensemble over diverse weak learners improves significantly, and increasing the diversity of the learners (via column or row sampling) up to a certain point helps to improve performance.</p>
 <p>Note that the idea of self-consistency decoding is orthogonal to the specific choice of CoT prompting. Specifically, self-consistency significantly improves with several forms of CoT prompting, including:</p>
 <ul>
 <li>Few shot in-context CoT prompts (<a href="https://arxiv.org/abs/2201.11903">Wei 2022</a>)</li>
@@ -228,6 +228,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

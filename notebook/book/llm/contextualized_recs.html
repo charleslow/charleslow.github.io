@@ -201,7 +201,7 @@
 </ul>
 </li>
 </ul>
-<p>The AB tests showed that explanations containing <span style="color:orange">meaningful details</span> about the artist or music led to significantly higher user engagement.</p>
+<p>The AB tests showed that explanations containing <span class="hl-subtle">meaningful details</span> about the artist or music led to significantly higher user engagement.</p>
 <p>For LLM fine-tuning, they found that Llama 3.1 8B worked well and could be trained with multiple adapters for 10 different tasks. Throughout the training process, they used MMLU benchmark as a guardrail to ensure that the model's overall ability remained intact. Spotify uses vLLM for inference.</p>
 <h2 id="linkedin"><a class="header" href="#linkedin">LinkedIn</a></h2>
 <p><a href="https://www.linkedin.com/pulse/celebrating-1-billion-members-our-new-ai-powered-linkedin-tomer-cohen-26vre">Our new AI powered LinkedIn</a></p>
@@ -241,6 +241,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

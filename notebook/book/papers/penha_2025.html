@@ -220,7 +220,7 @@
 <p>The results show that:</p>
 <ul>
 <li>Single-task based embeddings perform best in their own task, much better than any multi-task method. But they degrade performance on the other task very badly.</li>
-<li>Amongst the multi-task methods, the <span style="color:orange">multi-task</span> method of training a bi-encoder on both contexts works best.</li>
+<li>Amongst the multi-task methods, the <span class="hl-subtle">multi-task</span> method of training a bi-encoder on both contexts works best.</li>
 <li>Amongst semantic ID tokenisation methods, <code>RQ-Kmeans</code> was the clear winner, far outperforming all other methods. <code>RQ-VAE</code> in particular showed degenerate results especially for the search case.</li>
 </ul>
 <blockquote>
@@ -256,6 +256,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

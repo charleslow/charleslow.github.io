@@ -179,16 +179,16 @@
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="data-parallel-computing"><a class="header" href="#data-parallel-computing">Data Parallel Computing</a></h1>
-<p>When applications run slowly, the issue is usually that there is too much data to process. In many cases, this data can be split up and dealt with independently. Such independent evaluation of different pieces of data is called <span style="color:orange">data parallelism</span>.</p>
+<p>When applications run slowly, the issue is usually that there is too much data to process. In many cases, this data can be split up and dealt with independently. Such independent evaluation of different pieces of data is called <span class="hl-subtle">data parallelism</span>.</p>
 <ul>
-<li>This is different from <span style="color:orange">Task parallelism</span>, which is the task decomposition of applications. For example, we may need to do a vector multiplication and addition on the same set of data. In general, data parallelism is usually the main source of scalability for parallel programs.</li>
+<li>This is different from <span class="hl-subtle">Task parallelism</span>, which is the task decomposition of applications. For example, we may need to do a vector multiplication and addition on the same set of data. In general, data parallelism is usually the main source of scalability for parallel programs.</li>
 </ul>
 <p>Let us use a running example using color to gray scale conversion. This is a simple data parallel task as each pixel can be dealt with independently. Suppose we have a color image comprising many pixels, each pixel has an <code>r, g, b</code> value ranging from <code>0</code> to <code>1</code> indicating the intensity.</p>
 <p>We use a simple grayscale formula (note that the grayscale formula is because our eyes perceive luminosity of different colors differently):
 <span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">L</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.21</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">0.72</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord">0.07</span><span class="mord mathnormal">b</span></span></span></span></span></p>
 <h2 id="cuda-c-program"><a class="header" href="#cuda-c-program">CUDA C Program</a></h2>
 <p>CUDA C is an extension of ANSI C programming language with minimal new syntax. The structure of a CUDA C program reflects the coexistence of a host (CPU) and one or more devices (GPUs) in the computer. Each source file can have a mixture of host code and device code. By definition, a traditional C program is a CUDA program that contains only host code. The device code is clearly marked with CUDA C keywords.</p>
-<p>When a kernel function is called, a large number of threads are launched on a device to execute the kernel. All the threads that are launched by a kernel call are collectively called a <span style="color:orange">grid</span>. When all threads of a grid have completed, the grid terminates and the execution continues on the host until the next grid is launched.</p>
+<p>When a kernel function is called, a large number of threads are launched on a device to execute the kernel. All the threads that are launched by a kernel call are collectively called a <span class="hl-subtle">grid</span>. When all threads of a grid have completed, the grid terminates and the execution continues on the host until the next grid is launched.</p>
 <p>Launching a grid generates many threads. In the grayscale example, each thread processes one pixel. One can assume that CUDA threads take very few clock cycles to generate and schedule. In contrast, traditional C programs can take thousands of clock cycles to generate and schedule.</p>
 <blockquote>
 <p><strong>Threads</strong>. A thread is a simplified view of how a processor executes a sequential program. A thread consists of the code of the program, the point in the code that is being executed, and the values of its variables and data structures. The execution of a thread may be viewed as sequential.</p>
@@ -291,14 +291,14 @@ cudaFree(A_d);
     cudaFree(C_d);
 }
 </code></pre>
-<p>The above code is quite self explanatory. This kind of host code that delegates work to a device is called a <span style="color:orange">stub</span>. Note that <code>cudaMemcpyDeviceToHost</code> etc. are special CUDA keywords.</p>
+<p>The above code is quite self explanatory. This kind of host code that delegates work to a device is called a <span class="hl-subtle">stub</span>. Note that <code>cudaMemcpyDeviceToHost</code> etc. are special CUDA keywords.</p>
 <blockquote>
 <p>Notice that C syntax is a bit confusing - we write <code>float *A_d, *B_d, *C_d</code> where the <code>*</code> is attached to the variable, but in function parameters we write <code>void vecAdd(float* A_h, ...)</code>. It turns out that both ways of writing compile to the same code, and in both cases we are referring to <code>A_h, A_d</code> as float pointers. The reason why <code>*</code> is bound to the variable when declaring is to avoid the subtle bug of <code>float* A_d, B_d</code>, which actually declares <code>B_d</code> as a float, not a float pointer!</p>
 </blockquote>
 <h2 id="kernel-functions-and-threading"><a class="header" href="#kernel-functions-and-threading">Kernel Functions and Threading</a></h2>
 <p>Since all threads execute the same code, CUDA C programming is an instance of Single Program, Multiple Data (SPMD) parallel programming style. CUDA launches a grid of threads that are organized into a two level hierarchy:</p>
 <ul>
-<li>Each grid is organized as an array of <span style="color:orange">thread blocks</span>, which are also referred to as blocks</li>
+<li>Each grid is organized as an array of <span class="hl-subtle">thread blocks</span>, which are also referred to as blocks</li>
 <li>All blocks are of the same size, and each block can contain up to <code>1,024</code> threads</li>
 </ul>
 <p>The total number of threads per block is specified by the host code when a kernel is called. For a given grid of threads, the number of threads in a block is available in a variable called <code>blockDim</code>.</p>
@@ -356,7 +356,7 @@ void vecAddKernel(float* A, float* B, float* C, int n) {
 </ul>
 </li>
 </ul>
-<p>Notice that the CUDA kernel function has no for-loop. The reason is that the loop has been replaced by the grid of threads. Each thread in the grid corresponds to one iteration of the for loop. This is sometimes referred to as <span style="color:orange">loop parallelism</span>.</p>
+<p>Notice that the CUDA kernel function has no for-loop. The reason is that the loop has been replaced by the grid of threads. Each thread in the grid corresponds to one iteration of the for loop. This is sometimes referred to as <span class="hl-subtle">loop parallelism</span>.</p>
 <h2 id="complete-version-of-vecadd"><a class="header" href="#complete-version-of-vecadd">Complete Version of <code>vecAdd</code></a></h2>
 <p>Now we can write the complete version of <code>vecAdd</code>.</p>
 <pre><code class="language-c">void vecAdd(float* A, float* B, float* C, int n) {
@@ -379,7 +379,7 @@ void vecAddKernel(float* A, float* B, float* C, int n) {
     cudaFree(C_d);
 }
 </code></pre>
-<p>Note that we call the kernel function with <code>vecAddKernel</code> and specify <span style="color:orange">execution configuration parameters</span> using the "&lt;&lt;&lt; &gt;&gt;&gt;" demarcators.</p>
+<p>Note that we call the kernel function with <code>vecAddKernel</code> and specify <span class="hl-subtle">execution configuration parameters</span> using the "&lt;&lt;&lt; &gt;&gt;&gt;" demarcators.</p>
 <ul>
 <li>The first parameter <code>ceil(n / 256.0)</code> gives the number of blocks in the grid
 <ul>
@@ -504,6 +504,22 @@ void myFunction(...) {
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

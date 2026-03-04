@@ -187,8 +187,8 @@
 <p>BERT4Rec was proposed as an improvement to SASRec, and the claim was that introducing bi-directional attention (like BERT) and performing prediction on the cloze passage task (i.e. randomly masking x% of items) is able to lead to significant gains over SASRec. The argument is that the random masking is akin to data augmentation, as there are far more permutations of masked positions compared to just predicting the next item.</p>
 <p>The authors point out two misgivings they have with this interpretation, which is in line with my own intuitions:</p>
 <ul>
-<li>BERT4Rec task is only <span style="color:orange">weakly related</span> to the final goal of sequential recommendations, whereas SASRec tasks for training and prediction are perfectly aligned (i.e. just predict the next item). This is akin to only using the BERT encoder (without the decoder) for a language modelling task, which is quite strange.</li>
-<li>BERT4Rec masks some items and <span style="color:orange">only calculates losses for the subset of items</span>, whereas SASRec computes losses for all items (except the last item) at once, getting more training signal from each training sequence</li>
+<li>BERT4Rec task is only <span class="hl-subtle">weakly related</span> to the final goal of sequential recommendations, whereas SASRec tasks for training and prediction are perfectly aligned (i.e. just predict the next item). This is akin to only using the BERT encoder (without the decoder) for a language modelling task, which is quite strange.</li>
+<li>BERT4Rec masks some items and <span class="hl-subtle">only calculates losses for the subset of items</span>, whereas SASRec computes losses for all items (except the last item) at once, getting more training signal from each training sequence</li>
 </ul>
 <p>So we should expect SASRec to perform better and more efficiently than BERT4Rec. How then do we explain the performance discrepancy? The authors hypothesize that the performance difference is really due to the difference in loss functions between them, as explained below.</p>
 <h2 id="setup"><a class="header" href="#setup">Setup</a></h2>
@@ -243,6 +243,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 
