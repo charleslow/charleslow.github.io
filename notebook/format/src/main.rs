@@ -30,26 +30,26 @@ struct Chapter {
     other: serde_json::Map<String, Value>,
 }
 
-/// Transform text inside <<text>> to add color
+/// Transform text inside <<text>> to bold orange highlights
 /// Pattern: (?<!<)<<(?!<)(.+?)(?<!>)>>(?!>)
 /// This matches << >> but not <<< >>> (avoids triple angle brackets)
 fn transform_text(input_text: &str) -> String {
     // Rust regex doesn't support lookbehind, so we use a different approach
     // We'll match <<...>> and check context manually
     let pattern = Regex::new(r"<<(.+?)>>").unwrap();
-    
+
     let mut result = String::new();
     let mut last_end = 0;
-    
+
     for caps in pattern.captures_iter(input_text) {
         let m = caps.get(0).unwrap();
         let start = m.start();
         let end = m.end();
-        
+
         // Check for triple angle brackets (lookbehind/lookahead simulation)
         let preceded_by_lt = start > 0 && input_text.as_bytes().get(start - 1) == Some(&b'<');
         let followed_by_gt = end < input_text.len() && input_text.as_bytes().get(end) == Some(&b'>');
-        
+
         if preceded_by_lt || followed_by_gt {
             // This is part of <<< or >>>, don't transform
             result.push_str(&input_text[last_end..end]);
@@ -61,9 +61,16 @@ fn transform_text(input_text: &str) -> String {
         }
         last_end = end;
     }
-    
+
     result.push_str(&input_text[last_end..]);
     result
+}
+
+/// Transform text inside <|text|> to subtle inline highlights
+/// Uses a CSS class for a warm background tint with accent underline
+fn transform_subtle_text(input_text: &str) -> String {
+    let pattern = Regex::new(r"<\|(.+?)\|>").unwrap();
+    pattern.replace_all(input_text, r#"<span class="hl-subtle">$1</span>"#).to_string()
 }
 
 /// Find all arXiv URLs in the text
@@ -77,11 +84,13 @@ fn find_arxiv_urls(text: &str) -> Vec<String> {
 
 fn process_chapter(chapter: &mut Chapter, arxiv_urls: &mut Vec<String>) {
     chapter.content = transform_text(&chapter.content);
+    chapter.content = transform_subtle_text(&chapter.content);
     arxiv_urls.extend(find_arxiv_urls(&chapter.content));
-    
+
     for sub_item in &mut chapter.sub_items {
         if let BookItem::Chapter { Chapter: sub_chapter } = sub_item {
             sub_chapter.content = transform_text(&sub_chapter.content);
+            sub_chapter.content = transform_subtle_text(&sub_chapter.content);
             arxiv_urls.extend(find_arxiv_urls(&sub_chapter.content));
         }
     }
@@ -161,6 +170,36 @@ mod tests {
         assert_eq!(
             transform_text("<<a>> and <<b>>"),
             r#"<span style="color:orange">a</span> and <span style="color:orange">b</span>"#
+        );
+    }
+
+    #[test]
+    fn test_transform_subtle_text() {
+        assert_eq!(
+            transform_subtle_text("This is <|important|> text."),
+            r#"This is <span class="hl-subtle">important</span> text."#
+        );
+
+        // Multiple subtle highlights
+        assert_eq!(
+            transform_subtle_text("<|a|> and <|b|>"),
+            r#"<span class="hl-subtle">a</span> and <span class="hl-subtle">b</span>"#
+        );
+
+        // No match - plain text
+        assert_eq!(
+            transform_subtle_text("no highlights here"),
+            "no highlights here"
+        );
+    }
+
+    #[test]
+    fn test_both_highlights() {
+        let input = "<<bold>> and <|subtle|>";
+        let result = transform_subtle_text(&transform_text(input));
+        assert_eq!(
+            result,
+            r#"<span style="color:orange">bold</span> and <span class="hl-subtle">subtle</span>"#
         );
     }
 
