@@ -88,7 +88,7 @@ Instead of specifying the exact operations, DBMS allow us to state the high leve
 
 ## Document Data Model
 
-A collections of record documents containing a hierarchy of named field / value pairs. A field's value can be a scalar type, array, or another document. Modern implementations use `JSON`. Main reason for this model is to avoid <<relational object impedance msimatch>>, i.e. relational databases store data in rows with relationships between tables, but in object oriented languages like Python data is stored in objects with nested attributes, which could result in inefficient queries when we try to map between the two. In contrast, Document Databases store data in a nested json which closely resembles the object-oriented approach, making it easier to work with. The down side is that we could end up storing a lot of duplicate data in the json objects.
+A collections of record documents containing a hierarchy of named field / value pairs. A field's value can be a scalar type, array, or another document. Modern implementations use `JSON`. Main reason for this model is to avoid <<relational object impedance mismatch>>, i.e. relational databases store data in rows with relationships between tables, but in object oriented languages like Python data is stored in objects with nested attributes, which could result in inefficient queries when we try to map between the two. In contrast, Document Databases store data in a nested json which closely resembles the object-oriented approach, making it easier to work with. The down side is that we could end up storing a lot of duplicate data in the json objects.
 - Examples: MongoDB, RavenDB, DynamoDB etc.
 
 ## Vector Data Model
