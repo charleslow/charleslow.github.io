@@ -10,7 +10,7 @@ A general framework for NLP systems: create a function to map an input X into an
 - Language Modelling
 - Translation
 - Text Classification
-- Langugage Analysis
+- Language Analysis
 - Image Captioning
 
 Challenges of NLP

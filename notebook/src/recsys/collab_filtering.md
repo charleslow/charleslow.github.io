@@ -69,7 +69,7 @@ The difference between VAE and a regular autoencoder is that it doesn't learn a 
 ## Splitting
 
 `recommenders` uses a few different types of data splitting:
-1. Stratified spltting. 
+1. Stratified splitting. 
 
 
 
