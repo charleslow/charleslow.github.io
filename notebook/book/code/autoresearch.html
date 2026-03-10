@@ -1,0 +1,296 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>karpathy/autoresearch - Chux&#x27;s Notebook</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../katex.min.css">
+        <link rel="stylesheet" href="../styles.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Chux&#x27;s Notebook</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="karpathyautoresearch"><a class="header" href="#karpathyautoresearch">karpathy/autoresearch</a></h1>
+<p><a href="https://charleslow.github.io/code-stories/?repo=charleslow/code-stories-cache&amp;story=autoresearch-end-to-end">Code Stories Link: autoresearch-end-to-end</a></p>
+<p>Karpathy's autoresearch is an experiment on agent-led experimentation. The idea is really simple - there are only 3 pertinent files in the repo.</p>
+<p><span class="hl-subtle">program.md</span> - A natural language instruction on the goal and structure of the experimentation loop. It reads like a brief to a graduate student:</p>
+<ul>
+<li>Look at the git state of the repo</li>
+<li>Hack <code>train.py</code> to test experimental ideas</li>
+<li>Run the experiment and read the results
+<ul>
+<li>If crash, try to fix a few times and then give up</li>
+<li>If improved, git commit and start again</li>
+<li>If deproved, git reset to the original state</li>
+</ul>
+</li>
+<li>Final instructions:
+<ul>
+<li>Timeout: each run takes 5 mins total (<span class="hl-subtle">note</span>: also enforced in code)</li>
+<li>Crash: use judgement, fix easy bugs or give up on fundamental issues</li>
+<li>Never stop: never ask human for input, keep going indefinitely</li>
+</ul>
+</li>
+</ul>
+<p><span class="hl-subtle">prepare.py</span> - Mostly a one-off data preparation script to download and tokenize the data. Also defines some constants that are not changeable, and the evaluation function that computes bits per byte. The agent does not touch this file.</p>
+<ul>
+<li>Important constants:
+<ul>
+<li><code>TIME_BUDGET=300</code>: 5 min timeout</li>
+<li><code>EVAL_TOKENS</code>: fixed number of tokens for validation evaluation</li>
+<li><code>MAX_SEQ_LEN=2048</code>: max sequence length</li>
+</ul>
+</li>
+<li>Evaluation function:
+<ul>
+<li><code>evaluate_bpb(model, tokenizer, batch_size)</code> computes cross entropy loss and then normalizes by total bytes of validation tokens</li>
+<li>Cross entropy loss is expressed in <code>nats</code> because <code>ln</code> is used</li>
+<li>Divide by <code>ln(2)</code> to convert nats to bits</li>
+<li>Divide by byte count of validation tokens so that the metric is agnostic to the tokenizer vocabulary size</li>
+<li>Intuition is that a tokenizer with larger vocab size means that each token can represent longer words, i.e. each token carries more information bits by default</li>
+</ul>
+</li>
+<li>Dataloading choice:
+<ul>
+<li>Interesting packing strategy to ensure that each batch of tokens have the same length to minimize padding</li>
+<li>This is to squeeze out as much information as possible in the limited compute window of 5 mins</li>
+</ul>
+</li>
+</ul>
+<p><span class="hl-subtle">train.py</span> - The file that the agent is supposed to hack. The code is quite sophisticated, filled with various optimization tricks that Karpathy implemented in nanochat. So it is a strong baseline, implementing the entire transformer training loop from pytorch primitives.</p>
+<p>Will not dive into details of <code>train.py</code> here (that would be more of a nanochat deep dive), but some design choices:</p>
+<ul>
+<li>The training loop imports the immutable <code>TIME_BUDGET</code> from <code>prepare.py</code>, and imposes a stop when <code>total_training_time &gt; TIME_BUDGET</code></li>
+<li><code>evaluate_bpb</code> is called on the model and tokenizer to get final <code>val_bpb</code> which is printed out at the end of the run</li>
+</ul>
+<h2 id="takeaway"><a class="header" href="#takeaway">Takeaway</a></h2>
+<p>That is about it! What's surprising to me is also what is <strong>not</strong> in the code: there is no sophisticated harness to ensure that the agent cannot cheat. Technically, there is nothing stopping the agent from removing the time budget from <code>train.py</code> or hacking the evaluation function. The takeaway is that <span class="hl-subtle">the prompt is sufficient harness</span>, at least for this setup and using claude.</p>
+<p>There is also too much hype about this experiment. The tweaks that the agent makes are mostly hyperparameter changes, such as tweaking various learning rates and RoPE parameters, so it can be seen as a glorified hyperparameter tuning run which is not new.</p>
+<p>Nonetheless, we should not downplay the usefulness of Karpathy's setup:</p>
+<ul>
+<li>Design choice of <code>5 min</code> on a H100 and using bits per bytes is a neat setup to force rapid interation. He also demonstrated that a simple setup as above is sufficient to get the agent to comply</li>
+<li>Unlike standard hyperparameter tuning, where the parameter space is pre-defined and limited scope, <span class="hl-subtle">the entire architecture (in theory) is open to hacking</span>. This is much more open-ended and the upper bound is unlimited. We will surely find ways to improve upon this structure and find non-trivial things using autoresearch-ish approaches. For a start, I hope to do something similar to get an agent to run through some ML experiments, using the time budget as a way to conduct effective dev runs.</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../code/picoclaw.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../experiments/main.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../code/picoclaw.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../experiments/main.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
