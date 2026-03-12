@@ -255,53 +255,63 @@
 </code></pre>
 <p>Note that <code>messages</code> has three components: <code>system</code>, <code>user</code>, <code>assistant</code>.</p>
 <h3 id="finetunepy"><a class="header" href="#finetunepy">finetune.py</a></h3>
-<p>The first part of the script handles dataset loading.</p>
-<p><span style="color:orange">load_and_prepare_dataset</span> is the main function for data loading and tokenization.</p>
+<p>Recall that the main idea is to add a loss that pushes the representation of the <code>context</code> towards the <code>target</code>. The main innovation in the code is using attention masking to create <span class="hl-subtle">islands of causal attention</span> for efficient computation of these representations.</p>
+<p>Before we go into the forward pass, first note that <code>n</code> predictor tokens (i.e. <code>&lt;span class="hl-subtle"&gt;predictor_i&lt;/span&gt;</code>) tokens are appended to the end of each user message. This simple step allows the network to learn a non-linear prediction function over the user representation, which will be compared against the assistant representation.</p>
+<h4 id="naive-approach"><a class="header" href="#naive-approach">Naive Approach</a></h4>
+<p>Let us start with the naive approach. In the <code>forward</code> step, there are normally three tensors to pass:</p>
 <ul>
-<li><code>data_file</code>: the <code>jsonl</code> file to load</li>
-<li><code>tokenizer</code>: the huggingface tokenizer we are using</li>
-<li><code>model_name: str</code>: the huggingface model we are using</li>
-<li><code>predictors</code>: the number of prediction tokens we will append to the end</li>
-<li><code>regular: bool</code>: If True, do normal LLM SFT, otherwise JEPA. regular is much simpler</li>
-<li><code>train_all: bool</code>: If True, compute loss on all tokens (not just <code>assistant</code>)</li>
-<li><code>plain: bool</code>: If True, do not <code>apply_chat_template</code>, instead format manually
+<li><code>input_ids</code>: the tokenized ids</li>
+<li><code>attention_mask</code>: the attention mask for causal modelling and masking out padding tokens</li>
+<li><code>labels</code>: the labels which are the inputs shifted right</li>
+</ul>
+<p>There are three views of the data:</p>
 <ul>
-<li>Used when chat template is not available for a particular model</li>
+<li>Without any suffix: this is the full conversation, which is the concatenation of the user message and the assistant message</li>
+<li>Suffixed by <code>_user</code>: this is the user message</li>
+<li>Suffixed by <code>_assistant</code>: this is the assistant message</li>
 </ul>
-</li>
-<li><code>front_pred: bool</code>: If True, put predictor tokens at the start of sequence (not effective).</li>
-<li><code>reverse_pred: bool</code>: If True, swap user and assistant (predict <code>user</code> from <code>assistant</code>)</li>
-</ul>
-<p>Step by step:</p>
+<p>Each view of the data has its own set of attention mask. The labels are set to <code>-100</code> for the <code>_user</code> and <code>_assistant</code> views, since these are used purely for computing the jepa loss and do not contribute to next token prediction loss.</p>
+<p>The <span class="hl-subtle">naive approach</span> simply treats each view as independent. This means that for a batch size of <code>B</code>, it gets transformed into <code>3B</code> size:</p>
 <ul>
-<li>First we use <code>load_dataset</code> from huggingface <code>datasets</code>
-<ul>
-<li>Always load the <code>train</code> split as train and test are stored in different files</li>
+<li>The first <code>B</code> entries are for the full conversation</li>
+<li>The next <code>B</code> entries are for the user view</li>
+<li>The next <code>B</code> entries are for the assistant view</li>
 </ul>
-</li>
-<li></li>
-</ul>
-<pre><code>Input JSONL:
-┌─────────────────────────────────────────┐
-│ {"messages": [system, user, assistant]} │
-└─────────────────────────────────────────┘
-                    │
-                    ▼
-         ┌──────────┼──────────┐
-         │          │          │
-         ▼          ▼          ▼
-    ┌────────┐ ┌────────┐ ┌──────────┐
-    │  Full  │ │  User  │ │Assistant │
-    │  Conv  │ │  Only  │ │  Only    │
-    └────────┘ └────────┘ └──────────┘
-         │          │          │
-         ▼          ▼          ▼
-    LM Loss    User Repr   Target Repr
-                    └─────┬────┘
-                          ▼
-                    JEPA Loss
-                 (cos similarity)
+<p>After the forward pass, the user and assistant hidden representations will be split up and used to compute the JEPA loss, and added to the NTP loss. Each hidden state for the user / assistant respectively would be <code>(B, seq_len, hidden_dim)</code>. The last token embedding is extracted and cosine similarity taken between user and assistant to get JEPA loss.</p>
+<p>Clearly, the naive approach creates <code>3x</code> the normal forward pass than just using next token prediction. The goal is to use clever masking to use <code>2x</code> forward passes instead.</p>
+<h4 id="clever-approach"><a class="header" href="#clever-approach">Clever Approach</a></h4>
+<p>The goal is to align the representation for both user and assistant views, but the representation for both views cannot attend to each other, otherwise there would be data leakage.</p>
+<p>The heart of the code lies with a 4D attention mask. First, for a given batch of inputs, it is initialized with:</p>
+<pre><code class="language-py">mask = torch.full(
+    (batch_size * 2, 1, seq_length, seq_length), 
+    -torch.inf
+).to(device)
 </code></pre>
+<p>Note that:</p>
+<ul>
+<li>The batch size is doubled because the first half is used for the full conversation's causal mask, and the second half is used for the packed user + assistant mask.</li>
+<li>The singleton dimension is used to broadcast across attention heads</li>
+<li>We start with <code>-torch.inf</code>, so that when added to attention logits before softmax, it will result in <code>0</code> attention weights (i.e. masked)</li>
+<li>We start by masking all attention, then we will create gaps subsequently</li>
+</ul>
+<p>Next, we compute the last token position for the <code>user</code> and <code>assistant</code> view respectively:</p>
+<ul>
+<li>The last token index is defined as the last real token before padding begins</li>
+<li>A utility function is used to walk each row (for the user and assistant view respectively) to find this last token</li>
+</ul>
+<p>Next, we copy the <code>input_ids</code> and <code>attention_mask</code> from the assistant message into the user message, such that it starts immediately after the user message ends. This is so that we can do a single forward pass on both.</p>
+<ul>
+<li>After this operation, <code>input_ids_user[i]</code> looks like: <code>[user_tok_0, user_tok_1, ..., user_tok_N, asst_tok_0, asst_tok_1, ..., asst_tok_M, pad, pad, ...]</code></li>
+</ul>
+<p>Now we punch holes into the attention mask. The exact implementation is not important to know, but an example will suffice. Suppose <code>length_user=3</code> and <code>length_assistant=2</code>, then the mask for the concatenated sequence along the last two dimensions will look like:</p>
+<pre><code>       u0   u1   u2   a0   a1
+  u0 [  0  -inf -inf -inf -inf ]
+  u1 [  0    0  -inf -inf -inf ]
+  u2 [  0    0    0  -inf -inf ]
+  a0 [-inf -inf -inf   0  -inf ]
+  a1 [-inf -inf -inf   0    0  ]
+</code></pre>
+<p>We can see that this mask prevents the user and assistant tokens from attending to one another, so the single forward pass will allow us to get the user and assistant representations. After the forward pass, some indexing is done to extract the hidden states of the user and assistant representation respectively.</p>
 
                     </main>
 
